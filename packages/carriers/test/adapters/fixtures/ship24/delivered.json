@@ -1,0 +1,24 @@
+{
+  "data": {
+    "trackings": [
+      {
+        "tracker": { "trackerId": "26148317-7502-d3ac-44a9-546d240ac0dd", "trackingNumber": "9400115901047177598206", "shipmentReference": "c6e4fef4-a816-b68f-4024-3b7e4c5a9f81", "clientTrackerId": "3fa99515-3ca0-4901-85bb-056ee016799b", "isSubscribed": true, "isTracked": true, "createdAt": "2021-03-10T05:13:00.000Z" },
+        "shipment": {
+          "shipmentId": "f4f888d7-d140-423f-9a48-e0689d27e098",
+          "statusCode": "delivery_delivered", "statusCategory": "delivery", "statusMilestone": "delivered",
+          "originCountryCode": "CN", "destinationCountryCode": "US",
+          "trackingNumbers": [ { "tn": "9400111202544843610364" }, { "tn": "9400115901047177598206" } ],
+          "delivery": { "estimatedDeliveryDate": "2021-03-04T18:00:00", "courierEstimatedDeliveryDate": { "from": "2021-03-04T17:00:00", "to": "2021-03-04T18:00:00" }, "service": "Parcel Post" },
+          "recipient": { "name": "John Doe", "address": "12515 Research Blvd", "postCode": "78738", "city": "Austin", "subdivision": "TX" }
+        },
+        "events": [
+          { "eventId": "52d54618-d602-eb91-496f-829302728146", "trackingNumber": "9400111202544843610364", "eventTrackingNumber": "9400115901047177598206", "status": "Package Received", "occurrenceDatetime": "2021-03-02T15:38:57", "order": 1, "location": "Beijing", "sourceCode": "usps-tracking", "courierCode": "us-post", "statusCode": "data_order_created", "statusCategory": "data", "statusMilestone": "info_received" },
+          { "eventId": "c6fbe883-49dc-7cba-48c4-46c6efd29db6", "trackingNumber": "9400111202544843610364", "eventTrackingNumber": "9400111202544843610364", "status": "Delivered to the addressee", "occurrenceDatetime": "2021-03-04T17:12:57", "order": 9, "location": "SAN RAFAEL, CA 94901", "sourceCode": "usps-tracking", "courierCode": "us-post", "statusCategory": "delivery", "statusCode": "delivery_delivered", "statusMilestone": "delivered" },
+          { "eventId": "ecb7f9fe-eb7e-e9bf-406a-a9eb5d3b0853", "trackingNumber": "9400111202544843610364", "eventTrackingNumber": "9400111202544843610364", "status": "Out for Delivery", "occurrenceDatetime": "2021-03-04T10:12:57", "order": 8, "location": "SAN RAFAEL, CA 94901", "sourceCode": "usps-tracking", "courierCode": "us-post", "statusCategory": "delivery", "statusCode": "delivery_out_for_delivery", "statusMilestone": "out_for_delivery" },
+          { "eventId": "d7d16234-280b-128f-4395-1abf79816837", "trackingNumber": "9400111202544843610364", "eventTrackingNumber": "9400111202544843610364", "status": "Arrived at Hub, Your item arrived at the hub.", "occurrenceDatetime": "2021-03-04T06:12:57", "order": 7, "location": "SAN RAFAEL, CA 94901", "sourceCode": "usps-tracking", "courierCode": "us-post", "statusCode": null, "statusCategory": null, "statusMilestone": "in_transit" }
+        ],
+        "statistics": { "timestamps": { "infoReceivedDatetime": "2021-03-02T15:38:57", "inTransitDatetime": "2021-03-02T19:24:57", "outForDeliveryDatetime": "2021-03-04T10:12:57", "failedAttemptDatetime": null, "availableForPickupDatetime": null, "exceptionDatetime": null, "deliveredDatetime": "2021-03-04T17:12:57" } }
+      }
+    ]
+  }
+}

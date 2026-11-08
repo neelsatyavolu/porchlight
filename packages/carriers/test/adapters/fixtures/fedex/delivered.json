@@ -1,0 +1,23 @@
+{
+  "transactionId": "a1",
+  "output": {
+    "completeTrackResults": [{
+      "trackingNumber": "128667043726",
+      "trackResults": [{
+        "trackingNumberInfo": { "trackingNumber": "128667043726", "carrierCode": "FDXE" },
+        "latestStatusDetail": { "code": "DL", "derivedCode": "DL", "statusByLocale": "Delivered", "description": "Delivered",
+          "scanLocation": { "city": "PALO ALTO", "stateOrProvinceCode": "CA", "countryCode": "US" } },
+        "dateAndTimes": [
+          { "type": "ESTIMATED_DELIVERY", "dateTime": "2026-11-05T00:00:00-08:00" },
+          { "type": "ACTUAL_DELIVERY", "dateTime": "2026-11-05T11:42:00-08:00" }
+        ],
+        "scanEvents": [
+          { "date": "2026-11-05T11:42:00-08:00", "eventType": "DL", "eventDescription": "Delivered", "derivedStatusCode": "DL", "derivedStatus": "Delivered",
+            "scanLocation": { "city": "PALO ALTO", "stateOrProvinceCode": "CA", "postalCode": "94301", "countryCode": "US" } },
+          { "date": "2026-11-05T07:55:00-08:00", "eventType": "OD", "eventDescription": "On FedEx vehicle for delivery", "derivedStatusCode": "OD", "derivedStatus": "On FedEx vehicle for delivery",
+            "scanLocation": { "city": "SAN JOSE", "stateOrProvinceCode": "CA", "postalCode": "95131", "countryCode": "US" } }
+        ]
+      }]
+    }]
+  }
+}

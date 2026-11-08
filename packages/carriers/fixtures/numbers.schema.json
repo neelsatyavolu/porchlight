@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Porchlight tracking-number fixtures",
+  "description": "Shared by packages/carriers (vitest) and PorchKit (XCTest). Each row is one number and the carrier it must (valid=true) or must not (valid=false) be detected as. Use public example numbers or redacted ones; never the owner's real numbers.",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["number", "carrier", "valid", "note"],
+    "properties": {
+      "number": { "type": "string", "minLength": 1 },
+      "carrier": {
+        "enum": ["usps", "ups", "fedex", "dhl", "dhl_ecommerce", "amazon", "ontrac", "lasership", "uniuni", "jitsu", "other"]
+      },
+      "valid": { "type": "boolean" },
+      "note": { "type": "string", "description": "Where the number came from and what it exercises." }
+    }
+  }
+}

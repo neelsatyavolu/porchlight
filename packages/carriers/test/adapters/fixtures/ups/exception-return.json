@@ -1,0 +1,17 @@
+{
+  "trackResponse": {
+    "shipment": [{
+      "package": [{
+        "trackingNumber": "1Z999AA10123456785",
+        "activity": [
+          { "location": { "address": { "city": "Austin", "stateProvince": "TX", "countryCode": "US" } },
+            "status": { "type": "X", "description": "Returning to Sender: The receiver refused the delivery.", "code": "RF", "statusCode": "010" },
+            "date": "20261104", "time": "101500", "gmtOffset": "-06:00" },
+          { "location": { "address": { "city": "Austin", "stateProvince": "TX", "countryCode": "US" } },
+            "status": { "type": "X", "description": "The receiver was not available for delivery. We'll make a second attempt the next business day.", "code": "48", "statusCode": "010" },
+            "date": "20261103", "time": "141000", "gmtOffset": "-06:00" }
+        ]
+      }]
+    }]
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "trackingNumber": "9400111899223456789012",
+  "status": "Delivered, Front Door/Porch",
+  "statusCategory": "Delivered",
+  "statusSummary": "Your item was delivered at the front door or porch at 12:55 pm on February 7, 2025 in DETROIT, MI 48201.",
+  "trackingEvents": [
+    { "eventType": "Delivered, Front Door/Porch", "eventCode": "01", "eventTimestamp": "2025-02-07T12:55:12-05:00", "GMTTimestamp": "2025-02-07T17:55:12Z", "GMTOffset": "-5:00", "eventCity": "DETROIT", "eventState": "MI", "eventZIPCode": "48201", "eventCountry": "US" },
+    { "eventType": "Out for Delivery", "eventCode": "OF", "eventTimestamp": "2025-02-07T07:10:00-05:00", "eventCity": "DETROIT", "eventState": "MI", "eventZIPCode": "48201", "eventCountry": "US" }
+  ]
+}

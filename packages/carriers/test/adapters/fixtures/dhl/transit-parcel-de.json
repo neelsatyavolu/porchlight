@@ -1,0 +1,26 @@
+{
+  "shipments": [{
+    "id": "00340434292135100197",
+    "service": "parcel-de",
+    "origin": { "address": { "countryCode": "DE" } },
+    "destination": { "address": { "countryCode": "DE", "addressLocality": "Bonn" } },
+    "status": {
+      "timestamp": "2024-07-02T07:21:00",
+      "location": { "address": { "addressLocality": "Bonn", "countryCode": "DE" } },
+      "statusCode": "transit",
+      "status": "PO",
+      "description": "Being delivered.",
+      "remark": "Being delivered."
+    },
+    "estimatedTimeOfDelivery": "2024-07-02",
+    "estimatedDeliveryTimeFrame": { "estimatedFrom": "2024-07-02T09:00:00", "estimatedThrough": "2024-07-02T10:30:00" },
+    "product": { "productCode": "09", "productName": "DHL KLEINPAKET" },
+    "returnFlag": false,
+    "events": [
+      { "timestamp": "2024-07-02T07:21:00", "location": { "address": { "addressLocality": "Bonn", "countryCode": "DE" } }, "statusCode": "transit", "status": "PO", "description": "Being delivered.", "remark": "Being delivered." },
+      { "timestamp": "2024-07-01T19:05:00", "location": { "address": { "addressLocality": "Köln", "countryCode": "DE" } }, "statusCode": "transit", "status": "ZU", "description": "The shipment has been processed in the parcel center." },
+      { "timestamp": "2024-06-30T10:00:00", "statusCode": "pre-transit", "description": "The instruction data for this shipment have been provided by the sender to DHL electronically." }
+    ]
+  }],
+  "possibleAdditionalShipmentsUrl": []
+}

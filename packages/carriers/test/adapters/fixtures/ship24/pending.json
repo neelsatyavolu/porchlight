@@ -1,0 +1,11 @@
+{
+  "data": {
+    "trackings": [
+      {
+        "tracker": { "trackerId": "t-pend", "trackingNumber": "UUS0000000000000001", "isSubscribed": true, "isTracked": false },
+        "shipment": { "statusCode": null, "statusCategory": null, "statusMilestone": "pending", "delivery": { "estimatedDeliveryDate": null } },
+        "events": []
+      }
+    ]
+  }
+}

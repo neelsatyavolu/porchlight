@@ -1,0 +1,19 @@
+[
+  {
+    "trackingNumber": "9400111899223456789012",
+    "mailClass": "Priority Mail®",
+    "mailClassCode": "PM",
+    "originCity": "ORLANDO", "originState": "FL", "originZIPCode": "32801",
+    "destinationCity": "PALO ALTO", "destinationState": "CA", "destinationZIPCode": "94301",
+    "status": "In Transit to Next Facility",
+    "statusCategory": "On the Way",
+    "statusSummary": "Your item is in transit to the next facility.",
+    "deliveryDateExpectation": { "expectedDeliveryDate": "2026-11-05" },
+    "trackingEvents": [
+      { "eventType": "In Transit to Next Facility", "eventCode": "NT", "eventTimestamp": "2026-11-03T22:10:00-05:00", "eventCity": "ORLANDO", "eventState": "FL", "eventZIPCode": "32862", "eventCountry": "US" },
+      { "eventType": "Arrived at USPS Regional Facility", "eventCode": "10", "eventTimestamp": "2026-11-03T18:02:00-05:00", "eventCity": "ORLANDO", "eventState": "FL", "eventZIPCode": "32862", "eventCountry": "US" },
+      { "eventType": "USPS in possession of item", "eventCode": "03", "eventTimestamp": "2026-11-03T14:41:00-05:00", "eventCity": "ORLANDO", "eventState": "FL", "eventZIPCode": "32801", "eventCountry": "US" },
+      { "eventType": "Shipping Label Created, USPS Awaiting Item", "eventCode": "GX", "eventTimestamp": "2026-11-02T09:15:00-05:00", "eventCity": "ORLANDO", "eventState": "FL", "eventZIPCode": "32801", "eventCountry": "" }
+    ]
+  }
+]

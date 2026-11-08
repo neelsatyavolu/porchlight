@@ -1,0 +1,14 @@
+{
+  "data": {
+    "trackings": [
+      {
+        "tracker": { "trackerId": "t-ret", "trackingNumber": "C11234567890123", "isSubscribed": true, "isTracked": true },
+        "shipment": { "statusCode": "exception_return", "statusCategory": "exception", "statusMilestone": "exception", "delivery": { "courierEstimatedDeliveryDate": { "from": "2026-11-06", "to": "2026-11-06" } } },
+        "events": [
+          { "eventId": "r-2", "status": "Returning to sender", "occurrenceDatetime": "2026-11-06T10:00:00-07:00", "order": 2, "location": "Phoenix, AZ", "statusCategory": "exception", "statusCode": "exception_return", "statusMilestone": "exception" },
+          { "eventId": "r-1", "status": "Delivery attempted", "occurrenceDatetime": "2026-11-05T14:00:00-07:00", "order": 1, "location": "Phoenix, AZ", "statusCategory": "delivery", "statusCode": "delivery_failed_attempt", "statusMilestone": "failed_attempt" }
+        ]
+      }
+    ]
+  }
+}

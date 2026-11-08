@@ -1,0 +1,20 @@
+{
+  "data": {
+    "trackings": [
+      {
+        "tracker": { "trackerId": "0f2a2b44-0000-4000-8000-000000000001", "trackingNumber": "SCD0000F00410922107", "isSubscribed": true, "isTracked": true, "createdAt": "2026-11-07T18:00:00.000Z" },
+        "shipment": {
+          "shipmentId": "0f2a2b44-0000-4000-8000-000000000002",
+          "statusCode": "delivery_out_for_delivery", "statusCategory": "delivery", "statusMilestone": "out_for_delivery",
+          "delivery": { "estimatedDeliveryDate": "2026-11-08T21:00:00", "service": null }
+        },
+        "events": [
+          { "eventId": "e-3", "status": "Out for delivery", "occurrenceDatetime": "2026-11-08T08:40:00-08:00", "order": 3, "location": "Hayward, CA", "courierCode": "axlehire", "statusCategory": "delivery", "statusCode": "delivery_out_for_delivery", "statusMilestone": "out_for_delivery" },
+          { "eventId": "e-2", "status": "Arrived at Jitsu hub", "occurrenceDatetime": "2026-11-07T22:05:00-08:00", "order": 2, "location": "Hayward, CA", "courierCode": "axlehire", "statusCategory": "transit", "statusCode": "transit_on_its_way", "statusMilestone": "in_transit" },
+          { "eventId": "e-1", "status": "Shipment information received", "occurrenceDatetime": "2026-11-07", "order": 1, "location": null, "courierCode": "axlehire", "statusCategory": "data", "statusCode": "data_order_created", "statusMilestone": "info_received" }
+        ],
+        "statistics": { "timestamps": { "deliveredDatetime": null } }
+      }
+    ]
+  }
+}

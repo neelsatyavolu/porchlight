@@ -1,0 +1,24 @@
+{
+  "trackResponse": {
+    "shipment": [{
+      "inquiryNumber": "1Z1442YY7229014688",
+      "package": [{
+        "trackingNumber": "1Z1442YY7229014688",
+        "currentStatus": { "code": "SR", "description": "Your package was released by the customs agency.", "simplifiedTextDescription": "Delivered", "statusCode": "003", "type": "X" },
+        "deliveryDate": [{ "type": "DEL", "date": "20220126" }],
+        "deliveryTime": { "type": "DEL", "startTime": "", "endTime": "163000" },
+        "activity": [
+          { "location": { "address": { "city": "PARAMUS", "stateProvince": "NJ", "countryCode": "US" }, "slic": "0761" },
+            "status": { "type": "D", "description": "DELIVERED ", "code": "F4", "statusCode": "011" },
+            "date": "20220126", "time": "163000", "gmtDate": "20220126", "gmtTime": "21:30:00", "gmtOffset": "-05:00" },
+          { "location": { "address": { "city": "PARAMUS", "stateProvince": "NJ", "countryCode": "US" } },
+            "status": { "type": "I", "description": "Out For Delivery Today", "code": "OT", "statusCode": "021" },
+            "date": "20220126", "time": "081200", "gmtDate": "20220126", "gmtTime": "13:12:00", "gmtOffset": "-05:00" },
+          { "status": { "type": "M", "description": "Shipper created a label, UPS has not received the package yet. ", "code": "MP", "statusCode": "003" },
+            "date": "20220124", "time": "151641" }
+        ],
+        "packageCount": 1
+      }]
+    }]
+  }
+}

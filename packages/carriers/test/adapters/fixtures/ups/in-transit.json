@@ -1,0 +1,24 @@
+{
+  "trackResponse": {
+    "shipment": [{
+      "inquiryNumber": "1Z999AA10123456784",
+      "package": [{
+        "trackingNumber": "1Z999AA10123456784",
+        "currentStatus": { "code": "IT", "description": "On the Way", "simplifiedTextDescription": "On the Way", "statusCode": "005", "type": "I" },
+        "deliveryDate": [
+          { "type": "SDD", "date": "20261105" },
+          { "type": "RDD", "date": "20261106" }
+        ],
+        "deliveryTime": { "type": "EOD", "startTime": "090000", "endTime": "190000" },
+        "activity": [
+          { "location": { "address": { "city": "", "stateProvince": "", "countryCode": "US" } },
+            "status": { "type": "U", "description": "The delivery date has been updated.", "code": "FC", "statusCode": "035" },
+            "date": "20261104", "time": "021500", "gmtDate": "20261104", "gmtTime": "08:15:00", "gmtOffset": "-06:00" },
+          { "location": { "address": { "city": "Louisville", "stateProvince": "KY", "countryCode": "US" } },
+            "status": { "type": "I", "description": "Departed from Facility", "code": "DP", "statusCode": "005" },
+            "date": "20261103", "time": "233000", "gmtDate": "20261104", "gmtTime": "04:30:00", "gmtOffset": "-05:00" }
+        ]
+      }]
+    }]
+  }
+}

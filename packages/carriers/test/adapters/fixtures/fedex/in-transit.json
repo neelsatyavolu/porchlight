@@ -1,0 +1,30 @@
+{
+  "transactionId": "624deea6-b709-470c-8c39-4b5511281492",
+  "output": {
+    "completeTrackResults": [{
+      "trackingNumber": "123456789012",
+      "trackResults": [{
+        "trackingNumberInfo": { "trackingNumber": "123456789012", "carrierCode": "FDXG", "trackingNumberUniqueId": "2460~123456789012~FDEG" },
+        "latestStatusDetail": {
+          "code": "IT", "derivedCode": "IT", "statusByLocale": "In transit", "description": "In transit",
+          "scanLocation": { "city": "OAKLAND", "stateOrProvinceCode": "CA", "countryCode": "US" }
+        },
+        "dateAndTimes": [
+          { "type": "ESTIMATED_DELIVERY", "dateTime": "2026-11-05T00:00:00-08:00" },
+          { "type": "ACTUAL_PICKUP", "dateTime": "2026-11-02T16:20:00-05:00" },
+          { "type": "SHIP", "dateTime": "2026-11-02T00:00:00-06:00" }
+        ],
+        "estimatedDeliveryTimeWindow": { "window": { "begins": "2026-11-05T10:00:00-08:00", "ends": "2026-11-05T14:00:00-08:00" } },
+        "standardTransitTimeWindow": { "window": { "ends": "2026-11-06T00:00:00-08:00" } },
+        "scanEvents": [
+          { "date": "2026-11-04T03:12:00-08:00", "eventType": "AR", "eventDescription": "Arrived at FedEx location", "derivedStatusCode": "IT", "derivedStatus": "In transit", "exceptionCode": "", "exceptionDescription": "",
+            "scanLocation": { "city": "OAKLAND", "stateOrProvinceCode": "CA", "postalCode": "94621", "countryCode": "US" }, "locationType": "FEDEX_FACILITY" },
+          { "date": "2026-11-02T16:20:00-05:00", "eventType": "PU", "eventDescription": "Picked up", "derivedStatusCode": "PU", "derivedStatus": "Picked up", "exceptionCode": "", "exceptionDescription": "",
+            "scanLocation": { "city": "MEMPHIS", "stateOrProvinceCode": "TN", "postalCode": "38118", "countryCode": "US" }, "locationType": "PICKUP_LOCATION" },
+          { "date": "2026-11-02T09:00:00-05:00", "eventType": "OC", "eventDescription": "Shipment information sent to FedEx", "derivedStatusCode": "IN", "derivedStatus": "Initiated", "exceptionCode": "", "exceptionDescription": "",
+            "scanLocation": { "countryCode": "US" }, "locationType": "CUSTOMER" }
+        ]
+      }]
+    }]
+  }
+}

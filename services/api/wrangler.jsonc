@@ -1,0 +1,52 @@
+// Porchlight API Worker. Nothing here is deployed yet: every id is "TBD"
+// until the owner approves creating the D1 database, KV namespace and queue.
+// Secrets (set with `wrangler secret put`, never committed): APPLE_CLIENT_IDS,
+// RESEND_API_KEY, AGGREGATOR_API_KEY, USPS_CLIENT_ID, USPS_CLIENT_SECRET,
+// UPS_CLIENT_ID, UPS_CLIENT_SECRET, FEDEX_CLIENT_ID, FEDEX_CLIENT_SECRET,
+// DHL_API_KEY, APNS_KEY_ID, APNS_PRIVATE_KEY. Local values go in .dev.vars.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "porchlight-api",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-10-20",
+  "observability": { "enabled": true },
+
+  "vars": {
+    "APNS_TEAM_ID": "VTQW687WBQ",
+    "APP_ORIGIN": "https://porchlight.xanom.co"
+    // "APNS_TOPIC": "<app bundle id>" goes here once the bundle id is chosen.
+  },
+
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "porchlight",
+      "database_id": "TBD",
+      "migrations_dir": "migrations"
+    }
+  ],
+
+  "kv_namespaces": [{ "binding": "RATE", "id": "TBD" }],
+
+  "queues": {
+    "producers": [{ "binding": "TRACK_QUEUE", "queue": "porchlight-track" }],
+    "consumers": [
+      {
+        "queue": "porchlight-track",
+        "max_batch_size": 10,
+        "max_batch_timeout": 5,
+        "max_retries": 3
+      }
+    ]
+  },
+
+  "triggers": { "crons": ["*/5 * * * *"] },
+
+  // apps/web build output lands here in Phase 2. /v1/* always hits the Worker.
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": ["/v1/*"]
+  }
+}

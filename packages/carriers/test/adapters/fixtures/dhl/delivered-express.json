@@ -1,0 +1,20 @@
+{
+  "shipments": [{
+    "id": "7777777770",
+    "service": "express",
+    "status": {
+      "timestamp": "2026-11-04T14:15:00+01:00",
+      "location": { "address": { "addressLocality": "LONDON - UK" } },
+      "statusCode": "delivered",
+      "status": "delivered",
+      "description": "Delivered"
+    },
+    "estimatedTimeOfDelivery": "2026-11-04T23:59:00+01:00",
+    "returnFlag": false,
+    "events": [
+      { "timestamp": "2026-11-04T14:15:00+01:00", "location": { "address": { "addressLocality": "LONDON - UK" } }, "statusCode": "delivered", "description": "Delivered" },
+      { "timestamp": "2026-11-04T08:02:00+01:00", "location": { "address": { "addressLocality": "LONDON - UK" } }, "statusCode": "transit", "description": "Shipment is out with courier for delivery" },
+      { "timestamp": "2026-11-03T20:11:00+01:00", "location": { "address": { "addressLocality": "LEIPZIG - GERMANY" } }, "statusCode": "transit", "description": "Shipment is ready for pickup at service point" }
+    ]
+  }]
+}
