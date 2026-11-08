@@ -1,0 +1,29 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "overused-font",
+        "value": "geist",
+        "createdAt": "2026-11-08T22:51:09.914Z",
+        "reason": "owner's CLAUDE.md and ~/DESIGN.md (Blackletter) mandate Geist / Geist Serif / Geist Mono"
+      },
+      {
+        "rule": "overused-font",
+        "value": "geist mono",
+        "createdAt": "2026-11-08T22:51:09.930Z",
+        "reason": "owner's CLAUDE.md and ~/DESIGN.md (Blackletter) mandate Geist / Geist Serif / Geist Mono"
+      },
+      {
+        "rule": "flat-type-hierarchy",
+        "value": "*",
+        "files": [
+          "site/src/index.html"
+        ],
+        "createdAt": "2026-11-08T22:51:21.460Z",
+        "reason": "assistant-checked false positive: h1 clamp(56px,10vw,96px) and h2 clamp(40px,6vw,56px) serif vs 18px body in site.css; detector does not resolve clamp()"
+      }
+    ]
+  }
+}
