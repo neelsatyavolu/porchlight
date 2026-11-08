@@ -9,6 +9,8 @@ export interface MagicLinkMail {
   appOrigin: string;
   link: string;
   code: string;
+  /** EMAIL_FROM, e.g. "Porchlight <signin@n3el.dev>" when the app host isn't a Resend-verified domain. */
+  from?: string;
 }
 
 let fetchImpl: typeof fetch = (input, init) => fetch(input, init);
@@ -44,7 +46,7 @@ export async function sendMagicLink(mail: MagicLinkMail): Promise<void> {
     method: "POST",
     headers: { authorization: `Bearer ${mail.apiKey}`, "content-type": "application/json" },
     body: JSON.stringify({
-      from: `Porchlight <signin@${host}>`,
+      from: mail.from ?? `Porchlight <signin@${host}>`,
       to: [mail.to],
       subject: `Your Porchlight sign-in code: ${mail.code}`,
       text,

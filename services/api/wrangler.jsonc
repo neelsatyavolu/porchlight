@@ -1,5 +1,5 @@
-// Porchlight API Worker. Nothing here is deployed yet: every id is "TBD"
-// until the owner approves creating the D1 database, KV namespace and queue.
+// Porchlight Worker (API + web app + site) at https://porchlight.xanom.co,
+// Cloudflare account 5eac7df5e71a989ae9dbf9c8e9761c24. Deploy: pnpm deploy (README).
 // Secrets (set with `wrangler secret put`, never committed): APPLE_CLIENT_IDS,
 // RESEND_API_KEY, AGGREGATOR_API_KEY, USPS_CLIENT_ID, USPS_CLIENT_SECRET,
 // UPS_CLIENT_ID, UPS_CLIENT_SECRET, FEDEX_CLIENT_ID, FEDEX_CLIENT_SECRET,
@@ -10,25 +10,27 @@
   "main": "src/index.ts",
   "compatibility_date": "2026-10-20",
   "observability": { "enabled": true },
+  "routes": [{ "pattern": "porchlight.xanom.co", "custom_domain": true }],
 
   "vars": {
     "APNS_TEAM_ID": "VTQW687WBQ",
     "APP_ORIGIN": "https://porchlight.xanom.co",
     "APNS_TOPIC": "co.xanom.porchlight",
     // Host for "production" devices; "sandbox" devices use api.sandbox.push.apple.com.
-    "APNS_HOST": "api.push.apple.com"
+    "APNS_HOST": "api.push.apple.com",
+    "EMAIL_FROM": "Porchlight <signin@n3el.dev>"
   },
 
   "d1_databases": [
     {
       "binding": "DB",
       "database_name": "porchlight",
-      "database_id": "TBD",
+      "database_id": "f74dd3bd-3a85-4cce-9cb0-70beadf8133d",
       "migrations_dir": "migrations"
     }
   ],
 
-  "kv_namespaces": [{ "binding": "RATE", "id": "TBD" }],
+  "kv_namespaces": [{ "binding": "RATE", "id": "f61a769e97514cada2b95361dbd45bfe" }],
 
   "queues": {
     "producers": [{ "binding": "TRACK_QUEUE", "queue": "porchlight-track" }],

@@ -147,7 +147,7 @@ async function emailStart({ req, env }: RouteContext): Promise<Response> {
     return json({ sent: true }, 202);
   }
   try {
-    await sendMagicLink({ apiKey: env.RESEND_API_KEY, to: body.email, appOrigin: env.APP_ORIGIN, link: link.href, code });
+    await sendMagicLink({ apiKey: env.RESEND_API_KEY, to: body.email, appOrigin: env.APP_ORIGIN, link: link.href, code, from: env.EMAIL_FROM });
   } catch (err) {
     console.error("resend failed", err);
     throw new HttpError(503, "unavailable", "Could not send the email, try again later");

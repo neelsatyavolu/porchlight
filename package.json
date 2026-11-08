@@ -10,7 +10,8 @@
     "build": "pnpm --filter @porchlight/site build && pnpm --filter @porchlight/web build && pnpm --filter @porchlight/api build",
     "dev": "node scripts/dev.mjs",
     "test": "pnpm -r --if-present test",
-    "typecheck": "pnpm -r --if-present typecheck"
+    "typecheck": "pnpm -r --if-present typecheck",
+    "deploy": "pnpm --filter @porchlight/site build && pnpm --filter @porchlight/web build && pnpm --filter @porchlight/api run deploy"
   },
   "devDependencies": {
     "typescript": "5.9.3",

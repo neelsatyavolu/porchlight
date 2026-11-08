@@ -31,6 +31,8 @@ export interface Env extends CarrierEnv {
    * is localhost or 127.0.0.1. Never set in wrangler.jsonc.
    */
   EMAIL_DEV_LOG?: string;
+  /** Sender for sign-in mail; must be on a Resend-verified domain. Defaults to signin@<APP_ORIGIN host>. */
+  EMAIL_FROM?: string;
 
   // Secrets (wrangler secret put). Optional because local dev and tests run
   // without them; code must handle a missing key explicitly.
