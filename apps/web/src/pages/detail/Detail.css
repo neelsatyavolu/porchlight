@@ -1,0 +1,237 @@
+/* Package detail (DESIGN.md §6 "Detail" and "Timeline"). */
+
+.detail {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-5);
+  padding: var(--s-5) 0 var(--s-7);
+}
+
+.detail__back {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-1);
+  align-self: flex-start;
+  color: var(--mute);
+  font-size: var(--text-body-sm);
+}
+
+.detail__back:hover {
+  color: var(--ink);
+}
+
+.detail__note {
+  color: var(--body);
+  font-size: var(--text-body-sm);
+}
+
+.detail__head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+}
+
+.detail__title {
+  font: 500 var(--text-heading) / 31px var(--sans);
+}
+
+.detail__title-button {
+  max-width: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: var(--r-sm);
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  overflow-wrap: anywhere;
+  cursor: text;
+}
+
+.detail__title-button:hover {
+  background: var(--hover);
+}
+
+.detail__status {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2) var(--s-3);
+  color: var(--ink);
+}
+
+.detail__eta {
+  color: var(--body);
+}
+
+.detail__carrier-words {
+  color: var(--mute);
+  font-size: var(--text-body-sm);
+}
+
+/* Facts: label/value rows with hairlines. */
+.facts {
+  margin: 0;
+  border-top: 1px solid var(--line);
+}
+
+.facts__row {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: var(--s-3);
+  align-items: center;
+  min-height: 48px;
+  padding: var(--s-2) 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.facts__row dt {
+  color: var(--mute);
+  font-size: var(--text-body-sm);
+}
+
+.facts__row dd {
+  margin: 0;
+  min-width: 0;
+  color: var(--ink);
+}
+
+.facts__value {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2) var(--s-3);
+}
+
+.facts__number {
+  letter-spacing: 0.02em;
+  overflow-wrap: anywhere;
+}
+
+.facts__link {
+  font-size: var(--text-body-sm);
+}
+
+.detail__section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+}
+
+.detail__section-title {
+  font: 500 var(--text-heading-sm) / 24px var(--sans);
+}
+
+.items {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--line);
+}
+
+.items__row {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--s-3);
+  padding: var(--s-3) 0;
+  border-bottom: 1px solid var(--line);
+  color: var(--ink);
+}
+
+.items__qty {
+  flex: none;
+  color: var(--mute);
+  font-size: var(--text-body-sm);
+}
+
+/* Timeline: dots on a hairline rail. */
+.timeline {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+}
+
+.timeline__header {
+  margin-bottom: var(--s-2);
+  color: var(--mute);
+  font: 500 var(--text-label) / 18px var(--sans);
+}
+
+.timeline__events {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.timeline__event {
+  position: relative;
+  padding: 0 0 var(--s-4) var(--s-5);
+}
+
+.timeline__event::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 3.5px;
+  width: 1px;
+  background: var(--line-2);
+}
+
+.timeline__dot {
+  position: absolute;
+  top: 8px;
+  left: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: var(--r-full);
+  background: var(--stone);
+}
+
+.timeline__dot[data-tone="out"] {
+  background: var(--status-out);
+}
+.timeline__dot[data-tone="delivered"] {
+  background: var(--status-delivered);
+}
+.timeline__dot[data-tone="exception"] {
+  background: var(--status-exception);
+}
+.timeline__dot[data-tone="neutral"] {
+  background: var(--status-neutral);
+}
+
+.timeline__text {
+  color: var(--body);
+}
+
+.timeline__event--newest .timeline__text {
+  color: var(--ink);
+}
+
+.timeline__meta {
+  color: var(--mute);
+  font-size: var(--text-body-sm);
+}
+
+.detail__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+}
+
+.detail__message {
+  color: var(--mute);
+  font-size: var(--text-body-sm);
+}
+
+.detail__message--error {
+  color: var(--danger);
+}
+
+@media (max-width: 599px) {
+  .facts__row {
+    grid-template-columns: 1fr;
+    gap: var(--s-1);
+  }
+}

@@ -1,0 +1,475 @@
+/* Marketing pages. Follows ~/DESIGN.md (Blackletter) as written, via tokens.css.
+   The package-list preview on the home page uses the app's row and group
+   styles from DESIGN.md §4 and §6. */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--canvas);
+  color: var(--body);
+  font: 400 var(--text-body-lg) / 1.6 var(--sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+  transition: color var(--dur-fast) var(--ease);
+}
+a:hover {
+  color: var(--accent-hover);
+}
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+.wrap {
+  max-width: calc(1120px + 2 * var(--gutter));
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+.skip {
+  position: absolute;
+  left: -9999px;
+}
+.skip:focus {
+  left: var(--gutter);
+  top: 12px;
+  z-index: 2;
+  padding: 8px 12px;
+  background: var(--card);
+  border: 1px solid var(--line-2);
+  border-radius: var(--r-md);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* Nav */
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  height: 64px;
+  border-bottom: 1px solid var(--line);
+  background: var(--canvas);
+}
+.nav .wrap {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  height: 100%;
+}
+.mark {
+  margin-right: auto;
+  color: var(--ink);
+  font-weight: 500;
+}
+.mark:hover {
+  color: var(--ink);
+}
+.nav-links {
+  display: flex;
+  gap: 24px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--text-body-sm);
+}
+.nav-links a,
+.nav-signin {
+  color: var(--body);
+  font-size: var(--text-body-sm);
+}
+.nav-links a:hover,
+.nav-signin:hover {
+  color: var(--ink);
+}
+@media (max-width: 720px) {
+  .nav-links {
+    display: none;
+  }
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  height: var(--control-h);
+  padding: 0 16px;
+  border-radius: var(--r-md);
+  background: var(--primary);
+  color: var(--primary-on);
+  font: 500 var(--text-button) / 1 var(--sans);
+  white-space: nowrap;
+  transition: background var(--dur-fast) var(--ease);
+}
+.btn:hover {
+  background: var(--primary-hover);
+  color: var(--primary-on);
+}
+.btn-ghost {
+  background: var(--elev);
+  border: 1px solid var(--line-2);
+  color: var(--ink);
+}
+.btn-ghost:hover {
+  background: var(--elev);
+  border-color: var(--mute);
+  color: var(--ink);
+}
+
+/* Hero */
+.hero {
+  padding: 128px 0 64px;
+}
+.hero h1 {
+  max-width: 12ch;
+  margin: 0 0 24px;
+  color: var(--ink);
+  font: 400 clamp(56px, 10vw, 96px) / 1 var(--serif);
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+.lede {
+  max-width: 52ch;
+  margin: 0 0 32px;
+  font-size: 19px;
+  line-height: 1.45;
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px 24px;
+}
+.aside {
+  color: var(--mute);
+  font-size: var(--text-body-sm);
+}
+
+/* Product view: the package list */
+.preview {
+  max-width: 720px;
+  margin: 0 0 128px;
+}
+.preview-frame {
+  overflow: hidden;
+  border: 1px solid var(--line-2);
+  border-radius: var(--r-lg);
+  background: var(--canvas);
+}
+.preview figcaption {
+  margin-top: 12px;
+  color: var(--mute);
+  font-size: var(--text-body-sm);
+}
+.group-head {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  height: 32px;
+  margin: 0;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--line);
+  color: var(--mute);
+  font: 500 var(--text-label) / 18px var(--sans);
+}
+.group + .group .group-head {
+  border-top: 1px solid var(--line);
+}
+.rows {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.row {
+  display: grid;
+  grid-template-columns: 8px minmax(0, 1fr) auto;
+  column-gap: 12px;
+  align-items: center;
+  min-height: var(--row-h);
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--line);
+}
+.rows li:last-child .row {
+  border-bottom: 0;
+}
+.row .dot {
+  grid-row: 1;
+  align-self: center;
+}
+.row-title,
+.row-meta {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.row-title {
+  color: var(--ink);
+  font: 500 15px / 22px var(--sans);
+}
+.row-eta {
+  color: var(--body);
+  font-size: var(--text-body-sm);
+  text-align: right;
+  white-space: nowrap;
+}
+.row-meta {
+  grid-column: 2;
+  color: var(--mute);
+  font-size: var(--text-body-sm);
+  line-height: 20px;
+}
+.row-carrier {
+  grid-column: 3;
+  justify-self: end;
+}
+.muted {
+  color: var(--mute);
+}
+
+.dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: var(--r-full);
+  background: var(--status-neutral);
+}
+.dot-out {
+  background: var(--status-out);
+}
+.dot-ok {
+  background: var(--status-delivered);
+}
+.dot-warn {
+  background: var(--status-exception);
+}
+.dot-hollow {
+  background: none;
+  border: 1.5px solid var(--status-neutral);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  height: 20px;
+  padding: 0 6px;
+  border: 1px solid var(--line-2);
+  border-radius: var(--r-sm);
+  color: var(--mute);
+  font: 400 var(--text-caption) / 1 var(--sans);
+}
+
+.num {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Bands */
+.band {
+  padding: 96px 0;
+  border-top: 1px solid var(--line);
+}
+.band-head {
+  max-width: 65ch;
+  margin-bottom: 48px;
+}
+.band h2 {
+  margin: 0 0 16px;
+  color: var(--ink);
+  font: 400 clamp(40px, 6vw, 56px) / 1 var(--serif);
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+.band-head p {
+  margin: 0;
+}
+
+/* Sources: feature grid 3 -> 1 */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+@media (max-width: 1024px) {
+  .cards {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+.card {
+  display: flex;
+  flex-direction: column;
+  padding: 32px;
+  border: 1px solid var(--line-2);
+  border-radius: var(--r-lg);
+  background: var(--card);
+}
+@media (max-width: 600px) {
+  .card {
+    padding: 24px;
+  }
+}
+.card h3 {
+  margin: 0 0 8px;
+  color: var(--ink);
+  font: 500 var(--text-heading) / 1.4 var(--sans);
+  letter-spacing: -0.01em;
+}
+.card p {
+  margin: 0 0 16px;
+  font-size: var(--text-body);
+  line-height: 1.55;
+}
+.card .aside {
+  margin: auto 0 0;
+}
+
+/* Label/value lists: carriers, privacy, downloads */
+.facts {
+  max-width: 880px;
+  margin: 0;
+  border-top: 1px solid var(--line);
+}
+.fact {
+  display: grid;
+  grid-template-columns: minmax(0, 240px) minmax(0, 1fr);
+  gap: 8px 32px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--line);
+}
+.fact dt {
+  color: var(--ink);
+  font-weight: 500;
+}
+.fact dd {
+  margin: 0;
+}
+@media (max-width: 600px) {
+  .fact {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+.band-foot {
+  margin: 24px 0 0;
+}
+
+.get {
+  max-width: 880px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--line);
+}
+.get li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 24px;
+  min-height: 72px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--line);
+}
+.get-name {
+  color: var(--ink);
+  font-weight: 500;
+}
+.get-req {
+  margin-right: auto;
+  color: var(--mute);
+  font-size: var(--text-body-sm);
+}
+.soon {
+  color: var(--mute);
+  font-size: var(--text-body-sm);
+}
+
+/* Policy pages */
+.doc {
+  max-width: 65ch;
+  padding: 96px 0;
+}
+.doc h1 {
+  margin: 0 0 16px;
+  color: var(--ink);
+  font: 400 clamp(56px, 9vw, 72px) / 1 var(--serif);
+  letter-spacing: -0.02em;
+}
+.doc h2 {
+  margin: 48px 0 8px;
+  color: var(--ink);
+  font: 500 var(--text-heading) / 1.4 var(--sans);
+  letter-spacing: -0.01em;
+}
+.doc p,
+.doc li {
+  margin: 0 0 12px;
+}
+.doc ul {
+  margin: 0 0 12px;
+  padding-left: 20px;
+}
+.doc .facts {
+  margin: 0 0 12px;
+}
+.doc .fact {
+  grid-template-columns: minmax(0, 180px) minmax(0, 1fr);
+}
+@media (max-width: 600px) {
+  .doc .fact {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+.updated {
+  margin: 0 0 48px;
+  color: var(--mute);
+  font-size: var(--text-body-sm);
+}
+
+/* Footer */
+.foot {
+  border-top: 1px solid var(--line);
+  color: var(--mute);
+  font-size: var(--text-body-sm);
+}
+.foot .wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+  padding-top: 32px;
+  padding-bottom: 64px;
+}
+.foot span {
+  margin-right: auto;
+}
+.foot a {
+  color: var(--mute);
+}
+.foot a:hover {
+  color: var(--ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+  }
+}

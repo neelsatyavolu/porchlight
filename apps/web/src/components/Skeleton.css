@@ -1,0 +1,50 @@
+/* Loading rows: Row's box (64px, hairline below) with flat --active bars. Static on purpose. */
+.skeleton__row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s-3);
+  min-height: var(--row-h);
+  padding: var(--s-3) var(--s-4);
+  border-bottom: 1px solid var(--line);
+}
+
+.skeleton__dot {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  margin-top: 7px; /* centers on the 22px title line, like .row__leading */
+  border-radius: var(--r-full);
+  background: var(--active);
+}
+
+.skeleton__lines {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+  flex: 1;
+  min-width: 0;
+  padding-top: 5px;
+}
+
+.skeleton__bar {
+  display: block;
+  height: 12px;
+  border-radius: var(--r-sm);
+  background: var(--active);
+}
+
+.skeleton__bar--title {
+  width: 40%;
+}
+
+.skeleton__bar--meta {
+  width: 64%;
+}
+
+.skeleton__row:nth-child(3n) .skeleton__bar--title {
+  width: 28%;
+}
+
+.skeleton__row:nth-child(3n + 1) .skeleton__bar--meta {
+  width: 52%;
+}

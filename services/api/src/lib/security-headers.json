@@ -1,0 +1,8 @@
+{
+  "Content-Security-Policy": "default-src 'self'; script-src 'self' https://appleid.cdn-apple.com; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-src https://appleid.apple.com; form-action 'self'; frame-ancestors 'none'; base-uri 'none'; object-src 'none'",
+  "X-Content-Type-Options": "nosniff",
+  "X-Frame-Options": "DENY",
+  "Referrer-Policy": "strict-origin-when-cross-origin",
+  "Permissions-Policy": "camera=(), microphone=(), geolocation=(), payment=()",
+  "Strict-Transport-Security": "max-age=31536000"
+}

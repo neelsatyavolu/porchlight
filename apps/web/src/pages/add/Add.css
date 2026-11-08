@@ -1,0 +1,120 @@
+/* Add by paste (DESIGN.md §7 "Add"). */
+
+.add {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-5);
+  max-width: 560px;
+  padding: var(--s-6) 0 var(--s-7);
+}
+
+.add__title {
+  font: 500 var(--text-heading) / 31px var(--sans);
+}
+
+.add__numbers {
+  height: auto;
+  min-height: var(--input-h);
+  padding: 10px 14px;
+  line-height: 20px;
+  resize: vertical;
+}
+
+.add__lines {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--line);
+}
+
+.pick {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+  margin: 0;
+  padding: var(--s-3) 0;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  min-width: 0;
+}
+
+.pick__number {
+  float: left; /* lets the legend sit inside the flex column */
+  padding: 0;
+  color: var(--ink);
+  letter-spacing: 0.02em;
+  overflow-wrap: anywhere;
+}
+
+.pick__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+}
+
+.pick__chip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  height: 28px;
+  padding: 0 var(--s-3);
+  border: 1px solid var(--line-2);
+  border-radius: var(--r-md);
+  color: var(--body);
+  font-size: var(--text-body-sm);
+  cursor: pointer;
+  transition:
+    background-color var(--dur-fast) var(--ease),
+    border-color var(--dur-fast) var(--ease);
+}
+
+.pick__chip:hover {
+  background: var(--hover);
+}
+
+.pick__chip:has(.pick__radio:checked) {
+  border-color: var(--accent);
+  background: var(--tint);
+  color: var(--ink);
+}
+
+.pick__chip:has(.pick__radio:focus-visible) {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.pick__radio {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.pick__note {
+  color: var(--mute);
+  font-size: var(--text-caption);
+}
+
+.pick__error {
+  color: var(--danger);
+  font-size: var(--text-caption);
+}
+
+.add__hint {
+  color: var(--mute);
+  font-size: var(--text-body-sm);
+}
+
+.add__actions {
+  display: flex;
+  justify-content: flex-start;
+}
+
+@media (max-width: 599px) {
+  .pick__chips {
+    flex-direction: column;
+  }
+
+  .pick__chip {
+    height: var(--row-h);
+    min-height: 44px;
+  }
+}

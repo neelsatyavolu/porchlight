@@ -1,0 +1,167 @@
+/* Porchlight design tokens. Source of truth: DESIGN.md §2–§4.
+   Shared by apps/web and site/ (site/build.mjs copies this file as is).
+   Dark is the default; light follows the system unless <html data-theme> says otherwise.
+   Components use these variables, never raw hex. */
+
+:root {
+  /* Surfaces */
+  --canvas: #000000;
+  --card: #0a0a0c;
+  --elev: #111114;
+  --deep: #06060a;
+
+  /* Text */
+  --ink: #fcfdff;
+  --body: rgba(252, 253, 255, 0.86);
+  --mute: #a1a4a5;
+  --stone: #464a4d;
+
+  /* Lines and fills */
+  --line: rgba(255, 255, 255, 0.06);
+  --line-2: rgba(255, 255, 255, 0.14);
+  --hover: rgba(255, 255, 255, 0.04);
+  --active: rgba(255, 255, 255, 0.07);
+  --scrim: rgba(0, 0, 0, 0.6);
+
+  /* Buttons */
+  --primary: #fcfdff;
+  --primary-on: #000000;
+  --primary-hover: #e8f0ff;
+
+  /* The one accent */
+  --accent: #4c8dff;
+  --accent-hover: #6fa3ff;
+  --accent-on: #000000;
+  --tint: rgba(76, 141, 255, 0.12);
+  --ring: rgba(76, 141, 255, 0.55);
+
+  /* State */
+  --ok: #3dd68c;
+  --danger: #ff4d5e;
+  --warn: #ffc53d;
+
+  /* Package status (DESIGN.md §5). Only these three are colored. */
+  --status-delivered: var(--ok);
+  --status-exception: var(--warn);
+  --status-out: var(--accent);
+  --status-neutral: var(--mute);
+
+  /* Type */
+  --serif: "Geist Serif", Georgia, serif;
+  --sans: "Geist", ui-sans-serif, system-ui, sans-serif;
+  --mono: "Geist Mono", ui-monospace, Menlo, monospace;
+
+  --text-display: 48px;
+  --text-display-sm: 40px;
+  --text-heading: 22px;
+  --text-heading-sm: 18px;
+  --text-body-lg: 17px;
+  --text-body: 15px;
+  --text-body-sm: 14px;
+  --text-label: 13px;
+  --text-button: 14px;
+  --text-caption: 12px;
+  --text-mono: 13px;
+
+  /* Radii */
+  --r-sm: 6px;
+  --r-md: 8px;
+  --r-lg: 12px;
+  --r-full: 9999px;
+
+  /* Spacing (4px base) */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 24px;
+  --s-6: 32px;
+  --s-7: 48px;
+  --s-8: 96px;
+
+  /* Sizes */
+  --control-h: 36px;
+  --input-h: 40px;
+  --row-h: 64px;
+  --nav-h: 56px;
+  --content-w: 720px;
+  --gutter: 24px;
+
+  /* Motion */
+  --ease: cubic-bezier(0.2, 0, 0, 1);
+  --dur-fast: 150ms;
+  --dur-enter: 250ms;
+
+  color-scheme: dark;
+}
+
+@media (max-width: 600px) {
+  :root {
+    --gutter: 16px;
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --canvas: #fcfcfd;
+    --card: #ffffff;
+    --elev: #f4f5f7;
+    --deep: #0a0a0c;
+    --ink: #0a0a0c;
+    --body: rgba(10, 10, 12, 0.82);
+    --mute: #5f6366;
+    --stone: #c4c7ca;
+    --line: rgba(0, 0, 0, 0.06);
+    --line-2: rgba(0, 0, 0, 0.12);
+    --hover: rgba(0, 0, 0, 0.04);
+    --active: rgba(0, 0, 0, 0.07);
+    --scrim: rgba(10, 10, 12, 0.32);
+    --primary: #0a0a0c;
+    --primary-on: #fcfdff;
+    --primary-hover: #26262b;
+    --accent: #2f6fe0;
+    --accent-hover: #2459ba;
+    --accent-on: #ffffff;
+    --tint: rgba(47, 111, 224, 0.08);
+    --ring: rgba(47, 111, 224, 0.45);
+    --ok: #14915a;
+    --danger: #d92d3f;
+    --warn: #b7791f;
+    color-scheme: light;
+  }
+}
+
+:root[data-theme="light"] {
+  --canvas: #fcfcfd;
+  --card: #ffffff;
+  --elev: #f4f5f7;
+  --deep: #0a0a0c;
+  --ink: #0a0a0c;
+  --body: rgba(10, 10, 12, 0.82);
+  --mute: #5f6366;
+  --stone: #c4c7ca;
+  --line: rgba(0, 0, 0, 0.06);
+  --line-2: rgba(0, 0, 0, 0.12);
+  --hover: rgba(0, 0, 0, 0.04);
+  --active: rgba(0, 0, 0, 0.07);
+  --scrim: rgba(10, 10, 12, 0.32);
+  --primary: #0a0a0c;
+  --primary-on: #fcfdff;
+  --primary-hover: #26262b;
+  --accent: #2f6fe0;
+  --accent-hover: #2459ba;
+  --accent-on: #ffffff;
+  --tint: rgba(47, 111, 224, 0.08);
+  --ring: rgba(47, 111, 224, 0.45);
+  --ok: #14915a;
+  --danger: #d92d3f;
+  --warn: #b7791f;
+  color-scheme: light;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-fast: 0ms;
+    --dur-enter: 0ms;
+  }
+}

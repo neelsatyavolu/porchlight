@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark light">
+  <title>Porchlight: a delivery tracker for Mac, iPhone and the web</title>
+  <meta name="description" content="Porchlight keeps the packages you're expecting in one list, grouped by the day they arrive. Amazon orders and shipping mail from Flint show up without typing.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='6' fill='%234C8DFF'/%3E%3C/svg%3E">
+  <link rel="preload" href="/fonts/GeistSerif.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/Geist.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/styles/tokens.css">
+  <link rel="stylesheet" href="/styles/fonts.css">
+  <link rel="stylesheet" href="/styles/site.css">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="nav">
+    <div class="wrap">
+      <a class="mark" href="/">Porchlight</a>
+      <nav aria-label="Sections">
+        <ul class="nav-links">
+          <li><a href="#sources">How it works</a></li>
+          <li><a href="#carriers">Carriers</a></li>
+          <li><a href="#privacy">Privacy</a></li>
+          <li><a href="#get">Download</a></li>
+        </ul>
+      </nav>
+      <a class="nav-signin" href="/signin">Sign in</a>
+    </div>
+  </header>
+
+  <main id="main" class="wrap">
+    <section class="hero" aria-labelledby="hero-title">
+      <h1 id="hero-title">Know what's arriving today.</h1>
+      <p class="lede">Porchlight keeps every package you're expecting in one list, grouped by the day it arrives. Your Amazon orders and the tracking numbers in your shipping mail show up without any typing. It runs on Mac, iPhone and the web, all on one account.</p>
+      <div class="actions">
+        <a class="btn" href="/app">Open web app</a>
+        <span class="aside">Mac and iPhone apps are coming soon.</span>
+      </div>
+    </section>
+
+    <figure class="preview">
+      <div class="preview-frame">
+        <div class="group">
+          <p class="group-head">Today <span class="num">2</span></p>
+          <ul class="rows">
+            <li>
+              <div class="row">
+                <span class="dot dot-out" role="img" aria-label="Out for delivery"></span>
+                <span class="row-title">Trail running shoes</span>
+                <span class="row-eta num">By 8:00 PM</span>
+                <span class="row-meta">Out for delivery · On vehicle for delivery, Oakland</span>
+                <span class="row-carrier badge">UPS</span>
+              </div>
+            </li>
+            <li>
+              <div class="row">
+                <span class="dot dot-warn" role="img" aria-label="Problem"></span>
+                <span class="row-title">Desk lamp</span>
+                <span class="row-eta">Today</span>
+                <span class="row-meta">Problem · Delivery attempted, no access to building</span>
+                <span class="row-carrier badge">FedEx</span>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div class="group">
+          <p class="group-head">Tomorrow <span class="num">1</span></p>
+          <ul class="rows">
+            <li>
+              <div class="row">
+                <span class="dot" role="img" aria-label="In transit"></span>
+                <span class="row-title">USB-C cable, 2 pack</span>
+                <span class="row-eta">Tomorrow</span>
+                <span class="row-meta">In transit · Arrived at delivery station, San Jose</span>
+                <span class="row-carrier badge">Amazon</span>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div class="group">
+          <p class="group-head">Later <span class="num">1</span></p>
+          <ul class="rows">
+            <li>
+              <div class="row">
+                <span class="dot dot-hollow" role="img" aria-label="Label created"></span>
+                <span class="row-title">DHL <span class="num">···2210</span></span>
+                <span class="row-eta muted">No date yet</span>
+                <span class="row-meta">Label created · Shipment information received</span>
+                <span class="row-carrier badge">DHL</span>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div class="group">
+          <p class="group-head">Delivered <span class="num">1</span></p>
+          <ul class="rows">
+            <li>
+              <div class="row">
+                <span class="dot dot-ok" role="img" aria-label="Delivered"></span>
+                <span class="row-title">Coffee filters</span>
+                <span class="row-eta num">Delivered 2:14 PM</span>
+                <span class="row-meta">Delivered · Front porch</span>
+                <span class="row-carrier badge">USPS</span>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <figcaption>An example list. Each row shows what the carrier last reported, and a package with no date says "No date yet" instead of a guess.</figcaption>
+    </figure>
+
+    <section id="sources" class="band" aria-labelledby="sources-title">
+      <div class="band-head">
+        <h2 id="sources-title">Most packages add themselves.</h2>
+        <p>There are three ways a package gets into Porchlight. Two of them need nothing from you after the first setup.</p>
+      </div>
+      <ul class="cards">
+        <li class="card">
+          <h3>Amazon</h3>
+          <p>Sign in to Amazon once inside the Porchlight app on your Mac or iPhone. The app reads Your Orders and adds each shipment with its items, delivery date and tracking number. On a Mac it checks every 30 minutes while the app is running.</p>
+          <p class="aside">If Amazon signs you out or changes its pages, Settings says when the last import failed.</p>
+        </li>
+        <li class="card">
+          <h3>Flint</h3>
+          <p>Flint, the mail app, finds tracking numbers in your shipping email. Pair it once with a code from Porchlight's settings, and each new shipping email adds a package.</p>
+          <p class="aside">Flint sends the carrier, the number, the sender's name and the subject line. Nothing else from the email.</p>
+        </li>
+        <li class="card">
+          <h3>Paste</h3>
+          <p>Paste a tracking number into the web app or either native app. Porchlight works out the carrier from the number's format, and when two carriers could match, it asks which one.</p>
+          <p class="aside">On iPhone you can also scan the barcode on a label.</p>
+        </li>
+      </ul>
+    </section>
+
+    <section id="carriers" class="band" aria-labelledby="carriers-title">
+      <div class="band-head">
+        <h2 id="carriers-title">Carriers</h2>
+        <p>Porchlight asks each carrier, or a tracking service that covers it, how your package is doing. Packages out for delivery are checked every 15 minutes and packages in transit every hour or two. Every package shows when it was last checked.</p>
+      </div>
+      <dl class="facts">
+        <div class="fact"><dt>USPS</dt><dd>Domestic numbers and international mail</dd></div>
+        <div class="fact"><dt>UPS</dt><dd>Numbers starting with 1Z</dd></div>
+        <div class="fact"><dt>FedEx</dt><dd>Express and Ground</dd></div>
+        <div class="fact"><dt>DHL</dt><dd>DHL Express and DHL eCommerce</dd></div>
+        <div class="fact"><dt>Amazon Logistics</dt><dd>TBA numbers, read by the app from your Amazon account</dd></div>
+        <div class="fact"><dt>OnTrac and LaserShip</dt><dd>Regional delivery in the US</dd></div>
+        <div class="fact"><dt>Jitsu and UniUni</dt><dd>Same-day and last-mile carriers</dd></div>
+        <div class="fact"><dt>Others</dt><dd>Through a tracking service that covers over a thousand more</dd></div>
+      </dl>
+    </section>
+
+    <section id="privacy" class="band" aria-labelledby="privacy-title">
+      <div class="band-head">
+        <h2 id="privacy-title">What leaves your devices</h2>
+        <p>Porchlight needs your tracking numbers to do its job. It doesn't need your Amazon password or your email.</p>
+      </div>
+      <dl class="facts">
+        <div class="fact"><dt>Amazon sign-in</dt><dd>Your Amazon password and cookies stay on the Mac or iPhone where you signed in. They are never sent to Porchlight and never synced to your other devices.</dd></div>
+        <div class="fact"><dt>Flint</dt><dd>Only the numbers and details Flint extracted. Email bodies stay on your Mac.</dd></div>
+        <div class="fact"><dt>Carriers</dt><dd>A carrier or the tracking service receives the tracking number. Your name and email address are not sent.</dd></div>
+        <div class="fact"><dt>Ads and tracking</dt><dd>There are no ads. This website counts page views without cookies. The apps don't collect analytics unless you agree to it first.</dd></div>
+      </dl>
+      <p class="band-foot"><a href="/privacy">Read the privacy policy</a></p>
+    </section>
+
+    <section id="get" class="band" aria-labelledby="get-title">
+      <div class="band-head">
+        <h2 id="get-title">Get Porchlight</h2>
+        <p>Sign in with a link sent to your email. Your packages appear on every device you sign in on.</p>
+      </div>
+      <ul class="get">
+        <li>
+          <span class="get-name">Web</span>
+          <span class="get-req">Any current browser</span>
+          <a class="btn btn-ghost" href="/app">Open web app</a>
+        </li>
+        <li>
+          <span class="get-name">Mac</span>
+          <span class="get-req">macOS 15 or later</span>
+          <span class="soon">Coming soon</span>
+        </li>
+        <li>
+          <span class="get-name">iPhone</span>
+          <span class="get-req">iOS 18 or later</span>
+          <span class="soon">Coming soon</span>
+        </li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <div class="wrap">
+      <span>Porchlight</span>
+      <a href="/app">Web app</a>
+      <a href="/privacy">Privacy</a>
+      <a href="/terms">Terms</a>
+    </div>
+  </footer>
+</body>
+</html>

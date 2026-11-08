@@ -1,4 +1,5 @@
 import type { Env } from "./env.js";
+import { serveAssets } from "./lib/assets.js";
 import { errorResponse, HttpError } from "./lib/http.js";
 import { Router } from "./lib/router.js";
 import { consume } from "./poll/consume.js";
@@ -51,7 +52,7 @@ export default {
     if (pathname === "/v1" || pathname.startsWith("/v1/")) {
       return withHeaders(await handleApi(req, env, exec), corsHeaders(req, env));
     }
-    return env.ASSETS.fetch(req);
+    return serveAssets(req, env.ASSETS);
   },
 
   async scheduled(controller, env, exec): Promise<void> {

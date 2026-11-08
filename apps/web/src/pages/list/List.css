@@ -1,0 +1,111 @@
+/* Package list (DESIGN.md §6). Shared components carry their own styles. */
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+  padding: var(--s-6) 0 var(--s-7);
+}
+
+.list__head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+}
+
+.list__title {
+  font: 500 var(--text-heading) / 31px var(--sans);
+}
+
+.list__tools {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--s-2);
+}
+
+.list__search {
+  flex: 1;
+  min-width: 0;
+}
+
+.list__views {
+  display: flex;
+  gap: var(--s-1);
+}
+
+.list__views .btn[aria-pressed="true"] {
+  background: var(--active);
+  color: var(--ink);
+}
+
+.list__note {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--s-2);
+  color: var(--mute);
+  font-size: var(--text-body-sm);
+}
+
+.text-button {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--accent);
+  font: inherit;
+  cursor: pointer;
+}
+
+.text-button:hover {
+  color: var(--accent-hover);
+}
+
+.group__header {
+  position: sticky;
+  top: var(--nav-h);
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 32px;
+  padding: 0 var(--s-4);
+  border-bottom: 1px solid var(--line);
+  background: var(--canvas);
+  color: var(--mute);
+  font: 500 var(--text-label) / 18px var(--sans);
+}
+
+.group__title {
+  color: inherit;
+  font: inherit;
+}
+
+.group__count {
+  margin-left: var(--s-2);
+}
+
+.list__eta--muted {
+  color: var(--mute);
+}
+
+.list__row-end {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+}
+
+.list__checked {
+  color: var(--mute);
+  font-size: var(--text-caption);
+  white-space: nowrap;
+}
+
+@media (max-width: 599px) {
+  .list {
+    padding-top: var(--s-5);
+  }
+
+  .list__checked {
+    display: none;
+  }
+}

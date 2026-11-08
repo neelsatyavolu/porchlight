@@ -1,0 +1,27 @@
+/* Geist faces, self-hosted from the geist npm package (OFL); its "exports" hide
+   the font files, hence the node_modules path. Vite fingerprints
+   these into /app/assets. site/build.mjs writes its own copy with /fonts/ paths. */
+
+@font-face {
+  font-family: "Geist";
+  src: url("../../node_modules/geist/dist/fonts/geist-sans/Geist-Variable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Geist Mono";
+  src: url("../../node_modules/geist/dist/fonts/geist-mono/GeistMono-Variable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Geist Serif";
+  src: url("../../node_modules/geist/dist/fonts/geist-serif/GeistSerifVF.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}

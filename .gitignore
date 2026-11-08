@@ -12,3 +12,5 @@ coverage/
 DerivedData/
 *.xcuserstate
 xcuserdata/
+# Build output: site/ and apps/web are built into the Worker's assets folder.
+services/api/public/

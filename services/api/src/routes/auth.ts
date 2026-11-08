@@ -108,6 +108,17 @@ async function apple({ req, env }: RouteContext): Promise<Response> {
   return signedIn(env, user, created, body.client, body.deviceId);
 }
 
+/**
+ * EMAIL_DEV_LOG=1 logs the magic link and code instead of sending them, but
+ * only when APP_ORIGIN is localhost or 127.0.0.1, so a stray production var
+ * cannot leak codes into logs.
+ */
+function devEmailLog(env: Env): boolean {
+  if (env.EMAIL_DEV_LOG !== "1") return false;
+  const host = new URL(env.APP_ORIGIN).hostname;
+  return host === "localhost" || host === "127.0.0.1";
+}
+
 const emailCodeKey = (mail: string, code: string): string => `code:${mail}:${code}`;
 
 async function emailStart({ req, env }: RouteContext): Promise<Response> {
@@ -115,7 +126,8 @@ async function emailStart({ req, env }: RouteContext): Promise<Response> {
   await enforce(env, `auth:${clientIp(req)}`, LIMITS.authPerIp, now);
   const body = await readJson(req, emailStartBody);
   checkWebOrigin(req, env, body.client);
-  if (!env.RESEND_API_KEY) throw new HttpError(503, "unavailable", "Email sign-in is not configured");
+  const devLog = !env.RESEND_API_KEY && devEmailLog(env);
+  if (!env.RESEND_API_KEY && !devLog) throw new HttpError(503, "unavailable", "Email sign-in is not configured");
   await enforce(env, `email:${body.email}`, LIMITS.emailStartPerEmail, now);
 
   const token = randomToken();
@@ -128,6 +140,11 @@ async function emailStart({ req, env }: RouteContext): Promise<Response> {
   ]);
   const link = new URL("/auth/verify", env.APP_ORIGIN);
   link.searchParams.set("token", token);
+  if (devLog || !env.RESEND_API_KEY) {
+    // Local dev only (devEmailLog): the sign-in goes to the wrangler dev log.
+    console.info(`EMAIL_DEV_LOG sign-in for ${body.email}: ${link.href} code: ${code}`);
+    return json({ sent: true }, 202);
+  }
   try {
     await sendMagicLink({ apiKey: env.RESEND_API_KEY, to: body.email, appOrigin: env.APP_ORIGIN, link: link.href, code });
   } catch (err) {

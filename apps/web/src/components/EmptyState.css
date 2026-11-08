@@ -1,0 +1,35 @@
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--s-3);
+  max-width: 44ch;
+}
+
+.empty--page {
+  padding: var(--s-8) 0 var(--s-7);
+}
+
+.empty--inline {
+  padding: var(--s-6) var(--s-4);
+}
+
+.empty__title {
+  overflow-wrap: anywhere;
+}
+
+.empty--page .empty__title {
+  font-size: var(--text-display-sm);
+}
+
+.empty--inline .empty__title {
+  font: 500 var(--text-heading-sm) / 1.35 var(--sans);
+}
+
+.empty__body {
+  color: var(--body);
+}
+
+.empty__action {
+  margin-top: var(--s-2);
+}

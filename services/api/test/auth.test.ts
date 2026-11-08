@@ -1,5 +1,5 @@
 import { createExecutionContext, env, waitOnExecutionContext } from "cloudflare:test";
-import { afterEach, beforeAll, describe, expect, it } from "vitest";
+import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 import type { Env } from "../src/env.js";
 import { errorResponse, HttpError } from "../src/lib/http.js";
 import { Router } from "../src/lib/router.js";
@@ -252,6 +252,34 @@ describe("email magic link", () => {
     expect(res.status).toBe(503);
     expect((await body(res)).error.code).toBe("unavailable");
     expect((await call("POST", "/v1/auth/email/start", { body: { email: "nope", client: "web" } })).status).toBe(400);
+  });
+
+  it("logs the link and code instead of sending when EMAIL_DEV_LOG is set on a localhost origin", async () => {
+    const devEnv = { ...testEnv, RESEND_API_KEY: undefined, EMAIL_DEV_LOG: "1", APP_ORIGIN: "http://localhost:8787" } as Env;
+    const logged: string[] = [];
+    const spy = vi.spyOn(console, "info").mockImplementation((...args: unknown[]) => {
+      logged.push(args.map(String).join(" "));
+    });
+    try {
+      const email = freshEmail();
+      const start = await call("POST", "/v1/auth/email/start", { env: devEnv, body: { email, client: "ios" } });
+      expect(start.status).toBe(202);
+      expect(sent).toHaveLength(0);
+      const line = logged.find((l) => l.includes(email)) ?? "";
+      expect(line).toContain("http://localhost:8787/auth/verify?token=");
+      const code = /code: (\d{6})/.exec(line)?.[1];
+      expect(code).toBeDefined();
+      const ok = await call("POST", "/v1/auth/email/verify", { env: devEnv, body: { email, code, client: "ios" } });
+      expect(ok.status).toBe(200);
+    } finally {
+      spy.mockRestore();
+    }
+  });
+
+  it("ignores EMAIL_DEV_LOG when APP_ORIGIN is not localhost", async () => {
+    const prodEnv = { ...testEnv, RESEND_API_KEY: undefined, EMAIL_DEV_LOG: "1" } as Env;
+    const res = await call("POST", "/v1/auth/email/start", { env: prodEnv, body: { email: freshEmail(), client: "ios" } });
+    expect(res.status).toBe(503);
   });
 });
 

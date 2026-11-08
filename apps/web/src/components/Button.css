@@ -1,0 +1,91 @@
+.btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-2);
+  height: var(--control-h);
+  padding: 0 var(--s-4);
+  border: 1px solid transparent;
+  border-radius: var(--r-md);
+  font: 500 var(--text-button) / 1.43 var(--sans);
+  white-space: nowrap;
+  cursor: pointer;
+  overflow: hidden;
+  transition:
+    background-color var(--dur-fast) var(--ease),
+    border-color var(--dur-fast) var(--ease),
+    color var(--dur-fast) var(--ease);
+}
+
+.btn--sm {
+  height: 28px;
+  padding: 0 var(--s-3);
+  font-size: var(--text-caption);
+}
+
+.btn--primary {
+  background: var(--primary);
+  color: var(--primary-on);
+}
+.btn--primary:hover:not(:disabled) {
+  background: var(--primary-hover);
+}
+
+.btn--accent {
+  background: var(--accent);
+  color: var(--accent-on);
+}
+.btn--accent:hover:not(:disabled) {
+  background: var(--accent-hover);
+}
+
+.btn--ghost {
+  background: var(--elev);
+  border-color: var(--line-2);
+  color: var(--ink);
+}
+.btn--ghost:hover:not(:disabled) {
+  background: var(--active);
+}
+
+.btn--danger {
+  background: transparent;
+  border-color: var(--line-2);
+  color: var(--danger);
+}
+.btn--danger:hover:not(:disabled) {
+  background: var(--hover);
+}
+
+.btn:disabled {
+  cursor: default;
+  opacity: 0.5;
+}
+
+.btn--busy::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 1px;
+  width: 40%;
+  background: currentColor;
+  animation: btn-progress 1s var(--ease) infinite;
+}
+
+@keyframes btn-progress {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(250%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn--busy::after {
+    animation: none;
+    width: 100%;
+  }
+}

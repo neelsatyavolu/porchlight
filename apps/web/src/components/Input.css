@@ -1,0 +1,55 @@
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+}
+
+.field__label {
+  color: var(--ink);
+  font: 500 var(--text-body-sm) / 1.45 var(--sans);
+}
+
+.field__input {
+  height: var(--input-h);
+  padding: 0 14px;
+  border: 1px solid var(--line-2);
+  border-radius: var(--r-md);
+  background: var(--card);
+  color: var(--ink);
+  font: 400 var(--text-body) / 1.55 var(--sans);
+  caret-color: var(--accent);
+  transition:
+    border-color var(--dur-fast) var(--ease),
+    box-shadow var(--dur-fast) var(--ease);
+}
+
+.field__input--mono {
+  font-family: var(--mono);
+  font-size: var(--text-mono);
+  font-variant-ligatures: none;
+  letter-spacing: 0.02em;
+}
+
+.field__input::placeholder {
+  color: var(--mute);
+}
+
+.field__input:focus-visible {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--ring);
+}
+
+.field__input[aria-invalid="true"] {
+  border-color: var(--danger);
+}
+
+.field__hint {
+  color: var(--mute);
+  font-size: var(--text-caption);
+}
+
+.field__error {
+  color: var(--danger);
+  font-size: var(--text-caption);
+}

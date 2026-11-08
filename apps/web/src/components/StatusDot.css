@@ -1,0 +1,34 @@
+.status-dot {
+  display: inline-block;
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: var(--r-full);
+  background: var(--status-neutral);
+}
+
+.status-dot--out {
+  background: var(--status-out);
+}
+.status-dot--delivered {
+  background: var(--status-delivered);
+}
+.status-dot--exception {
+  background: var(--status-exception);
+}
+
+.status-dot--hollow {
+  background: transparent;
+  border: 1.5px solid var(--status-neutral);
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+}
+
+.status__label {
+  color: var(--ink);
+  font-size: var(--text-body-sm);
+}

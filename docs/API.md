@@ -87,6 +87,7 @@ Response 202: `{ "sent": true }`
 The link is `https://<APP_ORIGIN host>/auth/verify?token=<token>`. Native apps get it as a universal link. The token is single-use and expires after 15 minutes.
 The email also contains a 6-digit code, valid for the same 15 minutes. Using either the link or the code spends both.
 Errors: 400, 403, 429, 503 (no `RESEND_API_KEY`).
+Local dev: with no `RESEND_API_KEY`, `EMAIL_DEV_LOG=1` and an `APP_ORIGIN` on `localhost` or `127.0.0.1`, the server writes the link and code to the Worker log instead of sending mail and answers 202. Any other origin ignores the var.
 
 ### POST /v1/auth/email/verify
 Auth: none. Trades the link token, or the email and 6-digit code, for a session, creating the user if the email is new.

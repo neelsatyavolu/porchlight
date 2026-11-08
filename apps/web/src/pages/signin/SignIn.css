@@ -1,0 +1,94 @@
+/* Sign-in and verify: a centered 360px column, left-aligned (DESIGN.md §7). */
+.signin {
+  display: flex;
+  justify-content: center;
+  min-height: 100dvh;
+  padding: var(--s-8) var(--gutter) var(--s-7);
+  background: var(--canvas);
+}
+
+.signin__col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-5);
+  width: 100%;
+  max-width: 360px;
+}
+
+.signin__mark {
+  font-size: var(--text-display);
+  line-height: 1;
+}
+
+.signin__heading {
+  font: 500 var(--text-heading) / 31px var(--sans);
+}
+
+.signin__lede {
+  color: var(--body);
+}
+
+.signin__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+}
+
+.signin__form .btn {
+  width: 100%;
+}
+
+.signin__or {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  color: var(--mute);
+  font-size: var(--text-caption);
+}
+
+.signin__or::before,
+.signin__or::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+}
+
+.signin__apple {
+  width: 100%;
+}
+
+.signin__address {
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+
+.signin__error {
+  color: var(--danger);
+  font-size: var(--text-body-sm);
+}
+
+.signin__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-4);
+  font-size: var(--text-body-sm);
+}
+
+.signin__text-button {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--accent);
+  font: inherit;
+  cursor: pointer;
+}
+
+.signin__text-button:hover {
+  color: var(--accent-hover);
+}
+
+.signin__text-button:disabled {
+  color: var(--mute);
+  cursor: default;
+}

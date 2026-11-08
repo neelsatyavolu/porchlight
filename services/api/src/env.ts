@@ -19,6 +19,12 @@ export interface Env extends CarrierEnv {
    * id is chosen; push is skipped while it is missing.
    */
   APNS_TOPIC?: string;
+  /**
+   * Local dev only: "1" makes /auth/email/start log the link and code instead
+   * of sending mail when RESEND_API_KEY is missing. Ignored unless APP_ORIGIN
+   * is localhost or 127.0.0.1. Never set in wrangler.jsonc.
+   */
+  EMAIL_DEV_LOG?: string;
 
   // Secrets (wrangler secret put). Optional because local dev and tests run
   // without them; code must handle a missing key explicitly.
