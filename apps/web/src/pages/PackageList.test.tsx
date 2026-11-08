@@ -17,11 +17,11 @@ const PACKAGES = [
     statusDetail: "On vehicle, Oakland",
     lastCheckedAt: "2026-11-08T17:46:00.000Z",
   }),
-  pkg("p2", { merchant: "IKEA", carrier: "fedex", etaEnd: "2026-11-09T00:00:00.000Z" }),
-  pkg("p3", { title: "Desk lamp", etaEnd: "2026-11-12T00:00:00.000Z" }),
+  pkg("p2", { merchant: "IKEA", carrier: "fedex", etaEnd: "2026-11-09", etaDateOnly: true }),
+  pkg("p3", { title: "Desk lamp", etaEnd: "2026-11-12", etaDateOnly: true }),
   pkg("p4", { title: "Socks", status: "delivered", deliveredAt: "2026-11-08T16:30:00.000Z" }),
   pkg("p5", { title: "Old phone case", archivedAt: "2026-11-01T00:00:00.000Z" }),
-  pkg("p6", { title: "Broken box", status: "exception", statusDetail: "Address issue", etaEnd: "2026-11-08T00:00:00.000Z" }),
+  pkg("p6", { title: "Broken box", status: "exception", statusDetail: "Address issue", etaEnd: "2026-11-08", etaDateOnly: true }),
 ];
 
 function groupNamed(name: RegExp) {

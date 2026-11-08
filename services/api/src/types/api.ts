@@ -1,6 +1,7 @@
 // CONTRACT: JSON shapes of the /v1 API. Mirrors docs/API.md exactly; change
 // both together. Every response body is wrapped in the Envelope from
-// lib/http.ts. All timestamps are ISO 8601 UTC strings ("2026-11-08T17:04:00.000Z").
+// lib/http.ts. All timestamps are ISO 8601 UTC strings ("2026-11-08T17:04:00.000Z"),
+// except a date-only ETA, which is a calendar date ("2026-11-10").
 import type { CarrierId, Status, TrackEvent } from "@porchlight/carriers";
 
 export type Platform = "ios" | "macos" | "web";
@@ -50,10 +51,15 @@ export interface MeResponse {
 
 // ---- Devices --------------------------------------------------------------
 
+/** Which APNs host serves the device's token: development builds use sandbox. */
+export type ApnsEnvironment = "sandbox" | "production";
+
 export interface DevicePutRequest {
   platform: Platform;
   apnsToken: string | null;
   appVersion: string | null;
+  /** Omitted: "production" on create, unchanged on update. */
+  environment?: ApnsEnvironment;
 }
 
 export interface Device {
@@ -61,6 +67,32 @@ export interface Device {
   platform: Platform;
   apnsToken: string | null;
   appVersion: string | null;
+  environment: ApnsEnvironment;
+}
+
+// ---- Sessions -------------------------------------------------------------
+
+export interface SessionInfo {
+  id: string;
+  /** The linked device's platform, else the client that signed in; null for old sessions. */
+  platform: Platform | null;
+  /** From the linked device; null without one. */
+  appVersion: string | null;
+  createdAt: string;
+  lastSeenAt: string;
+  /** True for the session making this request. */
+  current: boolean;
+}
+
+export interface SessionsResponse {
+  /** Most recently seen first. */
+  sessions: SessionInfo[];
+}
+
+export interface SessionDeleteResponse {
+  deleted: true;
+  /** True when the deleted session was the caller's own: the caller is now signed out. */
+  signedOut: boolean;
 }
 
 // ---- Packages and sync ----------------------------------------------------
@@ -81,8 +113,15 @@ export interface Package {
   source: PackageSource;
   status: Status;
   statusDetail: string | null;
+  /**
+   * When etaDateOnly is true: calendar dates "YYYY-MM-DD", the carrier's
+   * local delivery date, never shifted by time zone. When false: ISO 8601
+   * UTC instants.
+   */
   etaStart: string | null;
   etaEnd: string | null;
+  /** False when there is no ETA. */
+  etaDateOnly: boolean;
   deliveredAt: string | null;
   lastCheckedAt: string | null;
   archivedAt: string | null;
@@ -107,6 +146,13 @@ export interface PackagePutRequest {
   /** Create only; defaults to "manual". "amazon" and "flint" are reserved for imports. */
   source?: "manual" | "share";
   archived?: boolean;
+}
+
+/** GET /v1/packages/:id */
+export interface PackageResponse {
+  package: Package;
+  /** Newest first. */
+  events: PackageEvent[];
 }
 
 export interface PackageDeleteResponse {
@@ -167,9 +213,11 @@ export interface AmazonImportItem {
   trackingNumber: string;
   title: string | null;
   items: PackageItem[];
-  /** The ETA window Amazon showed; null when it showed none. */
+  /** The ETA window Amazon showed; null when it showed none. Form follows etaDateOnly. */
   etaStart: string | null;
   etaEnd: string | null;
+  /** True: etaStart/etaEnd are "YYYY-MM-DD". Omitted or false: ISO 8601 instants. */
+  etaDateOnly?: boolean;
   /** Status read on-device; sent for Amazon Logistics (TBA) packages. */
   observed?: AmazonObserved;
 }

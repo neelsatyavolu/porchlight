@@ -1,17 +1,32 @@
 // APNs push (SPEC §3 Push, docs/API.md "Push payloads"). Token-based auth:
 // an ES256 provider JWT signed with the .p8 key through WebCrypto, sent over
-// HTTPS to api.push.apple.com. Visible alerts for out_for_delivery, delivered
+// HTTPS to APNs: api.sandbox.push.apple.com for devices registered as
+// "sandbox" (development builds), APNS_HOST (default api.push.apple.com) for
+// the rest. Visible alerts for out_for_delivery, delivered
 // and exception transitions; a silent background push for any other change.
 import type { Status } from "@porchlight/carriers";
 import type { Env } from "../env.js";
 
-export const APNS_ORIGIN = "https://api.push.apple.com";
+export const APNS_PRODUCTION_HOST = "api.push.apple.com";
+export const APNS_SANDBOX_HOST = "api.sandbox.push.apple.com";
+const HOSTNAME = /^[a-z0-9.-]+(?::\d{1,5})?$/i;
 export const VISIBLE_STATUSES: ReadonlySet<Status> = new Set(["out_for_delivery", "delivered", "exception"]);
 /** Apple rejects provider tokens older than an hour and throttles refreshes under 20 min. */
 const TOKEN_REUSE_SEC = 50 * 60;
 const MAX_DETAIL_CHARS = 200;
 
-export type ApnsEnv = Pick<Env, "DB" | "APNS_TEAM_ID" | "APNS_KEY_ID" | "APNS_PRIVATE_KEY" | "APNS_TOPIC">;
+export type ApnsEnv = Pick<Env, "DB" | "APNS_TEAM_ID" | "APNS_KEY_ID" | "APNS_PRIVATE_KEY" | "APNS_TOPIC" | "APNS_HOST">;
+type Environment = "sandbox" | "production";
+
+/** The host for a device's environment. A malformed APNS_HOST falls back to Apple's production host. */
+export function apnsHost(env: Pick<Env, "APNS_HOST">, environment: Environment): string {
+  if (environment === "sandbox") return APNS_SANDBOX_HOST;
+  const configured = env.APNS_HOST?.trim();
+  if (!configured) return APNS_PRODUCTION_HOST;
+  if (HOSTNAME.test(configured)) return configured;
+  console.warn("apns: APNS_HOST is not a host name, using the default", configured);
+  return APNS_PRODUCTION_HOST;
+}
 
 export interface PackageChange {
   userId: string;
@@ -91,7 +106,12 @@ export function buildPush(c: PackageChange): ApnsPush {
 
 type SendResult = "sent" | "dead_token" | "failed";
 
-async function sendOne(deviceToken: string, push: ApnsPush, jwt: string, topic: string, packageId: string, deps: ApnsDeps): Promise<SendResult> {
+interface Target {
+  host: string;
+  deviceToken: string;
+}
+
+async function sendOne(target: Target, push: ApnsPush, jwt: string, topic: string, packageId: string, deps: ApnsDeps): Promise<SendResult> {
   const headers: Record<string, string> = {
     authorization: `bearer ${jwt}`,
     "apns-topic": topic,
@@ -100,7 +120,7 @@ async function sendOne(deviceToken: string, push: ApnsPush, jwt: string, topic: 
     "content-type": "application/json",
   };
   if (push.pushType === "alert") headers["apns-collapse-id"] = packageId;
-  const res = await deps.fetch(`${APNS_ORIGIN}/3/device/${encodeURIComponent(deviceToken)}`, {
+  const res = await deps.fetch(`https://${target.host}/3/device/${encodeURIComponent(target.deviceToken)}`, {
     method: "POST",
     headers,
     body: JSON.stringify(push.payload),
@@ -117,16 +137,19 @@ export async function notifyPackageChange(env: ApnsEnv, change: PackageChange, d
   const { APNS_TEAM_ID: teamId, APNS_KEY_ID: keyId, APNS_PRIVATE_KEY: pem, APNS_TOPIC: topic } = env;
   if (!teamId || !keyId || !pem || !topic) return 0;
 
-  const { results } = await env.DB.prepare("SELECT apns_token FROM devices WHERE user_id = ? AND apns_token IS NOT NULL")
+  const { results } = await env.DB.prepare(
+    "SELECT apns_token, apns_environment FROM devices WHERE user_id = ? AND apns_token IS NOT NULL",
+  )
     .bind(change.userId)
-    .all<{ apns_token: string }>();
+    .all<{ apns_token: string; apns_environment: Environment }>();
   if (results.length === 0) return 0;
 
   const jwt = await providerToken(teamId, keyId, pem, deps.nowSec());
   const push = buildPush(change);
   let sent = 0;
-  for (const { apns_token: token } of results) {
-    const outcome = await sendOne(token, push, jwt, topic, change.packageId, deps).catch((err: unknown) => {
+  for (const { apns_token: token, apns_environment: environment } of results) {
+    const target = { host: apnsHost(env, environment), deviceToken: token };
+    const outcome = await sendOne(target, push, jwt, topic, change.packageId, deps).catch((err: unknown) => {
       console.warn("apns: request error", err);
       return "failed" as const;
     });

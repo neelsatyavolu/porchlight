@@ -25,7 +25,8 @@ const LAMP = pkg("p1", {
   trackingNumber: "1Z999AA10123456784",
   status: "in_transit",
   statusDetail: "Departed facility",
-  etaEnd: "2026-11-12T00:00:00.000Z",
+  etaEnd: "2026-11-12",
+  etaDateOnly: true,
   lastCheckedAt: "2026-11-08T17:46:00.000Z",
   items: [
     { name: "Desk lamp", imageUrl: "https://m.media-amazon.com/x.jpg", quantity: 1 },

@@ -127,7 +127,7 @@ Icons: inline SVG, 16px, 1.5px stroke, `currentColor`. No emoji anywhere.
 
 Groups appear in this order, and empty groups are hidden: **Today, Tomorrow, This week, Later, Delivered**.
 
-The day of a package is the local calendar day of `etaEnd ?? etaStart`, in the browser's time zone, with one exception: carriers often send a date with no time, which reaches us as midnight UTC (`T00:00:00.000Z`). Read those by their UTC date, or a Nov 10 delivery lands on Nov 9 for everyone in the Americas. (API gap: the contract has no date-only flag; see README.)
+The day of a package comes from `etaEnd ?? etaStart`. When `etaDateOnly` is true those are calendar dates (`"2026-11-10"`): use the date as it is, in every time zone, and never convert it to an instant, or a Nov 10 delivery lands on Nov 9 for everyone in the Americas. A date-only ETA has no time of day, so it never shows "By 8:00 PM" or a time window. When `etaDateOnly` is false the values are instants: the day is their local calendar day in the browser's time zone (docs/API.md, "The Package object").
 
 | Group | Rule |
 |---|---|
@@ -169,7 +169,7 @@ Centered 360px column, left-aligned text. "Porchlight" in Display (48px Geist Se
 Paste field (Mono, autofocus, `inputmode="text"`, `autocapitalize="characters"`). As the user types, `detectCarrier` from `@porchlight/carriers` shows candidates as selectable chips (Row-height radio list on mobile); a single high-confidence match is preselected. Optional Title field. Accent button "Track package". A 409 duplicate goes straight to the existing package with a one-line note "You're already tracking this."
 
 ### Settings (`/app/settings`)
-Sections with Heading small titles and Row-based lists: Account (email, Sign out ghost, Delete account danger in a Sheet that asks for the word "delete"), Connections (Flint: "Pair Flint" shows the `ABCD-EFGH` code in 22px Mono with its expiry; paired tokens listed with "Last used" and Revoke), Amazon ("Connect Amazon in the Porchlight app on your Mac or iPhone. The web can't sign in to Amazon for you.").
+Sections with Heading small titles and Row-based lists: Account (email, Sign out ghost, Delete account danger in a Sheet that asks for the word "delete"), Devices (every signed-in session from `GET /v1/sessions`: "iPhone", "Mac" or "Web browser", with "Last active 3 h ago · Version 1.0 (7) · Signed in Nov 2" as meta; the current one says "This browser" and has no button, the others have a ghost sm "Sign out"), Connections (Flint: "Pair Flint" shows the `ABCD-EFGH` code in 22px Mono with its expiry; paired tokens listed with "Last used" and Revoke), Amazon ("Connect Amazon in the Porchlight app on your Mac or iPhone. The web can't sign in to Amazon for you.").
 
 ### Empty and error states
 
@@ -214,5 +214,5 @@ The Apple apps keep native chrome and borrow the content styling.
 - Status dot: `Circle().fill(...)` 8pt, or `Circle().strokeBorder(lineWidth: 1.5)` for the hollow states; tones from §4.
 - Radii: `RoundedRectangle(cornerRadius: 8, style: .continuous)` for controls, 12 for cards.
 - Buttons: system `.borderedProminent` tinted `Accent` for the one primary action, `.bordered` for the rest, `role: .destructive` for Delete. Do not restyle system buttons to imitate the web ones.
-- Grouping: the same five groups (§6) as `Section`s with system headers.
+- Grouping: the same five groups (§6) as `Section`s with system headers. A date-only ETA (`etaDateOnly`) decodes to `DateComponents` (year, month, day) and is compared with `Calendar.current`'s today as a calendar day; never decode it into a `Date` at midnight UTC.
 - Widget and Live Activity: system fonts only at small sizes, Geist for the package title; status dot tones as above.

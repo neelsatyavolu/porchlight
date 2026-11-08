@@ -6,7 +6,6 @@ import {
   dayNumberOf,
   daysFromToday,
   etaDayNumber,
-  isDateOnly,
   monthDay,
   weekdayMonthDay,
   weekdayName,
@@ -43,7 +42,7 @@ function isOut(pkg: Package): boolean {
 /** Days from today to the package's ETA day, or null with no ETA. */
 function etaOffset(pkg: Package, now: Date, timeZone: string): number | null {
   const eta = etaOf(pkg);
-  return eta === null ? null : daysFromToday(etaDayNumber(eta, timeZone), now, timeZone);
+  return eta === null ? null : daysFromToday(etaDayNumber(eta, pkg.etaDateOnly, timeZone), now, timeZone);
 }
 
 export function groupOf(pkg: Package, now: Date, timeZone: string): GroupId {
@@ -114,8 +113,8 @@ function deliveredPhrase(pkg: Package, now: Date, timeZone: string): string {
 /** The end of a same-day window with a real time, e.g. for "By 8:00 PM". */
 function todayDeadline(pkg: Package, now: Date, timeZone: string): string | null {
   const end = pkg.etaEnd;
-  if (end === null || isDateOnly(end)) return null;
-  return daysFromToday(etaDayNumber(end, timeZone), now, timeZone) === 0 ? clockTime(end, timeZone) : null;
+  if (end === null || pkg.etaDateOnly) return null;
+  return daysFromToday(etaDayNumber(end, false, timeZone), now, timeZone) === 0 ? clockTime(end, timeZone) : null;
 }
 
 /** The row's trailing ETA phrase (DESIGN.md §6 "Package row"). */
@@ -127,7 +126,7 @@ export function etaPhrase(pkg: Package, now: Date, timeZone: string): EtaPhrase 
   }
   const eta = etaOf(pkg);
   if (eta === null) return { text: "No date yet", muted: true };
-  const day = etaDayNumber(eta, timeZone);
+  const day = etaDayNumber(eta, pkg.etaDateOnly, timeZone);
   const today = dayNumberOf(now, timeZone);
   const offset = day - today;
   if (offset < 0) return { text: `Was due ${monthDay(day, today)}`, muted: true };
@@ -146,8 +145,8 @@ function dayWords(day: number, today: number): string {
 }
 
 /** A time-of-day for an ETA bound, or null for date-only values. */
-function boundTime(iso: string, timeZone: string): string | null {
-  return isDateOnly(iso) ? null : clockTime(iso, timeZone);
+function boundTime(value: string, dateOnly: boolean, timeZone: string): string | null {
+  return dateOnly ? null : clockTime(value, timeZone);
 }
 
 /**
@@ -182,16 +181,17 @@ export function etaSentence(pkg: Package, carrierLabel: string, now: Date, timeZ
   const eta = end ?? start;
   if (eta === null) return `No delivery date from ${carrierLabel} yet`;
 
-  const endDay = etaDayNumber(eta, timeZone);
+  const dateOnly = pkg.etaDateOnly;
+  const endDay = etaDayNumber(eta, dateOnly, timeZone);
   if (endDay < today) return `Was due ${weekdayMonthDay(endDay, today)}`;
 
   if (start !== null && end !== null) {
-    const startDay = etaDayNumber(start, timeZone);
+    const startDay = etaDayNumber(start, dateOnly, timeZone);
     if (startDay !== endDay) {
       return `Arriving between ${dayWords(Math.max(startDay, today), today)} and ${dayWords(endDay, today)}`;
     }
-    const from = boundTime(start, timeZone);
-    const to = boundTime(end, timeZone);
+    const from = boundTime(start, dateOnly, timeZone);
+    const to = boundTime(end, dateOnly, timeZone);
     if (from && to && from !== to) return `Arriving ${dayWords(endDay, today)}, ${from} to ${to}`;
   }
   return `Arriving ${dayWords(endDay, today)}`;

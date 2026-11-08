@@ -53,14 +53,24 @@ describe("ups adapter", () => {
     expect(result.events[2]).toMatchObject({ occurredAt: "2022-01-24T15:16:41", location: null });
   });
 
-  it("prefers the rescheduled date and window for the ETA, and skips U updates for status", async () => {
+  it("prefers the rescheduled date for the ETA, and skips U updates for status", async () => {
     const { adapter, ctx } = setup([{ body: inTransit }]);
     const result = await adapter.track(NUMBER, "ups", ctx);
     expect(result.status).toBe("in_transit");
     expect(result.statusDetail).toBe("Departed from Facility");
-    expect(result.etaStart).toBe("2026-11-06T09:00:00");
-    expect(result.etaEnd).toBe("2026-11-06T19:00:00");
+    // The 09:00-19:00 window has no UTC offset, so only its date is kept.
+    expect(result.etaStart).toBe("2026-11-06");
+    expect(result.etaEnd).toBe("2026-11-06");
+    expect(result.etaDateOnly).toBe(true);
     expect(result.events[0]).toMatchObject({ status: "in_transit", location: "US", occurredAt: "2026-11-04T02:15:00-06:00" });
+  });
+
+  it("reports a scheduled date with no window as date-only", async () => {
+    const body = structuredClone(inTransit);
+    delete (body.trackResponse.shipment[0]?.package[0] as Record<string, unknown>).deliveryTime;
+    const { adapter, ctx } = setup([{ body }]);
+    const result = await adapter.track(NUMBER, "ups", ctx);
+    expect([result.etaStart, result.etaEnd, result.etaDateOnly]).toEqual(["2026-11-06", "2026-11-06", true]);
   });
 
   it("maps return-to-sender exceptions to returned", async () => {

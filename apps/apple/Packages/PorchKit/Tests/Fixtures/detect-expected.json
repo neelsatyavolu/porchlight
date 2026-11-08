@@ -1,0 +1,1386 @@
+{
+  "fixtures": [
+    {
+      "input": "9400111206206406260787",
+      "normalized": "9400111206206406260787",
+      "candidates": [
+        {
+          "carrier": "usps",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "input": "420787459400111206206406260787",
+      "normalized": "420787459400111206206406260787",
+      "candidates": [
+        {
+          "carrier": "usps",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "input": "9400 1112 0108 0805 4830 16",
+      "normalized": "9400111201080805483016",
+      "candidates": [
+        {
+          "carrier": "usps",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "input": "9405803699300124287899",
+      "normalized": "9405803699300124287899",
+      "candidates": [
+        {
+          "carrier": "usps",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "input": "9434611206206407667136",
+      "normalized": "9434611206206407667136",
+      "candidates": [
+        {
+          "carrier": "usps",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "input": "4201002334249200190132607600833457",
+      "normalized": "4201002334249200190132607600833457",
+      "candidates": [
+        {
+          "carrier": "usps",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "input": "9505 5110 6960 5048 6006 24",
+      "normalized": "9505511069605048600624",
+      "candidates": [
+        {
+          "carrier": "usps",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "input": "92748931507708513018050063",
+      "normalized": "92748931507708513018050063",
+      "candidates": [
+        {
+          "carrier": "usps",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "input": "9361 2898 7870 0317 6337 95",
+      "normalized": "9361289878700317633795",
+      "candidates": [
+        {
+          "carrier": "usps",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "input": "9261292700768711948021",
+      "normalized": "9261292700768711948021",
+      "candidates": [
+        {
+          "carrier": "usps",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "input": "420 11213 92 6129098349792366623 8",
+      "normalized": "420112139261290983497923666238",
+      "candidates": [
+        {
+          "carrier": "usps",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "input": "9101 1234 5678 9000 0000 13",
+      "normalized": "9101123456789000000013",
+      "candidates": [
+        {
+          "carrier": "usps",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "input": "420 22153 9101026837331000039521",
+      "normalized": "420221539101026837331000039521",
+      "candidates": [
+        {
+          "carrier": "usps",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "input": "7196 9010 7560 0307 7385",
+      "normalized": "71969010756003077385",
+      "candidates": [
+        {
+          "carrier": "usps",
+          "confidence": "medium"
+        }
+      ]
+    },
+    {
+      "input": "0307 1790 0005 2348 3741",
+      "normalized": "03071790000523483741",
+      "candidates": [
+        {
+          "carrier": "usps",
+          "confidence": "medium"
+        }
+      ]
+    },
+    {
+      "input": " 0 3 0 7   1 7 9 0   0 0 0 5   2 3 4 8   3 7 4 1 ",
+      "normalized": "03071790000523483741",
+      "candidates": [
+        {
+          "carrier": "usps",
+          "confidence": "medium"
+        }
+      ]
+    },
+    {
+      "input": "7112 3456 7891 2345 6787",
+      "normalized": "71123456789123456787",
+      "candidates": [
+        {
+          "carrier": "usps",
+          "confidence": "medium"
+        }
+      ]
+    },
+    {
+      "input": "RB123456785US",
+      "normalized": "RB123456785US",
+      "candidates": [
+        {
+          "carrier": "usps",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "input": "RB123456785GB",
+      "normalized": "RB123456785GB",
+      "candidates": [
+        {
+          "carrier": "usps",
+          "confidence": "medium"
+        }
+      ]
+    },
+    {
+      "input": "RB123456785CV",
+      "normalized": "RB123456785CV",
+      "candidates": [
+        {
+          "carrier": "usps",
+          "confidence": "medium"
+        }
+      ]
+    },
+    {
+      "input": "9261290357478304880413",
+      "normalized": "9261290357478304880413",
+      "candidates": [
+        {
+          "carrier": "usps",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "input": "9434611206206407667131",
+      "normalized": "9434611206206407667131",
+      "candidates": []
+    },
+    {
+      "input": "9101 1234 5678 9000 0000 14",
+      "normalized": "9101123456789000000014",
+      "candidates": []
+    },
+    {
+      "input": "0307 1790 0005 2348 3742",
+      "normalized": "03071790000523483742",
+      "candidates": []
+    },
+    {
+      "input": "9200000000000000000000",
+      "normalized": "9200000000000000000000",
+      "candidates": []
+    },
+    {
+      "input": "RB123456786US",
+      "normalized": "RB123456786US",
+      "candidates": []
+    },
+    {
+      "input": "RB123456785XX",
+      "normalized": "RB123456785XX",
+      "candidates": []
+    },
+    {
+      "input": "1Z5R89390357567127",
+      "normalized": "1Z5R89390357567127",
+      "candidates": [
+        {
+          "carrier": "ups",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "input": "1Z879E930346834440",
+      "normalized": "1Z879E930346834440",
+      "candidates": [
+        {
+          "carrier": "ups",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "input": "1Z410E7W0392751591",
+      "normalized": "1Z410E7W0392751591",
+      "candidates": [
+        {
+          "carrier": "ups",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "input": "1ZXX3150YW44070023",
+      "normalized": "1ZXX3150YW44070023",
+      "candidates": [
+        {
+          "carrier": "ups",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "input": " 1 Z 8 V 9 2 A 7 0 3 6 7 2 0 3 0 2 4 ",
+      "normalized": "1Z8V92A70367203024",
+      "candidates": [
+        {
+          "carrier": "ups",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "input": "1z999aa10123456784",
+      "normalized": "1Z999AA10123456784",
+      "candidates": [
+        {
+          "carrier": "ups",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "input": "K1506235620",
+      "normalized": "K1506235620",
+      "candidates": [
+        {
+          "carrier": "ups",
+          "confidence": "medium"
+        }
+      ]
+    },
+    {
+      "input": "K 150 623 562 0",
+      "normalized": "K1506235620",
+      "candidates": [
+        {
+          "carrier": "ups",
+          "confidence": "medium"
+        }
+      ]
+    },
+    {
+      "input": "J4603636537",
+      "normalized": "J4603636537",
+      "candidates": [
+        {
+          "carrier": "ups",
+          "confidence": "medium"
+        }
+      ]
+    },
+    {
+      "input": "V0490119172",
+      "normalized": "V0490119172",
+      "candidates": [
+        {
+          "carrier": "ups",
+          "confidence": "medium"
+        }
+      ]
+    },
+    {
+      "input": "MI123456ABCDEF0123456",
+      "normalized": "MI123456ABCDEF0123456",
+      "candidates": [
+        {
+          "carrier": "ups",
+          "confidence": "medium"
+        }
+      ]
+    },
+    {
+      "input": "2Z5R89390357567127",
+      "normalized": "2Z5R89390357567127",
+      "candidates": []
+    },
+    {
+      "input": "1A5R89390357567127",
+      "normalized": "1A5R89390357567127",
+      "candidates": []
+    },
+    {
+      "input": "1Z1111111111111111",
+      "normalized": "1Z1111111111111111",
+      "candidates": []
+    },
+    {
+      "input": "K1506235622",
+      "normalized": "K1506235622",
+      "candidates": []
+    },
+    {
+      "input": "J4603636538",
+      "normalized": "J4603636538",
+      "candidates": []
+    },
+    {
+      "input": "986578788855",
+      "normalized": "986578788855",
+      "candidates": [
+        {
+          "carrier": "fedex",
+          "confidence": "medium"
+        }
+      ]
+    },
+    {
+      "input": "477179081230",
+      "normalized": "477179081230",
+      "candidates": [
+        {
+          "carrier": "fedex",
+          "confidence": "medium"
+        }
+      ]
+    },
+    {
+      "input": "799531274483",
+      "normalized": "799531274483",
+      "candidates": [
+        {
+          "carrier": "fedex",
+          "confidence": "medium"
+        }
+      ]
+    },
+    {
+      "input": "0414 4176 0228 964",
+      "normalized": "041441760228964",
+      "candidates": [
+        {
+          "carrier": "fedex",
+          "confidence": "medium"
+        }
+      ]
+    },
+    {
+      "input": "5682 8361 0012 734",
+      "normalized": "568283610012734",
+      "candidates": [
+        {
+          "carrier": "fedex",
+          "confidence": "medium"
+        }
+      ]
+    },
+    {
+      "input": "9611020987654312345672",
+      "normalized": "9611020987654312345672",
+      "candidates": [
+        {
+          "carrier": "fedex",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "input": "9622001900000000000000776632517510",
+      "normalized": "9622001900000000000000776632517510",
+      "candidates": [
+        {
+          "carrier": "fedex",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "input": "1001921334250001000300779017972697",
+      "normalized": "1001921334250001000300779017972697",
+      "candidates": [
+        {
+          "carrier": "fedex",
+          "confidence": "medium"
+        }
+      ]
+    },
+    {
+      "input": "1 1 9 52 6 64739 3000 75211 00 8710 799 199 40",
+      "normalized": "1195266473930007521100871079919940",
+      "candidates": [
+        {
+          "carrier": "fedex",
+          "confidence": "medium"
+        }
+      ]
+    },
+    {
+      "input": "32971514560102447849175802862014",
+      "normalized": "32971514560102447849175802862014",
+      "candidates": [
+        {
+          "carrier": "fedex",
+          "confidence": "medium"
+        }
+      ]
+    },
+    {
+      "input": "3 29715 145 6010244 784917580286 2014",
+      "normalized": "32971514560102447849175802862014",
+      "candidates": [
+        {
+          "carrier": "fedex",
+          "confidence": "medium"
+        }
+      ]
+    },
+    {
+      "input": "996578788855",
+      "normalized": "996578788855",
+      "candidates": [
+        {
+          "carrier": "fedex",
+          "confidence": "low"
+        }
+      ]
+    },
+    {
+      "input": "123456789010",
+      "normalized": "123456789010",
+      "candidates": [
+        {
+          "carrier": "fedex",
+          "confidence": "low"
+        }
+      ]
+    },
+    {
+      "input": "5682 8361 0012 732",
+      "normalized": "568283610012732",
+      "candidates": []
+    },
+    {
+      "input": "9600000000000000000001",
+      "normalized": "9600000000000000000001",
+      "candidates": []
+    },
+    {
+      "input": "9622001560001234567100794808390595",
+      "normalized": "9622001560001234567100794808390595",
+      "candidates": []
+    },
+    {
+      "input": "1001901781990001000300617767839438",
+      "normalized": "1001901781990001000300617767839438",
+      "candidates": []
+    },
+    {
+      "input": "32971514560102447849175802852014",
+      "normalized": "32971514560102447849175802852014",
+      "candidates": []
+    },
+    {
+      "input": "3297151456010244784917580286201",
+      "normalized": "3297151456010244784917580286201",
+      "candidates": []
+    },
+    {
+      "input": "00 0123 4500 0000 0027",
+      "normalized": "000123450000000027",
+      "candidates": []
+    },
+    {
+      "input": "3318810025",
+      "normalized": "3318810025",
+      "candidates": [
+        {
+          "carrier": "dhl",
+          "confidence": "low"
+        }
+      ]
+    },
+    {
+      "input": "8487135506",
+      "normalized": "8487135506",
+      "candidates": [
+        {
+          "carrier": "dhl",
+          "confidence": "low"
+        }
+      ]
+    },
+    {
+      "input": "1099255990",
+      "normalized": "1099255990",
+      "candidates": [
+        {
+          "carrier": "dhl",
+          "confidence": "low"
+        }
+      ]
+    },
+    {
+      "input": "73891051146",
+      "normalized": "73891051146",
+      "candidates": [
+        {
+          "carrier": "dhl",
+          "confidence": "low"
+        }
+      ]
+    },
+    {
+      "input": "JJD0099999999",
+      "normalized": "JJD0099999999",
+      "candidates": [
+        {
+          "carrier": "dhl",
+          "confidence": "medium"
+        }
+      ]
+    },
+    {
+      "input": "JVGL0999999990",
+      "normalized": "JVGL0999999990",
+      "candidates": [
+        {
+          "carrier": "dhl",
+          "confidence": "medium"
+        }
+      ]
+    },
+    {
+      "input": "3318810010",
+      "normalized": "3318810010",
+      "candidates": []
+    },
+    {
+      "input": "3318810034",
+      "normalized": "3318810034",
+      "candidates": []
+    },
+    {
+      "input": "XJD0099999998",
+      "normalized": "XJD0099999998",
+      "candidates": []
+    },
+    {
+      "input": "GM2951173225174494",
+      "normalized": "GM2951173225174494",
+      "candidates": [
+        {
+          "carrier": "dhl_ecommerce",
+          "confidence": "medium"
+        }
+      ]
+    },
+    {
+      "input": "GM 2 9 5 117 32 25 1 7 44 9 4",
+      "normalized": "GM2951173225174494",
+      "candidates": [
+        {
+          "carrier": "dhl_ecommerce",
+          "confidence": "medium"
+        }
+      ]
+    },
+    {
+      "input": "GM295117494011169042",
+      "normalized": "GM295117494011169042",
+      "candidates": [
+        {
+          "carrier": "dhl_ecommerce",
+          "confidence": "medium"
+        }
+      ]
+    },
+    {
+      "input": "GM9E44608A27984866BA2D",
+      "normalized": "GM9E44608A27984866BA2D",
+      "candidates": [
+        {
+          "carrier": "dhl_ecommerce",
+          "confidence": "medium"
+        }
+      ]
+    },
+    {
+      "input": "GS295117494011169041",
+      "normalized": "GS295117494011169041",
+      "candidates": []
+    },
+    {
+      "input": "AAAAAAAAAAAAAAAAAA",
+      "normalized": "AAAAAAAAAAAAAAAAAA",
+      "candidates": []
+    },
+    {
+      "input": "60120172242323",
+      "normalized": "60120172242323",
+      "candidates": []
+    },
+    {
+      "input": "30570000000000",
+      "normalized": "30570000000000",
+      "candidates": []
+    },
+    {
+      "input": "TBA000000000000",
+      "normalized": "TBA000000000000",
+      "candidates": [
+        {
+          "carrier": "amazon",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "input": "TBA010000000000",
+      "normalized": "TBA010000000000",
+      "candidates": [
+        {
+          "carrier": "amazon",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "input": "TBC 000000000000",
+      "normalized": "TBC000000000000",
+      "candidates": [
+        {
+          "carrier": "amazon",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "input": "TBM502887274000",
+      "normalized": "TBM502887274000",
+      "candidates": [
+        {
+          "carrier": "amazon",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "input": "tba010000000000",
+      "normalized": "TBA010000000000",
+      "candidates": [
+        {
+          "carrier": "amazon",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "input": "TBA50288727400A",
+      "normalized": "TBA50288727400A",
+      "candidates": []
+    },
+    {
+      "input": "TBB000000000000",
+      "normalized": "TBB000000000000",
+      "candidates": []
+    },
+    {
+      "input": "000000000000",
+      "normalized": "000000000000",
+      "candidates": [
+        {
+          "carrier": "fedex",
+          "confidence": "medium"
+        }
+      ]
+    },
+    {
+      "input": "C1004444443",
+      "normalized": "C1004444443",
+      "candidates": []
+    },
+    {
+      "input": "C11031500001879",
+      "normalized": "C11031500001879",
+      "candidates": [
+        {
+          "carrier": "ontrac",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "input": "C 110 31 500 00187 9",
+      "normalized": "C11031500001879",
+      "candidates": [
+        {
+          "carrier": "ontrac",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "input": "C10999911320231",
+      "normalized": "C10999911320231",
+      "candidates": [
+        {
+          "carrier": "ontrac",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "input": "D10011354453707",
+      "normalized": "D10011354453707",
+      "candidates": [
+        {
+          "carrier": "ontrac",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "input": "D10011342332145",
+      "normalized": "D10011342332145",
+      "candidates": [
+        {
+          "carrier": "ontrac",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "input": "1LS717793482164",
+      "normalized": "1LS717793482164",
+      "candidates": [
+        {
+          "carrier": "ontrac",
+          "confidence": "medium"
+        }
+      ]
+    },
+    {
+      "input": "1LS720000000000",
+      "normalized": "1LS720000000000",
+      "candidates": [
+        {
+          "carrier": "ontrac",
+          "confidence": "medium"
+        }
+      ]
+    },
+    {
+      "input": "1LS7119013618127-1",
+      "normalized": "1LS7119013618127",
+      "candidates": [
+        {
+          "carrier": "ontrac",
+          "confidence": "medium"
+        }
+      ]
+    },
+    {
+      "input": " 1 L S 7 1 1 9 0 1 3 6 1 8 1 2 7 - 1 ",
+      "normalized": "1LS7119013618127",
+      "candidates": [
+        {
+          "carrier": "ontrac",
+          "confidence": "medium"
+        }
+      ]
+    },
+    {
+      "input": "1LSCXVE005BUEFX",
+      "normalized": "1LSCXVE005BUEFX",
+      "candidates": [
+        {
+          "carrier": "ontrac",
+          "confidence": "medium"
+        }
+      ]
+    },
+    {
+      "input": "1LS CX VE00 58631Y",
+      "normalized": "1LSCXVE0058631Y",
+      "candidates": [
+        {
+          "carrier": "ontrac",
+          "confidence": "medium"
+        }
+      ]
+    },
+    {
+      "input": "LX17635036",
+      "normalized": "LX17635036",
+      "candidates": [
+        {
+          "carrier": "ontrac",
+          "confidence": "medium"
+        }
+      ]
+    },
+    {
+      "input": "LI 129 79072",
+      "normalized": "LI12979072",
+      "candidates": [
+        {
+          "carrier": "ontrac",
+          "confidence": "medium"
+        }
+      ]
+    },
+    {
+      "input": "LH13830790",
+      "normalized": "LH13830790",
+      "candidates": [
+        {
+          "carrier": "ontrac",
+          "confidence": "medium"
+        }
+      ]
+    },
+    {
+      "input": "LN30083672",
+      "normalized": "LN30083672",
+      "candidates": [
+        {
+          "carrier": "ontrac",
+          "confidence": "medium"
+        }
+      ]
+    },
+    {
+      "input": "C10000000000000",
+      "normalized": "C10000000000000",
+      "candidates": []
+    },
+    {
+      "input": "C11031500001889",
+      "normalized": "C11031500001889",
+      "candidates": []
+    },
+    {
+      "input": "D10011345983012",
+      "normalized": "D10011345983012",
+      "candidates": []
+    },
+    {
+      "input": "1LX734505321754",
+      "normalized": "1LX734505321754",
+      "candidates": []
+    },
+    {
+      "input": "1LS7119013618127-2",
+      "normalized": "1LS71190136181272",
+      "candidates": []
+    },
+    {
+      "input": "1LSCZVE0058631Y",
+      "normalized": "1LSCZVE0058631Y",
+      "candidates": []
+    },
+    {
+      "input": "XA17635036",
+      "normalized": "XA17635036",
+      "candidates": []
+    },
+    {
+      "input": "LX9763503N",
+      "normalized": "LX9763503N",
+      "candidates": []
+    },
+    {
+      "input": "1LS717793482164",
+      "normalized": "1LS717793482164",
+      "candidates": [
+        {
+          "carrier": "ontrac",
+          "confidence": "medium"
+        }
+      ]
+    },
+    {
+      "input": "UUS6181780830420033",
+      "normalized": "UUS6181780830420033",
+      "candidates": [
+        {
+          "carrier": "uniuni",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "input": "UUS5CS1789743195995",
+      "normalized": "UUS5CS1789743195995",
+      "candidates": [
+        {
+          "carrier": "uniuni",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "input": "UUS12A0000000000001",
+      "normalized": "UUS12A0000000000001",
+      "candidates": [
+        {
+          "carrier": "uniuni",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "input": "UUS1234567890123",
+      "normalized": "UUS1234567890123",
+      "candidates": [
+        {
+          "carrier": "uniuni",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "input": "UR06250000000000351",
+      "normalized": "UR06250000000000351",
+      "candidates": [
+        {
+          "carrier": "uniuni",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "input": "UNIA123456789YQ",
+      "normalized": "UNIA123456789YQ",
+      "candidates": [
+        {
+          "carrier": "uniuni",
+          "confidence": "medium"
+        }
+      ]
+    },
+    {
+      "input": "UUS123",
+      "normalized": "UUS123",
+      "candidates": []
+    },
+    {
+      "input": "UR0625000000000035",
+      "normalized": "UR0625000000000035",
+      "candidates": []
+    },
+    {
+      "input": "JT68284018587518",
+      "normalized": "JT68284018587518",
+      "candidates": []
+    },
+    {
+      "input": "SCD0000F00410922107",
+      "normalized": "SCD0000F00410922107",
+      "candidates": []
+    },
+    {
+      "input": "   ",
+      "normalized": "",
+      "candidates": []
+    },
+    {
+      "input": "hello world",
+      "normalized": "HELLOWORLD",
+      "candidates": []
+    },
+    {
+      "input": "12345",
+      "normalized": "12345",
+      "candidates": []
+    },
+    {
+      "input": "1Z",
+      "normalized": "1Z",
+      "candidates": []
+    },
+    {
+      "input": "!!!!####",
+      "normalized": "!!!!####",
+      "candidates": []
+    },
+    {
+      "input": "GFUS01011884214464",
+      "normalized": "GFUS01011884214464",
+      "candidates": []
+    },
+    {
+      "input": "30570000000000",
+      "normalized": "30570000000000",
+      "candidates": []
+    },
+    {
+      "input": "4155550123",
+      "normalized": "4155550123",
+      "candidates": []
+    },
+    {
+      "input": "ABCDEFGHILJKLMNOPQRSTU1234567890",
+      "normalized": "ABCDEFGHILJKLMNOPQRSTU1234567890",
+      "candidates": []
+    }
+  ],
+  "probes": [
+    {
+      "input": "",
+      "normalized": "",
+      "candidates": []
+    },
+    {
+      "input": " ",
+      "normalized": "",
+      "candidates": []
+    },
+    {
+      "input": "1z5r89390357567127",
+      "normalized": "1Z5R89390357567127",
+      "candidates": [
+        {
+          "carrier": "ups",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "input": " 1z 999-aa1.0123456784\n",
+      "normalized": "1Z999AA10123456784",
+      "candidates": [
+        {
+          "carrier": "ups",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "input": "9400 1112\t0108",
+      "normalized": "940011120108",
+      "candidates": [
+        {
+          "carrier": "fedex",
+          "confidence": "low"
+        }
+      ]
+    },
+    {
+      "input": "1LS7119013618127-1",
+      "normalized": "1LS7119013618127",
+      "candidates": [
+        {
+          "carrier": "ontrac",
+          "confidence": "medium"
+        }
+      ]
+    },
+    {
+      "input": "1LS7119013618127-2",
+      "normalized": "1LS71190136181272",
+      "candidates": []
+    },
+    {
+      "input": "1LS7119013618127‐1",
+      "normalized": "1LS71190136181271",
+      "candidates": []
+    },
+    {
+      "input": "1Z5R89390357567127",
+      "normalized": "1Z5R89390357567127",
+      "candidates": []
+    },
+    {
+      "input": "1Z5R89390357567127\u000b",
+      "normalized": "1Z5R89390357567127",
+      "candidates": [
+        {
+          "carrier": "ups",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "input": "1Z5R89390357567127﻿",
+      "normalized": "1Z5R89390357567127",
+      "candidates": [
+        {
+          "carrier": "ups",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "input": "1Z5R8939035756712٧",
+      "normalized": "1Z5R8939035756712٧",
+      "candidates": []
+    },
+    {
+      "input": "١٢٣٤٥٦٧٨٩٠١٢",
+      "normalized": "١٢٣٤٥٦٧٨٩٠١٢",
+      "candidates": []
+    },
+    {
+      "input": "１Z5R89390357567127",
+      "normalized": "１Z5R89390357567127",
+      "candidates": []
+    },
+    {
+      "input": "1Z5R8939 0357567127",
+      "normalized": "1Z5R89390357567127",
+      "candidates": [
+        {
+          "carrier": "ups",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "input": "1Z5R8939　0357567127",
+      "normalized": "1Z5R89390357567127",
+      "candidates": [
+        {
+          "carrier": "ups",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "input": "1Z5R8939—0357567127",
+      "normalized": "1Z5R89390357567127",
+      "candidates": [
+        {
+          "carrier": "ups",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "input": "1Z5R8939−0357567127",
+      "normalized": "1Z5R89390357567127",
+      "candidates": [
+        {
+          "carrier": "ups",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "input": "1Z5R8939​0357567127",
+      "normalized": "1Z5R8939​0357567127",
+      "candidates": []
+    },
+    {
+      "input": "1Z5R8939_0357567127",
+      "normalized": "1Z5R8939_0357567127",
+      "candidates": []
+    },
+    {
+      "input": "TBA000000000000",
+      "normalized": "TBA000000000000",
+      "candidates": [
+        {
+          "carrier": "amazon",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "input": "tba000000000000",
+      "normalized": "TBA000000000000",
+      "candidates": [
+        {
+          "carrier": "amazon",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "input": "C11031500001879",
+      "normalized": "C11031500001879",
+      "candidates": [
+        {
+          "carrier": "ontrac",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "input": "9611020987654312345672",
+      "normalized": "9611020987654312345672",
+      "candidates": [
+        {
+          "carrier": "fedex",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "input": "RB123456785US",
+      "normalized": "RB123456785US",
+      "candidates": [
+        {
+          "carrier": "usps",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "input": "RB123456785GB",
+      "normalized": "RB123456785GB",
+      "candidates": [
+        {
+          "carrier": "usps",
+          "confidence": "medium"
+        }
+      ]
+    },
+    {
+      "input": "RB123456785XX",
+      "normalized": "RB123456785XX",
+      "candidates": []
+    },
+    {
+      "input": "986578788855",
+      "normalized": "986578788855",
+      "candidates": [
+        {
+          "carrier": "fedex",
+          "confidence": "medium"
+        }
+      ]
+    },
+    {
+      "input": "996578788855",
+      "normalized": "996578788855",
+      "candidates": [
+        {
+          "carrier": "fedex",
+          "confidence": "low"
+        }
+      ]
+    },
+    {
+      "input": "3318810025",
+      "normalized": "3318810025",
+      "candidates": [
+        {
+          "carrier": "dhl",
+          "confidence": "low"
+        }
+      ]
+    },
+    {
+      "input": "4201002334249200190132607600833457",
+      "normalized": "4201002334249200190132607600833457",
+      "candidates": [
+        {
+          "carrier": "usps",
+          "confidence": "high"
+        }
+      ]
+    },
+    {
+      "input": "straße",
+      "normalized": "STRASSE",
+      "candidates": []
+    },
+    {
+      "input": "ǆ",
+      "normalized": "Ǆ",
+      "candidates": []
+    },
+    {
+      "input": "😀📦",
+      "normalized": "😀📦",
+      "candidates": []
+    },
+    {
+      "input": "\u0000",
+      "normalized": "\u0000",
+      "candidates": []
+    },
+    {
+      "input": "9999999999999999999999999999999999999999",
+      "normalized": "9999999999999999999999999999999999999999",
+      "candidates": []
+    },
+    {
+      "input": "99999999999999999999999999999999999999999",
+      "normalized": "99999999999999999999999999999999999999999",
+      "candidates": []
+    },
+    {
+      "input": "11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111TBA",
+      "normalized": "11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111",
+      "candidates": []
+    },
+    {
+      "input": "1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z",
+      "normalized": "1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z1Z",
+      "candidates": []
+    },
+    {
+      "input": "9999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999",
+      "normalized": "99999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999",
+      "candidates": []
+    },
+    {
+      "input": "                                                                                                                                                                                                       TBA000000000000",
+      "normalized": "T",
+      "candidates": []
+    }
+  ]
+}

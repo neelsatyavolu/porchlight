@@ -32,16 +32,32 @@ describe("dhl adapter", () => {
     expect(calls[0]?.headers.get("dhl-api-key")).toBe("dhl-key");
   });
 
-  it("refines parcel-de PO to out_for_delivery and uses the time frame as ETA", async () => {
+  it("refines parcel-de PO to out_for_delivery and uses the time frame's date as ETA", async () => {
     const { adapter, ctx } = setup([{ body: transit }]);
     const result = await adapter.track("00340434292135100197", "dhl", ctx);
     expect(result.status).toBe("out_for_delivery");
     expect(result.statusDetail).toBe("Being delivered.");
-    expect(result.etaStart).toBe("2024-07-02T09:00:00");
-    expect(result.etaEnd).toBe("2024-07-02T10:30:00");
+    // The frame has no UTC offset, so only its date is kept.
+    expect(result.etaStart).toBe("2024-07-02");
+    expect(result.etaEnd).toBe("2024-07-02");
+    expect(result.etaDateOnly).toBe(true);
     expect(result.events.map((e) => e.status)).toEqual(["out_for_delivery", "in_transit", "label_created"]);
     expect(result.events[1]?.location).toBe("Köln, DE");
     expect(result.events[2]?.location).toBeNull();
+  });
+
+  it("keeps a time frame with an offset as instants, and a bare estimatedTimeOfDelivery as a date", async () => {
+    const timed = structuredClone(transit) as { shipments: Record<string, unknown>[] };
+    timed.shipments[0]!.estimatedDeliveryTimeFrame = { estimatedFrom: "2024-07-02T09:00:00+02:00", estimatedThrough: "2024-07-02T10:30:00+02:00" };
+    let s = setup([{ body: timed }]);
+    let result = await s.adapter.track("00340434292135100197", "dhl", s.ctx);
+    expect([result.etaStart, result.etaEnd, result.etaDateOnly]).toEqual(["2024-07-02T09:00:00+02:00", "2024-07-02T10:30:00+02:00", false]);
+
+    const dated = structuredClone(transit) as { shipments: Record<string, unknown>[] };
+    delete dated.shipments[0]!.estimatedDeliveryTimeFrame;
+    s = setup([{ body: dated }]);
+    result = await s.adapter.track("00340434292135100197", "dhl", s.ctx);
+    expect([result.etaStart, result.etaEnd, result.etaDateOnly]).toEqual(["2024-07-02", "2024-07-02", true]);
   });
 
   it("normalizes an Express delivery and refines event text", async () => {

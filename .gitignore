@@ -14,3 +14,7 @@ DerivedData/
 xcuserdata/
 # Build output: site/ and apps/web are built into the Worker's assets folder.
 services/api/public/
+# Apple: XcodeGen output and SwiftPM build state
+apps/apple/*.xcodeproj/
+apps/apple/Packages/PorchKit/.build/
+apps/apple/Packages/PorchKit/.swiftpm/

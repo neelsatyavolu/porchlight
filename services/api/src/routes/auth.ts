@@ -39,6 +39,7 @@ const devicePutBody = z.object({
   platform: client,
   apnsToken: z.string().regex(/^[0-9a-fA-F]{16,256}$/, "must be hex").nullable(),
   appVersion: z.string().max(64).nullable(),
+  environment: z.enum(["sandbox", "production"]).optional(),
 });
 
 interface UserRow {
@@ -72,8 +73,8 @@ function checkWebOrigin(req: Request, env: Env, c: z.infer<typeof client>): void
   if (c === "web" && origin !== null && origin !== env.APP_ORIGIN) throw new HttpError(403, "forbidden", "Bad origin");
 }
 
-async function signedIn(env: Env, user: UserRow, created: boolean, c: string, dev: string | undefined): Promise<Response> {
-  const token = await createSession(env, user.id, dev ?? null, Date.now());
+async function signedIn(env: Env, user: UserRow, created: boolean, c: z.infer<typeof client>, dev: string | undefined): Promise<Response> {
+  const token = await createSession(env, user.id, dev ?? null, Date.now(), c);
   const data: SignInResponse = { token: c === "web" ? null : token, user: toUser(user), created };
   return json(data, 200, c === "web" ? { "set-cookie": sessionCookie(token) } : {});
 }
@@ -240,17 +241,29 @@ async function putDevice({ req, env, params }: RouteContext): Promise<Response> 
       body.apnsToken,
       id,
     ),
+    // An omitted environment is production on create and unchanged on update.
     env.DB.prepare(
-      `INSERT INTO devices (id, user_id, platform, apns_token, app_version) VALUES (?1, ?2, ?3, ?4, ?5)
-       ON CONFLICT (id) DO UPDATE SET platform = ?3, apns_token = ?4, app_version = ?5 WHERE user_id = ?2`,
-    ).bind(id, session.userId, body.platform, body.apnsToken, body.appVersion),
+      `INSERT INTO devices (id, user_id, platform, apns_token, app_version, apns_environment)
+       VALUES (?1, ?2, ?3, ?4, ?5, COALESCE(?6, 'production'))
+       ON CONFLICT (id) DO UPDATE SET platform = ?3, apns_token = ?4, app_version = ?5,
+         apns_environment = COALESCE(?6, apns_environment) WHERE user_id = ?2`,
+    ).bind(id, session.userId, body.platform, body.apnsToken, body.appVersion, body.environment ?? null),
     env.DB.prepare("UPDATE sessions SET device_id = ? WHERE token_hash = ? AND user_id = ?").bind(
       id,
       session.sessionId,
       session.userId,
     ),
   ]);
-  const data: Device = { id, platform: body.platform, apnsToken: body.apnsToken, appVersion: body.appVersion };
+  const stored = await env.DB.prepare("SELECT apns_environment FROM devices WHERE id = ? AND user_id = ?")
+    .bind(id, session.userId)
+    .first<{ apns_environment: Device["environment"] }>();
+  const data: Device = {
+    id,
+    platform: body.platform,
+    apnsToken: body.apnsToken,
+    appVersion: body.appVersion,
+    environment: stored?.apns_environment ?? "production",
+  };
   return json(data);
 }
 

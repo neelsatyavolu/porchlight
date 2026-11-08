@@ -13,8 +13,10 @@
 
   "vars": {
     "APNS_TEAM_ID": "VTQW687WBQ",
-    "APP_ORIGIN": "https://porchlight.xanom.co"
-    // "APNS_TOPIC": "<app bundle id>" goes here once the bundle id is chosen.
+    "APP_ORIGIN": "https://porchlight.xanom.co",
+    "APNS_TOPIC": "co.xanom.porchlight",
+    // Host for "production" devices; "sandbox" devices use api.sandbox.push.apple.com.
+    "APNS_HOST": "api.push.apple.com"
   },
 
   "d1_databases": [

@@ -45,6 +45,16 @@ function dateOf(track: Json, type: string): string | null {
   return strOrNull(entry?.dateTime);
 }
 
+/**
+ * ESTIMATED_DELIVERY often carries only a date, written as local midnight
+ * ("2026-11-05T00:00:00-08:00"). That midnight is not a delivery time, so it
+ * becomes the bare date.
+ */
+function estimateOf(dateTime: string | null): string | null {
+  const m = /^(\d{4}-\d{2}-\d{2})T00:00(?::00(?:\.0+)?)?(?:Z|[+-]\d{2}:?\d{2})?$/.exec(dateTime ?? "");
+  return m?.[1] ?? dateTime;
+}
+
 function parse(body: unknown): TrackResult {
   const complete = obj(arr(obj(obj(body).output).completeTrackResults)[0]);
   const track = obj(arr(complete.trackResults)[0]);
@@ -55,7 +65,7 @@ function parse(body: unknown): TrackResult {
   }
   const latest = obj(track.latestStatusDetail);
   const window = obj(obj(track.estimatedDeliveryTimeWindow).window);
-  const estimated = dateOf(track, "ESTIMATED_DELIVERY");
+  const estimated = estimateOf(dateOf(track, "ESTIMATED_DELIVERY"));
   // standardTransitTimeWindow is a service standard, not a prediction: never used (SPEC goal 4).
   const hasWindow = Boolean(str(window.begins) || str(window.ends));
   return finishResult({

@@ -8,9 +8,6 @@
 const MS_PER_DAY = 86_400_000;
 const LOCALE = "en-US";
 
-/** Carriers' date-only ETAs reach us as midnight UTC (DESIGN.md §6). */
-const DATE_ONLY = /T00:00:00(?:\.000)?Z$/;
-
 const partsCache = new Map<string, Intl.DateTimeFormat>();
 
 function dayFormatter(timeZone: string): Intl.DateTimeFormat {
@@ -24,11 +21,6 @@ function dayFormatter(timeZone: string): Intl.DateTimeFormat {
 
 export function systemTimeZone(): string {
   return Intl.DateTimeFormat().resolvedOptions().timeZone;
-}
-
-/** True for an ISO timestamp that is really a date with no time (midnight UTC). */
-export function isDateOnly(iso: string): boolean {
-  return DATE_ONLY.test(iso);
 }
 
 /** The calendar day of an instant as seen in `timeZone`. */
@@ -45,12 +37,13 @@ export function dayNumberOf(date: Date, timeZone: string): number {
 }
 
 /**
- * The calendar day an ETA names. Date-only values are read by their UTC date,
- * so "Nov 10" stays Nov 10 west of Greenwich; anything with a time is local.
+ * The calendar day an ETA names. A date-only value ("2026-11-10", the
+ * package's etaDateOnly) is that date in every zone; an instant is read in
+ * the viewer's zone.
  */
-export function etaDayNumber(iso: string, timeZone: string): number {
-  if (isDateOnly(iso)) return Math.floor(Date.parse(iso) / MS_PER_DAY);
-  return dayNumberOf(new Date(iso), timeZone);
+export function etaDayNumber(value: string, dateOnly: boolean, timeZone: string): number {
+  if (dateOnly) return Math.floor(Date.parse(value) / MS_PER_DAY);
+  return dayNumberOf(new Date(value), timeZone);
 }
 
 /** Calendar days from today to the given day (0 today, 1 tomorrow, -1 yesterday). */

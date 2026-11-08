@@ -18,6 +18,7 @@ function result(over: Partial<TrackResult> = {}): TrackResult {
     statusDetail: "Departed facility",
     etaStart: "2026-11-10T00:00:00.000Z",
     etaEnd: null,
+    etaDateOnly: false,
     deliveredAt: null,
     events: [
       { occurredAt: "2026-11-08T09:12:00.000Z", status: "in_transit", description: "Departed", location: "Oakland, CA" },

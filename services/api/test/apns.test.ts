@@ -121,6 +121,29 @@ describe("notifyPackageChange", () => {
     expect(row?.apns_token).toBeNull();
   });
 
+  it("sends sandbox devices to the sandbox host and the rest to APNS_HOST", async () => {
+    const { apnsEnv, userId } = await setup();
+    const dev = await seedDevice(env, userId, "dddd");
+    await env.DB.prepare("UPDATE devices SET apns_environment = 'sandbox' WHERE id = ?").bind(dev).run();
+    await seedDevice(env, userId, "ffff");
+    const fetchMock = vi.fn(async (_input: RequestInfo | URL, _init?: RequestInit) => new Response(null, { status: 200 }));
+    const withHost = { ...apnsEnv, APNS_HOST: "apns.example.test" } as Env;
+    expect(await notifyPackageChange(withHost, change({ userId }), { fetch: fetchMock as unknown as typeof fetch, nowSec: () => NOW_SEC })).toBe(2);
+    expect(fetchMock.mock.calls.map((c) => String(c[0])).sort()).toEqual([
+      "https://api.sandbox.push.apple.com/3/device/dddd",
+      "https://apns.example.test/3/device/ffff",
+    ]);
+  });
+
+  it("defaults the production host to api.push.apple.com and ignores a malformed APNS_HOST", async () => {
+    const { apnsEnv, userId } = await setup();
+    await seedDevice(env, userId, "0a0a");
+    const fetchMock = vi.fn(async (_input: RequestInfo | URL, _init?: RequestInit) => new Response(null, { status: 200 }));
+    const bad = { ...apnsEnv, APNS_HOST: "https://evil.example/path" } as Env;
+    await notifyPackageChange(bad, change({ userId }), { fetch: fetchMock as unknown as typeof fetch, nowSec: () => NOW_SEC });
+    expect(String(fetchMock.mock.calls[0]![0])).toBe("https://api.push.apple.com/3/device/0a0a");
+  });
+
   it("does nothing when the APNs key or topic is not configured", async () => {
     const userId = await seedUser(env);
     await seedDevice(env, userId, "eeee");

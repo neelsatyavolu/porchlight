@@ -6,6 +6,7 @@ import { z } from "zod";
 import type { Env } from "../env.js";
 import { notifyPackageChange, type PackageChange } from "../lib/apns.js";
 import { requireUser, requireUserOrToken } from "../lib/auth.js";
+import { etaToMs } from "../lib/eta.js";
 import { HttpError, json, readJson } from "../lib/http.js";
 import { takeToken, type BucketSpec, type RateDecision } from "../lib/rate.js";
 import type { RouteContext, Router } from "../lib/router.js";
@@ -72,8 +73,10 @@ const AmazonItem = z.strictObject({
       }),
     )
     .max(50),
-  etaStart: isoDate.nullable(),
-  etaEnd: isoDate.nullable(),
+  // Checked against etaDateOnly below: "YYYY-MM-DD" when true, an instant when false.
+  etaStart: z.union([z.iso.date(), isoDate]).nullable(),
+  etaEnd: z.union([z.iso.date(), isoDate]).nullable(),
+  etaDateOnly: z.boolean().optional(),
   observed: z
     .strictObject({
       status: z.enum(STATUSES),
@@ -83,6 +86,14 @@ const AmazonItem = z.strictObject({
       events: z.array(Event).max(100),
     })
     .optional(),
+}).superRefine((item, ctx) => {
+  const dateOnly = item.etaDateOnly === true;
+  for (const key of ["etaStart", "etaEnd"] as const) {
+    const value = item[key];
+    if (value !== null && etaToMs(value, dateOnly) === null) {
+      ctx.addIssue({ code: "custom", path: [key], message: dateOnly ? "must be YYYY-MM-DD when etaDateOnly is true" : "must be an ISO 8601 date-time when etaDateOnly is false" });
+    }
+  }
 });
 type AmazonItem = z.output<typeof AmazonItem>;
 
@@ -140,6 +151,7 @@ interface NewPackage {
   source: "flint" | "amazon";
   etaStart: number | null;
   etaEnd: number | null;
+  etaDateOnly: boolean;
   items: readonly PackageItem[];
 }
 
@@ -159,11 +171,12 @@ async function insertPackage(c: ImportCtx, p: NewPackage): Promise<string | null
     db
       .prepare(
         `INSERT INTO packages (id, user_id, carrier, tracking_number, title, merchant, order_id, source,
-           eta_start, eta_end, next_check_at, updated_at)
-         VALUES (?3, ?2, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?1, ${NEXT_UPDATED_AT})
+           eta_start, eta_end, eta_date_only, next_check_at, updated_at)
+         VALUES (?3, ?2, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?1, ${NEXT_UPDATED_AT})
          ON CONFLICT (user_id, carrier, tracking_number) DO NOTHING`,
       )
-      .bind(c.now, c.userId, id, p.carrier, p.number, p.title, p.merchant, p.orderId, p.source, p.etaStart, p.etaEnd),
+      .bind(c.now, c.userId, id, p.carrier, p.number, p.title, p.merchant, p.orderId, p.source, p.etaStart, p.etaEnd,
+        p.etaStart === null && p.etaEnd === null ? 0 : Number(p.etaDateOnly)),
     ...p.items.map((i) => item.bind(id, i.name, i.imageUrl, i.quantity, c.userId)),
   ]);
   return (res?.meta.changes ?? 0) > 0 ? id : null;
@@ -213,6 +226,7 @@ async function importFlintItem(c: ImportCtx, raw: unknown): Promise<ImportResult
       source: "flint",
       etaStart: null,
       etaEnd: null,
+      etaDateOnly: false,
       items: [],
     });
     if (id) {
@@ -250,17 +264,21 @@ async function replaceItems(c: ImportCtx, packageId: string, items: readonly Pac
 /** Writes the fields Amazon owns. Returns whether anything changed. */
 async function applyAmazonFields(c: ImportCtx, pkg: PackageRow, item: AmazonItem): Promise<boolean> {
   const hasEta = item.etaStart !== null || item.etaEnd !== null;
-  const etaStart = hasEta ? isoToMs(item.etaStart) : pkg.eta_start;
-  const etaEnd = hasEta ? isoToMs(item.etaEnd) : pkg.eta_end;
+  const dateOnly = item.etaDateOnly === true;
+  const etaStart = hasEta ? etaToMs(item.etaStart, dateOnly) : pkg.eta_start;
+  const etaEnd = hasEta ? etaToMs(item.etaEnd, dateOnly) : pkg.eta_end;
+  const etaDateOnly = hasEta ? Number(dateOnly) : pkg.eta_date_only;
   const title = pkg.title ?? item.title;
-  const fieldsChanged = pkg.order_id !== item.orderId || pkg.eta_start !== etaStart || pkg.eta_end !== etaEnd || pkg.title !== title;
+  const fieldsChanged =
+    pkg.order_id !== item.orderId || pkg.eta_start !== etaStart || pkg.eta_end !== etaEnd ||
+    pkg.eta_date_only !== etaDateOnly || pkg.title !== title;
   const itemsChanged = await replaceItems(c, pkg.id, item.items);
   if (fieldsChanged || itemsChanged) {
     await c.env.DB.prepare(
-      `UPDATE packages SET order_id = ?3, eta_start = ?4, eta_end = ?5, title = ?6, updated_at = ${NEXT_UPDATED_AT}
+      `UPDATE packages SET order_id = ?3, eta_start = ?4, eta_end = ?5, eta_date_only = ?8, title = ?6, updated_at = ${NEXT_UPDATED_AT}
        WHERE id = ?7 AND user_id = ?2`,
     )
-      .bind(c.now, c.userId, item.orderId, etaStart, etaEnd, title, pkg.id)
+      .bind(c.now, c.userId, item.orderId, etaStart, etaEnd, title, pkg.id, etaDateOnly)
       .run();
   }
   return fieldsChanged || itemsChanged;
@@ -308,8 +326,9 @@ async function importAmazonItem(c: ImportCtx, raw: unknown): Promise<ImportResul
         merchant: "Amazon",
         orderId: item.orderId,
         source: "amazon",
-        etaStart: isoToMs(item.etaStart),
-        etaEnd: isoToMs(item.etaEnd),
+        etaStart: etaToMs(item.etaStart, item.etaDateOnly === true),
+        etaEnd: etaToMs(item.etaEnd, item.etaDateOnly === true),
+        etaDateOnly: item.etaDateOnly === true,
         items: item.items,
       });
       if (!id) continue;

@@ -14,6 +14,9 @@ import type {
   PackagePutRequest,
   PairingStartResponse,
   RefreshResponse,
+  SessionDeleteResponse,
+  SessionInfo,
+  SessionsResponse,
   SignInResponse,
   SyncResponse,
   TokensResponse,
@@ -164,6 +167,8 @@ export function createClient(options: ClientOptions = {}) {
     signOut: () => request<{ signedOut: true }>("POST", "/auth/signout"),
     me: async (): Promise<User> => (await request<MeResponse>("GET", "/me")).user,
     deleteAccount: () => request<{ deleted: true }>("DELETE", "/me"),
+    listSessions: async (): Promise<SessionInfo[]> => (await request<SessionsResponse>("GET", "/sessions")).sessions,
+    deleteSession: (sessionId: string) => request<SessionDeleteResponse>("DELETE", `/sessions/${id(sessionId)}`),
 
     // Sync
     sync,

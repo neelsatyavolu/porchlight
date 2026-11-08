@@ -15,10 +15,16 @@ export interface Env extends CarrierEnv {
   /** The only origin CORS allows, e.g. https://porchlight.xanom.co. */
   APP_ORIGIN: string;
   /**
-   * apns-topic: the app bundle id. Not set in wrangler.jsonc until the bundle
-   * id is chosen; push is skipped while it is missing.
+   * apns-topic: the app bundle id, co.xanom.porchlight (one universal app
+   * for iOS and macOS). Push is skipped while it is missing.
    */
   APNS_TOPIC?: string;
+  /**
+   * APNs host for devices registered as "production", default
+   * api.push.apple.com. Devices registered as "sandbox" always use
+   * api.sandbox.push.apple.com (lib/apns.ts).
+   */
+  APNS_HOST?: string;
   /**
    * Local dev only: "1" makes /auth/email/start log the link and code instead
    * of sending mail when RESEND_API_KEY is missing. Ignored unless APP_ORIGIN

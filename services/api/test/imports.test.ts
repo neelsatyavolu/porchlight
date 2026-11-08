@@ -246,6 +246,30 @@ describe("POST /v1/imports/amazon", () => {
     expect(items.results).toEqual([{ name: "Charger" }]);
   });
 
+  it("takes a date-only Amazon ETA when etaDateOnly is true, and refuses dates that don't match the flag", async () => {
+    const userId = await seedUser(env);
+    const item = amazonItem({ etaStart: "2026-11-09", etaEnd: "2026-11-10", etaDateOnly: true });
+    const [r] = await results(await post("/v1/imports/amazon", { items: [item] }, userId));
+    expect(r?.outcome).toBe("created");
+    const row = (await getPackage(env, r!.packageId!)) as unknown as { eta_start: number; eta_end: number; eta_date_only: number };
+    expect([row.eta_start, row.eta_end, row.eta_date_only]).toEqual([Date.UTC(2026, 10, 9), Date.UTC(2026, 10, 10), 1]);
+
+    // Switching to a timed window on re-import clears the flag.
+    const [upd] = await results(await post("/v1/imports/amazon", { items: [{ ...item, etaStart: "2026-11-09T17:00:00.000Z", etaEnd: "2026-11-10T01:00:00.000Z", etaDateOnly: false }] }, userId));
+    expect(upd?.outcome).toBe("updated");
+    expect(((await getPackage(env, r!.packageId!)) as unknown as { eta_date_only: number }).eta_date_only).toBe(0);
+
+    const bad = await results(
+      await post(
+        "/v1/imports/amazon",
+        { items: [amazonItem({ etaStart: "2026-11-09T00:00:00.000Z", etaEnd: null, etaDateOnly: true }), amazonItem({ etaStart: "2026-11-09", etaEnd: null })] },
+        userId,
+      ),
+    );
+    expect(bad.map((b) => b.outcome)).toEqual(["rejected", "rejected"]);
+    expect(bad[0]?.reason).toMatch(/^etaStart/);
+  });
+
   it("applies device-observed TBA status and events, deduped, and pushes the transition", async () => {
     const userId = await seedUser(env);
     const item = amazonItem({ observed });

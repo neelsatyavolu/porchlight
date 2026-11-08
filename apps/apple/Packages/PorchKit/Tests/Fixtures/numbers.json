@@ -1,0 +1,794 @@
+[
+  {
+    "number": "9400111206206406260787",
+    "carrier": "usps",
+    "valid": true,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: IMpb AI 94, 22 digits"
+  },
+  {
+    "number": "420787459400111206206406260787",
+    "carrier": "usps",
+    "valid": true,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: IMpb AI 94 with 420+ZIP prefix"
+  },
+  {
+    "number": "9400 1112 0108 0805 4830 16",
+    "carrier": "usps",
+    "valid": true,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: IMpb AI 94, spaced"
+  },
+  {
+    "number": "9405803699300124287899",
+    "carrier": "usps",
+    "valid": true,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: IMpb AI 94"
+  },
+  {
+    "number": "9434611206206407667136",
+    "carrier": "usps",
+    "valid": true,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: IMpb AI 94"
+  },
+  {
+    "number": "4201002334249200190132607600833457",
+    "carrier": "usps",
+    "valid": true,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: IMpb AI 92 with 420+ZIP+4 prefix (34 digits; also FedEx-34 shape)"
+  },
+  {
+    "number": "9505 5110 6960 5048 6006 24",
+    "carrier": "usps",
+    "valid": true,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: IMpb AI 95, spaced"
+  },
+  {
+    "number": "92748931507708513018050063",
+    "carrier": "usps",
+    "valid": true,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: IMpb AI 92, 26 digits (UPS Mail Innovations style)"
+  },
+  {
+    "number": "9361 2898 7870 0317 6337 95",
+    "carrier": "usps",
+    "valid": true,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: IMpb AI 93"
+  },
+  {
+    "number": "9261292700768711948021",
+    "carrier": "usps",
+    "valid": true,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: IMpb AI 92"
+  },
+  {
+    "number": "420 11213 92 6129098349792366623 8",
+    "carrier": "usps",
+    "valid": true,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: IMpb AI 92 with 420+ZIP, spaced"
+  },
+  {
+    "number": "9101 1234 5678 9000 0000 13",
+    "carrier": "usps",
+    "valid": true,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: legacy AI 91"
+  },
+  {
+    "number": "420 22153 9101026837331000039521",
+    "carrier": "usps",
+    "valid": true,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: legacy AI 91 with 420+ZIP"
+  },
+  {
+    "number": "7196 9010 7560 0307 7385",
+    "carrier": "usps",
+    "valid": true,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: legacy 20 digit (91 prepended for the check)"
+  },
+  {
+    "number": "0307 1790 0005 2348 3741",
+    "carrier": "usps",
+    "valid": true,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: 20 digit"
+  },
+  {
+    "number": " 0 3 0 7   1 7 9 0   0 0 0 5   2 3 4 8   3 7 4 1 ",
+    "carrier": "usps",
+    "valid": true,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: 20 digit, one space per character"
+  },
+  {
+    "number": "7112 3456 7891 2345 6787",
+    "carrier": "usps",
+    "valid": true,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: 20 digit"
+  },
+  {
+    "number": "RB123456785US",
+    "carrier": "usps",
+    "valid": true,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: S10, USPS-originated"
+  },
+  {
+    "number": "RB123456785GB",
+    "carrier": "usps",
+    "valid": true,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: S10, inbound from Royal Mail"
+  },
+  {
+    "number": "RB123456785CV",
+    "carrier": "usps",
+    "valid": true,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: S10, inbound"
+  },
+  {
+    "number": "9261290357478304880413",
+    "carrier": "usps",
+    "valid": true,
+    "note": "DHL eCommerce US label as published by DCL Logistics; ordinary IMpb, tracked as USPS"
+  },
+  {
+    "number": "9434611206206407667131",
+    "carrier": "usps",
+    "valid": false,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: IMpb AI 94, bad check digit"
+  },
+  {
+    "number": "9101 1234 5678 9000 0000 14",
+    "carrier": "usps",
+    "valid": false,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: legacy AI 91, bad check digit"
+  },
+  {
+    "number": "0307 1790 0005 2348 3742",
+    "carrier": "usps",
+    "valid": false,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: 20 digit, bad check digit"
+  },
+  {
+    "number": "9200000000000000000000",
+    "carrier": "usps",
+    "valid": false,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: AI 92 without the mailer-ID shape"
+  },
+  {
+    "number": "RB123456786US",
+    "carrier": "usps",
+    "valid": false,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: S10, bad check digit"
+  },
+  {
+    "number": "RB123456785XX",
+    "carrier": "usps",
+    "valid": false,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: S10, unknown country code"
+  },
+  {
+    "number": "1Z5R89390357567127",
+    "carrier": "ups",
+    "valid": true,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: 1Z"
+  },
+  {
+    "number": "1Z879E930346834440",
+    "carrier": "ups",
+    "valid": true,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: 1Z"
+  },
+  {
+    "number": "1Z410E7W0392751591",
+    "carrier": "ups",
+    "valid": true,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: 1Z with letters in the serial"
+  },
+  {
+    "number": "1ZXX3150YW44070023",
+    "carrier": "ups",
+    "valid": true,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: 1Z with letters in the serial"
+  },
+  {
+    "number": " 1 Z 8 V 9 2 A 7 0 3 6 7 2 0 3 0 2 4 ",
+    "carrier": "ups",
+    "valid": true,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: 1Z, one space per character"
+  },
+  {
+    "number": "1z999aa10123456784",
+    "carrier": "ups",
+    "valid": true,
+    "note": "UPS public sample: 1Z, lowercase (widely published UPS sample)"
+  },
+  {
+    "number": "K1506235620",
+    "carrier": "ups",
+    "valid": true,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: waybill/InfoNotice"
+  },
+  {
+    "number": "K 150 623 562 0",
+    "carrier": "ups",
+    "valid": true,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: waybill, spaced"
+  },
+  {
+    "number": "J4603636537",
+    "carrier": "ups",
+    "valid": true,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: waybill"
+  },
+  {
+    "number": "V0490119172",
+    "carrier": "ups",
+    "valid": true,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: waybill"
+  },
+  {
+    "number": "MI123456ABCDEF0123456",
+    "carrier": "ups",
+    "valid": true,
+    "note": "synthetic Mail Innovations package ID in the ups.com shape MI + 6 digits + up to 22 chars"
+  },
+  {
+    "number": "2Z5R89390357567127",
+    "carrier": "ups",
+    "valid": false,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: wrong prefix"
+  },
+  {
+    "number": "1A5R89390357567127",
+    "carrier": "ups",
+    "valid": false,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: wrong prefix"
+  },
+  {
+    "number": "1Z1111111111111111",
+    "carrier": "ups",
+    "valid": false,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: 1Z, bad check digit"
+  },
+  {
+    "number": "K1506235622",
+    "carrier": "ups",
+    "valid": false,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: waybill, bad check digit"
+  },
+  {
+    "number": "J4603636538",
+    "carrier": "ups",
+    "valid": false,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: waybill, bad check digit"
+  },
+  {
+    "number": "986578788855",
+    "carrier": "fedex",
+    "valid": true,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: Express 12"
+  },
+  {
+    "number": "477179081230",
+    "carrier": "fedex",
+    "valid": true,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: Express 12"
+  },
+  {
+    "number": "799531274483",
+    "carrier": "fedex",
+    "valid": true,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: Express 12"
+  },
+  {
+    "number": "0414 4176 0228 964",
+    "carrier": "fedex",
+    "valid": true,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: Ground 15, spaced"
+  },
+  {
+    "number": "5682 8361 0012 734",
+    "carrier": "fedex",
+    "valid": true,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: Ground 15"
+  },
+  {
+    "number": "9611020987654312345672",
+    "carrier": "fedex",
+    "valid": true,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: Ground 96, 22 digits"
+  },
+  {
+    "number": "9622001900000000000000776632517510",
+    "carrier": "fedex",
+    "valid": true,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: Ground GSN, 34 digits"
+  },
+  {
+    "number": "1001921334250001000300779017972697",
+    "carrier": "fedex",
+    "valid": true,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: Express 34"
+  },
+  {
+    "number": "1 1 9 52 6 64739 3000 75211 00 8710 799 199 40",
+    "carrier": "fedex",
+    "valid": true,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: Express 34, odd spacing"
+  },
+  {
+    "number": "32971514560102447849175802862014",
+    "carrier": "fedex",
+    "valid": true,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: ASTRA 32"
+  },
+  {
+    "number": "3 29715 145 6010244 784917580286 2014",
+    "carrier": "fedex",
+    "valid": true,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: ASTRA 32, spaced"
+  },
+  {
+    "number": "996578788855",
+    "carrier": "fedex",
+    "valid": true,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: Express 12 with a failing check digit. Porchlight still returns FedEx (low): real FedEx 12-digit IDs often fail it"
+  },
+  {
+    "number": "123456789010",
+    "carrier": "fedex",
+    "valid": true,
+    "note": "synthetic, redacted shape of the two Flint FedEx 12-digit fixtures, which fail the Express-12 check; must still be FedEx (low)"
+  },
+  {
+    "number": "5682 8361 0012 732",
+    "carrier": "fedex",
+    "valid": false,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: Ground 15, bad check digit"
+  },
+  {
+    "number": "9600000000000000000001",
+    "carrier": "fedex",
+    "valid": false,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: Ground 96, bad check digit"
+  },
+  {
+    "number": "9622001560001234567100794808390595",
+    "carrier": "fedex",
+    "valid": false,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: GSN, bad check digit"
+  },
+  {
+    "number": "1001901781990001000300617767839438",
+    "carrier": "fedex",
+    "valid": false,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: Express 34, bad check digit"
+  },
+  {
+    "number": "32971514560102447849175802852014",
+    "carrier": "fedex",
+    "valid": false,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: ASTRA 32, bad check digit"
+  },
+  {
+    "number": "3297151456010244784917580286201",
+    "carrier": "fedex",
+    "valid": false,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: ASTRA, 31 digits"
+  },
+  {
+    "number": "00 0123 4500 0000 0027",
+    "carrier": "fedex",
+    "valid": false,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: SSCC-18 is generic GS1, deliberately not detected"
+  },
+  {
+    "number": "3318810025",
+    "carrier": "dhl",
+    "valid": true,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: Express waybill 10"
+  },
+  {
+    "number": "8487135506",
+    "carrier": "dhl",
+    "valid": true,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: Express waybill 10"
+  },
+  {
+    "number": "1099255990",
+    "carrier": "dhl",
+    "valid": true,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: Express waybill 10"
+  },
+  {
+    "number": "73891051146",
+    "carrier": "dhl",
+    "valid": true,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: Express waybill 11"
+  },
+  {
+    "number": "JJD0099999999",
+    "carrier": "dhl",
+    "valid": true,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: Express piece ID"
+  },
+  {
+    "number": "JVGL0999999990",
+    "carrier": "dhl",
+    "valid": true,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: Express piece ID"
+  },
+  {
+    "number": "3318810010",
+    "carrier": "dhl",
+    "valid": false,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: waybill, bad mod-7 check"
+  },
+  {
+    "number": "3318810034",
+    "carrier": "dhl",
+    "valid": false,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: waybill, bad mod-7 check"
+  },
+  {
+    "number": "XJD0099999998",
+    "carrier": "dhl",
+    "valid": false,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: piece ID, wrong prefix"
+  },
+  {
+    "number": "GM2951173225174494",
+    "carrier": "dhl_ecommerce",
+    "valid": true,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: GM"
+  },
+  {
+    "number": "GM 2 9 5 117 32 25 1 7 44 9 4",
+    "carrier": "dhl_ecommerce",
+    "valid": true,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: GM, spaced"
+  },
+  {
+    "number": "GM295117494011169042",
+    "carrier": "dhl_ecommerce",
+    "valid": true,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: GM"
+  },
+  {
+    "number": "GM9E44608A27984866BA2D",
+    "carrier": "dhl_ecommerce",
+    "valid": true,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: GM alphanumeric"
+  },
+  {
+    "number": "GS295117494011169041",
+    "carrier": "dhl_ecommerce",
+    "valid": false,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: wrong prefix"
+  },
+  {
+    "number": "AAAAAAAAAAAAAAAAAA",
+    "carrier": "dhl_ecommerce",
+    "valid": false,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: letters only"
+  },
+  {
+    "number": "60120172242323",
+    "carrier": "dhl_ecommerce",
+    "valid": false,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: 14-digit form, deliberately not detected (collides with airline eTickets)"
+  },
+  {
+    "number": "30570000000000",
+    "carrier": "dhl_ecommerce",
+    "valid": false,
+    "note": "synthetic, redacted shape of the 14-digit airline eTicket in Flint's united-booking-forwarded-twice.txt"
+  },
+  {
+    "number": "TBA000000000000",
+    "carrier": "amazon",
+    "valid": true,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: TBA"
+  },
+  {
+    "number": "TBA010000000000",
+    "carrier": "amazon",
+    "valid": true,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: TBA"
+  },
+  {
+    "number": "TBC 000000000000",
+    "carrier": "amazon",
+    "valid": true,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: TBC (Canada), spaced"
+  },
+  {
+    "number": "TBM502887274000",
+    "carrier": "amazon",
+    "valid": true,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: TBM (Mexico)"
+  },
+  {
+    "number": "tba010000000000",
+    "carrier": "amazon",
+    "valid": true,
+    "note": "TBA typed in lowercase"
+  },
+  {
+    "number": "TBA50288727400A",
+    "carrier": "amazon",
+    "valid": false,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: letter in the digits"
+  },
+  {
+    "number": "TBB000000000000",
+    "carrier": "amazon",
+    "valid": false,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: wrong prefix"
+  },
+  {
+    "number": "000000000000",
+    "carrier": "amazon",
+    "valid": false,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: digits only"
+  },
+  {
+    "number": "C1004444443",
+    "carrier": "amazon",
+    "valid": false,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: Amazon International, deliberately not detected (collides with other carriers)"
+  },
+  {
+    "number": "C11031500001879",
+    "carrier": "ontrac",
+    "valid": true,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: OnTrac C. LaserShip merged into OnTrac, so it maps to ontrac"
+  },
+  {
+    "number": "C 110 31 500 00187 9",
+    "carrier": "ontrac",
+    "valid": true,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: OnTrac C, spaced. LaserShip merged into OnTrac, so it maps to ontrac"
+  },
+  {
+    "number": "C10999911320231",
+    "carrier": "ontrac",
+    "valid": true,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: OnTrac C. LaserShip merged into OnTrac, so it maps to ontrac"
+  },
+  {
+    "number": "D10011354453707",
+    "carrier": "ontrac",
+    "valid": true,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: OnTrac D. LaserShip merged into OnTrac, so it maps to ontrac"
+  },
+  {
+    "number": "D10011342332145",
+    "carrier": "ontrac",
+    "valid": true,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: OnTrac D. LaserShip merged into OnTrac, so it maps to ontrac"
+  },
+  {
+    "number": "1LS717793482164",
+    "carrier": "ontrac",
+    "valid": true,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: LaserShip 1LS7 (15). LaserShip merged into OnTrac, so it maps to ontrac"
+  },
+  {
+    "number": "1LS720000000000",
+    "carrier": "ontrac",
+    "valid": true,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: LaserShip 1LS7 (15). LaserShip merged into OnTrac, so it maps to ontrac"
+  },
+  {
+    "number": "1LS7119013618127-1",
+    "carrier": "ontrac",
+    "valid": true,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: LaserShip 1LS7 (18) with -1 suffix. LaserShip merged into OnTrac, so it maps to ontrac"
+  },
+  {
+    "number": " 1 L S 7 1 1 9 0 1 3 6 1 8 1 2 7 - 1 ",
+    "carrier": "ontrac",
+    "valid": true,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: LaserShip 1LS7 (18), spaced. LaserShip merged into OnTrac, so it maps to ontrac"
+  },
+  {
+    "number": "1LSCXVE005BUEFX",
+    "carrier": "ontrac",
+    "valid": true,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: LaserShip 1LSCX. LaserShip merged into OnTrac, so it maps to ontrac"
+  },
+  {
+    "number": "1LS CX VE00 58631Y",
+    "carrier": "ontrac",
+    "valid": true,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: LaserShip 1LSCX, spaced. LaserShip merged into OnTrac, so it maps to ontrac"
+  },
+  {
+    "number": "LX17635036",
+    "carrier": "ontrac",
+    "valid": true,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: LaserShip LX. LaserShip merged into OnTrac, so it maps to ontrac"
+  },
+  {
+    "number": "LI 129 79072",
+    "carrier": "ontrac",
+    "valid": true,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: LaserShip LI, spaced. LaserShip merged into OnTrac, so it maps to ontrac"
+  },
+  {
+    "number": "LH13830790",
+    "carrier": "ontrac",
+    "valid": true,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: LaserShip LH. LaserShip merged into OnTrac, so it maps to ontrac"
+  },
+  {
+    "number": "LN30083672",
+    "carrier": "ontrac",
+    "valid": true,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: LaserShip LN. LaserShip merged into OnTrac, so it maps to ontrac"
+  },
+  {
+    "number": "C10000000000000",
+    "carrier": "ontrac",
+    "valid": false,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: OnTrac C, bad check digit"
+  },
+  {
+    "number": "C11031500001889",
+    "carrier": "ontrac",
+    "valid": false,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: OnTrac C, bad check digit"
+  },
+  {
+    "number": "D10011345983012",
+    "carrier": "ontrac",
+    "valid": false,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: OnTrac D, bad check digit"
+  },
+  {
+    "number": "1LX734505321754",
+    "carrier": "ontrac",
+    "valid": false,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: wrong prefix"
+  },
+  {
+    "number": "1LS7119013618127-2",
+    "carrier": "ontrac",
+    "valid": false,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: 1LS7 (18) with a -2 suffix"
+  },
+  {
+    "number": "1LSCZVE0058631Y",
+    "carrier": "ontrac",
+    "valid": false,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: wrong prefix"
+  },
+  {
+    "number": "XA17635036",
+    "carrier": "ontrac",
+    "valid": false,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: wrong prefix"
+  },
+  {
+    "number": "LX9763503N",
+    "carrier": "ontrac",
+    "valid": false,
+    "note": "jkeen/tracking_number_data v2.0.0 test_numbers: letter in the digits"
+  },
+  {
+    "number": "1LS717793482164",
+    "carrier": "lasership",
+    "valid": false,
+    "note": "LaserShip numbers are reported as ontrac, never lasership"
+  },
+  {
+    "number": "UUS6181780830420033",
+    "carrier": "uniuni",
+    "valid": true,
+    "note": "Ship24 public example, UUS + 16 digits"
+  },
+  {
+    "number": "UUS5CS1789743195995",
+    "carrier": "uniuni",
+    "valid": true,
+    "note": "Ship24 public example, UUS + 16 mixed"
+  },
+  {
+    "number": "UUS12A0000000000001",
+    "carrier": "uniuni",
+    "valid": true,
+    "note": "synthetic, redacted shape of Flint's uniuni-*.txt numbers (UUS + 2 digits + letter + 13 digits)"
+  },
+  {
+    "number": "UUS1234567890123",
+    "carrier": "uniuni",
+    "valid": true,
+    "note": "synthetic, older UUS + 13 digits form listed by ParcelPanel"
+  },
+  {
+    "number": "UR06250000000000351",
+    "carrier": "uniuni",
+    "valid": true,
+    "note": "UniUni Platform API docs, UR + 17 digits"
+  },
+  {
+    "number": "UNIA123456789YQ",
+    "carrier": "uniuni",
+    "valid": true,
+    "note": "synthetic, UNIA + 9 digits + YQ form listed by ParcelPanel"
+  },
+  {
+    "number": "UUS123",
+    "carrier": "uniuni",
+    "valid": false,
+    "note": "too short"
+  },
+  {
+    "number": "UR0625000000000035",
+    "carrier": "uniuni",
+    "valid": false,
+    "note": "UR with 16 digits"
+  },
+  {
+    "number": "JT68284018587518",
+    "carrier": "jitsu",
+    "valid": false,
+    "note": "Track91 example; Jitsu has no format-only detection in v1"
+  },
+  {
+    "number": "SCD0000F00410922107",
+    "carrier": "jitsu",
+    "valid": false,
+    "note": "lastscanned shipper-number example; Jitsu has no format-only detection in v1"
+  },
+  {
+    "number": "   ",
+    "carrier": "other",
+    "valid": true,
+    "note": "carrier other + valid true means detectCarrier returns no candidates: whitespace only"
+  },
+  {
+    "number": "hello world",
+    "carrier": "other",
+    "valid": true,
+    "note": "carrier other + valid true means detectCarrier returns no candidates: words"
+  },
+  {
+    "number": "12345",
+    "carrier": "other",
+    "valid": true,
+    "note": "carrier other + valid true means detectCarrier returns no candidates: short number"
+  },
+  {
+    "number": "1Z",
+    "carrier": "other",
+    "valid": true,
+    "note": "carrier other + valid true means detectCarrier returns no candidates: bare prefix"
+  },
+  {
+    "number": "!!!!####",
+    "carrier": "other",
+    "valid": true,
+    "note": "carrier other + valid true means detectCarrier returns no candidates: punctuation"
+  },
+  {
+    "number": "GFUS01011884214464",
+    "carrier": "other",
+    "valid": true,
+    "note": "carrier other + valid true means detectCarrier returns no candidates: GOFO Express: real format, but Porchlight has no carrier id for it, so the aggregator handles it"
+  },
+  {
+    "number": "30570000000000",
+    "carrier": "other",
+    "valid": true,
+    "note": "carrier other + valid true means detectCarrier returns no candidates: synthetic airline eTicket shape (14 digits)"
+  },
+  {
+    "number": "4155550123",
+    "carrier": "other",
+    "valid": true,
+    "note": "carrier other + valid true means detectCarrier returns no candidates: US phone number shape; mod-7 fails here so nothing matches"
+  },
+  {
+    "number": "ABCDEFGHILJKLMNOPQRSTU1234567890",
+    "carrier": "other",
+    "valid": true,
+    "note": "carrier other + valid true means detectCarrier returns no candidates: jkeen dhl_ecommerce negative"
+  }
+]

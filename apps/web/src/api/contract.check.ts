@@ -17,7 +17,11 @@ export const contractChecks: [
   Same<Web.PackageItem, Server.PackageItem>,
   Same<Web.PackageEvent, Server.PackageEvent>,
   Same<Web.PackagePutRequest, Server.PackagePutRequest>,
+  Same<Web.PackageResponse, Server.PackageResponse>,
   Same<Web.PackageDeleteResponse, Server.PackageDeleteResponse>,
+  Same<Web.SessionInfo, Server.SessionInfo>,
+  Same<Web.SessionsResponse, Server.SessionsResponse>,
+  Same<Web.SessionDeleteResponse, Server.SessionDeleteResponse>,
   Same<Web.RefreshResponse, Server.RefreshResponse>,
   Same<Web.SyncResponse, Server.SyncResponse>,
   Same<Web.PairingStartResponse, Server.PairingStartResponse>,
@@ -25,4 +29,4 @@ export const contractChecks: [
   Same<Web.ErrorCode, Http.ErrorCode>,
   Same<Web.ApiErrorBody, Http.ApiError>,
   Same<Web.Envelope<unknown>, Http.Envelope<unknown>>,
-] = [true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true];
+] = [true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true];

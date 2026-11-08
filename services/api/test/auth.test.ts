@@ -343,9 +343,9 @@ describe("PUT /v1/devices/:id", () => {
     const { token } = await emailSession();
     const id = crypto.randomUUID();
     const a = await body(await call("PUT", `/v1/devices/${id}`, { token, body: { platform: "macos", apnsToken: null, appVersion: null } }));
-    expect(a.data).toEqual({ id, platform: "macos", apnsToken: null, appVersion: null });
+    expect(a.data).toEqual({ id, platform: "macos", apnsToken: null, appVersion: null, environment: "production" });
     const b = await body(await call("PUT", `/v1/devices/${id}`, { token, body: { platform: "macos", apnsToken: "ffff0000ffff0000", appVersion: "1.1 (2)" } }));
-    expect(b.data).toEqual({ id, platform: "macos", apnsToken: "ffff0000ffff0000", appVersion: "1.1 (2)" });
+    expect(b.data).toEqual({ id, platform: "macos", apnsToken: "ffff0000ffff0000", appVersion: "1.1 (2)", environment: "production" });
     const session = await env.DB.prepare("SELECT device_id FROM sessions WHERE token_hash = ?").bind(await sha256Hex(token)).first<{ device_id: string }>();
     expect(session?.device_id).toBe(id);
   });
@@ -359,6 +359,23 @@ describe("PUT /v1/devices/:id", () => {
     expect((await call("PUT", `/v1/devices/${id}`, { token: bob.token, body: dev })).status).toBe(404);
     expect((await call("PUT", "/v1/devices/not-a-uuid", { token: bob.token, body: dev })).status).toBe(400);
     expect((await call("PUT", `/v1/devices/${crypto.randomUUID()}`, { token: bob.token, body: { platform: "android" } })).status).toBe(400);
+  });
+});
+
+describe("PUT /v1/devices/:id environment", () => {
+  it("stores sandbox or production, keeps the stored value when omitted, and rejects anything else", async () => {
+    const { token } = await emailSession();
+    const id = crypto.randomUUID();
+    const dev = { platform: "ios", apnsToken: "abab0000abab0000", appVersion: "1.0 (1)" };
+    const a = await body(await call("PUT", `/v1/devices/${id}`, { token, body: { ...dev, environment: "sandbox" } }));
+    expect(a.data.environment).toBe("sandbox");
+    const b = await body(await call("PUT", `/v1/devices/${id}`, { token, body: dev }));
+    expect(b.data.environment).toBe("sandbox");
+    const c = await body(await call("PUT", `/v1/devices/${id}`, { token, body: { ...dev, environment: "production" } }));
+    expect(c.data.environment).toBe("production");
+    const row = await env.DB.prepare("SELECT apns_environment FROM devices WHERE id = ?").bind(id).first<{ apns_environment: string }>();
+    expect(row?.apns_environment).toBe("production");
+    expect((await call("PUT", `/v1/devices/${id}`, { token, body: { ...dev, environment: "development" } })).status).toBe(400);
   });
 });
 

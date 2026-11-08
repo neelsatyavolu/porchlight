@@ -5,7 +5,6 @@ import {
   dayNumberOf,
   daysFromToday,
   etaDayNumber,
-  isDateOnly,
   monthDay,
   shortDayHeader,
   weekdayMonthDay,
@@ -26,20 +25,15 @@ describe("dayNumberOf", () => {
 });
 
 describe("etaDayNumber", () => {
-  it("reads a date-only ETA (midnight UTC) by its UTC date, in every zone", () => {
-    const eta = "2026-11-10T00:00:00.000Z";
-    expect(isDateOnly(eta)).toBe(true);
-    expect(etaDayNumber(eta, LA)).toBe(day(2026, 11, 10));
-    expect(etaDayNumber(eta, TOKYO)).toBe(day(2026, 11, 10));
-    // Read naively, the same instant is Nov 9 in LA.
-    expect(dayNumberOf(new Date(eta), LA)).toBe(day(2026, 11, 9));
+  it("reads a date-only ETA as that calendar date in every zone", () => {
+    expect(etaDayNumber("2026-11-10", true, LA)).toBe(day(2026, 11, 10));
+    expect(etaDayNumber("2026-11-10", true, TOKYO)).toBe(day(2026, 11, 10));
   });
 
-  it("reads an ETA with a time in the viewer's zone", () => {
-    const eta = "2026-11-10T03:00:00.000Z"; // Nov 9, 7 PM in LA
-    expect(isDateOnly(eta)).toBe(false);
-    expect(etaDayNumber(eta, LA)).toBe(day(2026, 11, 9));
-    expect(etaDayNumber(eta, TOKYO)).toBe(day(2026, 11, 10));
+  it("reads an instant in the viewer's zone, even one at midnight UTC", () => {
+    expect(etaDayNumber("2026-11-10T03:00:00.000Z", false, LA)).toBe(day(2026, 11, 9)); // Nov 9, 7 PM in LA
+    expect(etaDayNumber("2026-11-10T03:00:00.000Z", false, TOKYO)).toBe(day(2026, 11, 10));
+    expect(etaDayNumber("2026-11-10T00:00:00.000Z", false, LA)).toBe(day(2026, 11, 9)); // Nov 9, 4 PM in LA
   });
 });
 

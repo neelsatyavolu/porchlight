@@ -14,8 +14,21 @@ const TOKEN = {
   lastUsedAt: null,
 };
 
+const HOUR = 3_600_000;
+const SESSIONS = [
+  { id: "s-web", platform: "web", appVersion: null, createdAt: "2026-11-01T10:00:00.000Z", lastSeenAt: new Date().toISOString(), current: true },
+  {
+    id: "s-phone",
+    platform: "ios",
+    appVersion: "1.0 (7)",
+    createdAt: "2026-11-02T10:00:00.000Z",
+    lastSeenAt: new Date(Date.now() - 3 * HOUR).toISOString(),
+    current: false,
+  },
+];
+
 function renderSettings(routes: Record<string, Handler>) {
-  const fetch = fakeApi({ "GET /v1/tokens": () => ok({ tokens: [TOKEN] }), ...routes });
+  const fetch = fakeApi({ "GET /v1/tokens": () => ok({ tokens: [TOKEN] }), "GET /v1/sessions": () => ok({ sessions: SESSIONS }), ...routes });
   renderPage(
     <RequireSession>
       <Settings />
@@ -64,6 +77,46 @@ describe("Settings: account", () => {
     await user.type(within(dialog).getByLabelText(/Type .delete. to confirm/), "delete");
     await user.click(within(dialog).getByRole("button", { name: "Delete account" }));
     expect(await within(dialog).findByRole("alert")).toHaveTextContent("Couldn't delete your account. Server error");
+  });
+});
+
+describe("Settings: sessions", () => {
+  it("lists where you're signed in, marks this browser, and signs another device out", async () => {
+    const user = userEvent.setup();
+    const fetch = renderSettings({ "DELETE /v1/sessions/s-phone": () => ok({ deleted: true, signedOut: false }) });
+    const list = await screen.findByRole("list", { name: "Signed-in devices" });
+    const rows = within(list).getAllByRole("listitem");
+    expect(rows).toHaveLength(2);
+    expect(within(rows[0]!).getByText("Web browser")).toBeInTheDocument();
+    expect(within(rows[0]!).getByText(/This browser/)).toBeInTheDocument();
+    expect(within(rows[0]!).queryByRole("button")).not.toBeInTheDocument();
+    expect(within(rows[1]!).getByText("iPhone")).toBeInTheDocument();
+    expect(within(rows[1]!).getByText(/Last active 3 h ago · Version 1.0 \(7\)/)).toBeInTheDocument();
+
+    await user.click(within(rows[1]!).getByRole("button", { name: "Sign out iPhone" }));
+    await waitFor(() => expect(within(list).getAllByRole("listitem")).toHaveLength(1));
+    expect(fetch).toHaveBeenCalledWith("/v1/sessions/s-phone", expect.objectContaining({ method: "DELETE" }));
+  });
+
+  it("says why when signing a device out fails", async () => {
+    const user = userEvent.setup();
+    renderSettings({ "DELETE /v1/sessions/s-phone": () => fail(500, "internal", "Server error") });
+    await user.click(await screen.findByRole("button", { name: "Sign out iPhone" }));
+    expect(await screen.findByText("Couldn't sign out iPhone. Server error")).toBeInTheDocument();
+  });
+
+  it("offers a retry when sessions fail to load", async () => {
+    const user = userEvent.setup();
+    let calls = 0;
+    renderSettings({
+      "GET /v1/sessions": () => {
+        calls += 1;
+        return calls === 1 ? fail(500, "internal", "Server error") : ok({ sessions: SESSIONS });
+      },
+    });
+    expect(await screen.findByText(/Couldn't load your devices/)).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Try again" }));
+    expect(await screen.findByText("iPhone")).toBeInTheDocument();
   });
 });
 

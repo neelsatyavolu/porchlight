@@ -2,6 +2,7 @@ import type { CarrierId, Status } from "@porchlight/carriers";
 import type { Env } from "../env.js";
 import { requireUser } from "../lib/auth.js";
 import { base64UrlDecodeText, base64UrlEncodeText, toIso } from "../lib/crypto.js";
+import { etaToWire } from "../lib/eta.js";
 import { HttpError, json } from "../lib/http.js";
 import type { RouteContext, Router } from "../lib/router.js";
 import type { Package, PackageEvent, PackageItem, PackageSource, SyncResponse } from "../types/api.js";
@@ -21,6 +22,8 @@ export interface PackageRow {
   status_detail: string | null;
   eta_start: number | null;
   eta_end: number | null;
+  /** 1 when the ETA is date-only (lib/eta.ts). */
+  eta_date_only: number;
   delivered_at: number | null;
   last_checked_at: number | null;
   next_check_at: number | null;
@@ -56,8 +59,9 @@ export function toPackage(r: PackageRow, items: PackageItem[]): Package {
     source: r.source,
     status: r.status,
     statusDetail: r.status_detail,
-    etaStart: toIso(r.eta_start),
-    etaEnd: toIso(r.eta_end),
+    etaStart: etaToWire(r.eta_start, r.eta_date_only === 1),
+    etaEnd: etaToWire(r.eta_end, r.eta_date_only === 1),
+    etaDateOnly: r.eta_date_only === 1 && (r.eta_start !== null || r.eta_end !== null),
     deliveredAt: toIso(r.delivered_at),
     lastCheckedAt: toIso(r.last_checked_at),
     archivedAt: toIso(r.archived_at),
@@ -92,7 +96,8 @@ async function itemsFor(env: Env, userId: string, ids: readonly string[]): Promi
   return out;
 }
 
-async function eventsFor(env: Env, userId: string, ids: readonly string[]): Promise<PackageEvent[]> {
+/** Every event of the given packages, newest first per package. */
+export async function eventsFor(env: Env, userId: string, ids: readonly string[]): Promise<PackageEvent[]> {
   if (ids.length === 0) return [];
   const { results } = await env.DB.prepare(
     `SELECT e.id, e.package_id, e.occurred_at, e.status, e.description, e.location FROM events e

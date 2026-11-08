@@ -61,12 +61,13 @@ describe("ship24 aggregator adapter", () => {
     expect(result.events.map((e) => e.status)).toEqual(["returned", "exception"]);
     expect(result.etaStart).toBe("2026-11-06");
     expect(result.etaEnd).toBe("2026-11-06");
+    expect(result.etaDateOnly).toBe(true);
   });
 
   it("returns unknown with no events while the tracker is still pending", async () => {
     const { adapter, ctx } = setup([{ body: pending }]);
     const result = await adapter.track("UUS0000000000000001", "uniuni", ctx);
-    expect(result).toEqual({ status: "unknown", statusDetail: "", etaStart: null, etaEnd: null, deliveredAt: null, events: [] });
+    expect(result).toEqual({ status: "unknown", statusDetail: "", etaStart: null, etaEnd: null, etaDateOnly: false, deliveredAt: null, events: [] });
   });
 
   it("maps 401, 429, quota and 404 to typed errors", async () => {

@@ -35,6 +35,7 @@ Rules that apply to every adapter:
 1. Map structured codes first and descriptions second. Keep the raw carrier code and text in `events.description` so nothing is lost.
 2. An unmapped code becomes `unknown` at the package level, but the event is still stored. Carriers add codes without notice; DHL says so in its client guidance.
 3. Never make up an ETA (SPEC goal 4). Store only a field the carrier labels as estimated or scheduled, and clear it when the package is delivered.
+4. An ETA is either date-only or a pair of instants (`etaDateOnly`, docs/API.md). Instants need a UTC offset or `Z`. A bare date (USPS `expectedDeliveryDate`, UPS `deliveryDate` without a window, DHL `estimatedTimeOfDelivery` as a date, Ship24 `courierEstimatedDeliveryDate` as a date) is date-only. So is a local time with no offset (UPS `deliveryTime` windows, DHL `estimatedDeliveryTimeFrame` without offsets, Ship24 local times), because it names no instant without the destination's time zone: only its date is kept. FedEx `ESTIMATED_DELIVERY` at local midnight (`T00:00:00-08:00`) is a date with no time and becomes date-only; FedEx `estimatedDeliveryTimeWindow` carries offsets and stays timed. `finishResult` in `adapters/shared/result.ts` applies this.
 
 ---
 

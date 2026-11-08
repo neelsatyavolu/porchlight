@@ -86,8 +86,10 @@ export interface Package {
   source: PackageSource;
   status: Status;
   statusDetail: string | null;
+  /** "YYYY-MM-DD" calendar dates when etaDateOnly, else ISO 8601 UTC instants. */
   etaStart: string | null;
   etaEnd: string | null;
+  etaDateOnly: boolean;
   deliveredAt: string | null;
   lastCheckedAt: string | null;
   archivedAt: string | null;
@@ -110,6 +112,11 @@ export interface PackagePutRequest {
   archived?: boolean;
 }
 
+export interface PackageResponse {
+  package: Package;
+  events: PackageEvent[];
+}
+
 export interface PackageDeleteResponse {
   id: string;
   deletedAt: string;
@@ -126,6 +133,26 @@ export interface SyncResponse {
   deleted: string[];
   cursor: string;
   hasMore: boolean;
+}
+
+// ---- Sessions ---------------------------------------------------------------
+
+export interface SessionInfo {
+  id: string;
+  platform: Platform | null;
+  appVersion: string | null;
+  createdAt: string;
+  lastSeenAt: string;
+  current: boolean;
+}
+
+export interface SessionsResponse {
+  sessions: SessionInfo[];
+}
+
+export interface SessionDeleteResponse {
+  deleted: true;
+  signedOut: boolean;
 }
 
 // ---- Pairing and API tokens -------------------------------------------------

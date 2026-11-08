@@ -46,19 +46,31 @@ describe("fedex adapter", () => {
     expect(result.statusDetail).toBe("In transit");
     expect(result.etaStart).toBe("2026-11-05T10:00:00-08:00");
     expect(result.etaEnd).toBe("2026-11-05T14:00:00-08:00");
+    expect(result.etaDateOnly).toBe(false);
     expect(result.events.map((e) => e.status)).toEqual(["in_transit", "in_transit", "label_created"]);
     expect(result.events[0]).toMatchObject({ description: "Arrived at FedEx location", location: "OAKLAND, CA, US" });
     expect(result.events[2]?.location).toBe("US");
   });
 
-  it("falls back to ESTIMATED_DELIVERY when there is no window", async () => {
+  it("falls back to ESTIMATED_DELIVERY when there is no window, as a date when it carries no time", async () => {
     const body = structuredClone(inTransit);
     const track = body.output.completeTrackResults[0]?.trackResults[0] as Record<string, unknown>;
     delete track.estimatedDeliveryTimeWindow;
     const { adapter, ctx } = setup([{ body }]);
     const result = await adapter.track(NUMBER, "fedex", ctx);
-    expect(result.etaStart).toBe("2026-11-05T00:00:00-08:00");
-    expect(result.etaEnd).toBe("2026-11-05T00:00:00-08:00");
+    expect(result.etaStart).toBe("2026-11-05");
+    expect(result.etaEnd).toBe("2026-11-05");
+    expect(result.etaDateOnly).toBe(true);
+  });
+
+  it("keeps an ESTIMATED_DELIVERY with a real time as an instant", async () => {
+    const body = structuredClone(inTransit);
+    const track = body.output.completeTrackResults[0]?.trackResults[0] as Record<string, unknown>;
+    delete track.estimatedDeliveryTimeWindow;
+    track.dateAndTimes = [{ type: "ESTIMATED_DELIVERY", dateTime: "2026-11-05T20:00:00-08:00" }];
+    const { adapter, ctx } = setup([{ body }]);
+    const result = await adapter.track(NUMBER, "fedex", ctx);
+    expect([result.etaStart, result.etaEnd, result.etaDateOnly]).toEqual(["2026-11-05T20:00:00-08:00", "2026-11-05T20:00:00-08:00", false]);
   });
 
   it("reports actual delivery", async () => {

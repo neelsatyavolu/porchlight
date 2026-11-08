@@ -2,6 +2,7 @@
 // store carrier events (deduped by raw_hash), and apply a tracking update.
 import { STATUSES, type Status, type TrackEvent } from "@porchlight/carriers";
 import { sha256Hex } from "../lib/auth.js";
+import { etaToMs } from "../lib/eta.js";
 import { NEXT_UPDATED_AT } from "../routes/packages.js";
 import { nextCheckAt } from "./interval.js";
 
@@ -18,6 +19,8 @@ export interface PackageRow {
   status_detail: string | null;
   eta_start: number | null;
   eta_end: number | null;
+  /** 1: eta_start/eta_end are calendar dates at 00:00 UTC (lib/eta.ts). */
+  eta_date_only: number;
   delivered_at: number | null;
   last_checked_at: number | null;
   next_check_at: number | null;
@@ -65,6 +68,8 @@ export interface TrackingUpdate {
   /** undefined, or both null, keeps the stored ETA (only what a source said). */
   etaStart?: string | null;
   etaEnd?: string | null;
+  /** Applies with a new ETA: true when etaStart/etaEnd are "YYYY-MM-DD" dates. */
+  etaDateOnly?: boolean;
   deliveredAt: string | null;
   events: readonly TrackEvent[];
   /** Becomes last_checked_at. */
@@ -92,8 +97,10 @@ export async function applyTracking(db: D1Database, pkg: PackageRow, u: Tracking
   const delivered = u.status === "delivered";
   const hasEta = u.etaStart != null || u.etaEnd != null;
   // A delivered package has no ETA; a stored one would outlive the delivery.
-  const etaStart = delivered ? null : hasEta ? isoToMs(u.etaStart) : pkg.eta_start;
-  const etaEnd = delivered ? null : hasEta ? isoToMs(u.etaEnd) : pkg.eta_end;
+  const newDateOnly = u.etaDateOnly === true;
+  const etaStart = delivered ? null : hasEta ? etaToMs(u.etaStart, newDateOnly) : pkg.eta_start;
+  const etaEnd = delivered ? null : hasEta ? etaToMs(u.etaEnd, newDateOnly) : pkg.eta_end;
+  const etaDateOnly = etaStart === null && etaEnd === null ? 0 : hasEta ? Number(newDateOnly) : pkg.eta_date_only;
   const deliveredAt = delivered ? (isoToMs(u.deliveredAt) ?? pkg.delivered_at) : null;
 
   const statusChanged = u.status !== pkg.status;
@@ -103,6 +110,7 @@ export async function applyTracking(db: D1Database, pkg: PackageRow, u: Tracking
     u.statusDetail !== pkg.status_detail ||
     etaStart !== pkg.eta_start ||
     etaEnd !== pkg.eta_end ||
+    etaDateOnly !== pkg.eta_date_only ||
     deliveredAt !== pkg.delivered_at;
 
   const movement = statusChanged ? nowMs : ((await lastEventAt(db, pkg.id)) ?? pkg.updated_at);
@@ -111,11 +119,11 @@ export async function applyTracking(db: D1Database, pkg: PackageRow, u: Tracking
   await db
     .prepare(
       `UPDATE packages SET status = ?3, status_detail = ?4, eta_start = ?5, eta_end = ?6, delivered_at = ?7,
-         last_checked_at = ?8, next_check_at = ?9,
+         last_checked_at = ?8, next_check_at = ?9, eta_date_only = ?12,
          updated_at = CASE WHEN ?10 THEN ${NEXT_UPDATED_AT} ELSE updated_at END
        WHERE id = ?11 AND user_id = ?2`,
     )
-    .bind(nowMs, pkg.user_id, u.status, u.statusDetail, etaStart, etaEnd, deliveredAt, u.checkedAtMs, next, changed ? 1 : 0, pkg.id)
+    .bind(nowMs, pkg.user_id, u.status, u.statusDetail, etaStart, etaEnd, deliveredAt, u.checkedAtMs, next, changed ? 1 : 0, pkg.id, etaDateOnly)
     .run();
   return { changed, statusChanged, nextCheckAt: next };
 }

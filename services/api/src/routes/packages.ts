@@ -6,8 +6,8 @@ import { isUuid, toIso } from "../lib/crypto.js";
 import { HttpError, json, readJson } from "../lib/http.js";
 import { rateLimited } from "../lib/ratelimit.js";
 import type { RouteContext, Router } from "../lib/router.js";
-import type { PackageDeleteResponse, RefreshResponse } from "../types/api.js";
-import { loadPackage, type PackageRow } from "./sync.js";
+import type { PackageDeleteResponse, PackageResponse, RefreshResponse } from "../types/api.js";
+import { eventsFor, loadPackage, toPackages, type PackageRow } from "./sync.js";
 
 const REFRESH_INTERVAL_MS = 2 * 60 * 1000;
 
@@ -111,7 +111,7 @@ async function update(env: Env, row: PackageRow, body: PutBody): Promise<Respons
       stmts.push(
         env.DB.prepare(
           `UPDATE packages SET carrier = ?, tracking_number = ?, status = 'unknown', status_detail = NULL,
-             eta_start = NULL, eta_end = NULL, delivered_at = NULL, last_checked_at = NULL, next_check_at = ?
+             eta_start = NULL, eta_end = NULL, eta_date_only = 0, delivered_at = NULL, last_checked_at = NULL, next_check_at = ?
            WHERE id = ? AND user_id = ?`,
         ).bind(carrier, number, now, row.id, row.user_id),
         env.DB.prepare("DELETE FROM events WHERE package_id = ?").bind(row.id),
@@ -140,6 +140,19 @@ async function putPackage({ req, env, params }: RouteContext): Promise<Response>
   if (session instanceof Response) return session;
   const id = packageId(params.id);
   return put(env, session.userId, id, await readJson(req, putBody));
+}
+
+/** One live package with its items and events, for deep links. */
+async function getPackage({ req, env, params }: RouteContext): Promise<Response> {
+  const session = await requireUser(req, env);
+  if (session instanceof Response) return session;
+  const id = packageId(params.id);
+  const row = await env.DB.prepare("SELECT * FROM packages WHERE id = ? AND user_id = ? AND deleted_at IS NULL")
+    .bind(id, session.userId)
+    .first<PackageRow>();
+  if (!row) throw new HttpError(404, "not_found", "No such package");
+  const [pkg] = await toPackages(env, session.userId, [row]);
+  return json<PackageResponse>({ package: pkg!, events: await eventsFor(env, session.userId, [id]) });
 }
 
 async function deletePackage({ req, env, params }: RouteContext): Promise<Response> {
@@ -179,9 +192,10 @@ async function refreshPackage({ req, env, params }: RouteContext): Promise<Respo
   return json<RefreshResponse>({ queued: true, nextAllowedAt: toIso(nextAllowed) }, 202);
 }
 
-/** Owns: PUT /v1/packages/:id, DELETE /v1/packages/:id, POST /v1/packages/:id/refresh (docs/API.md). */
+/** Owns: GET /v1/packages/:id, PUT /v1/packages/:id, DELETE /v1/packages/:id, POST /v1/packages/:id/refresh (docs/API.md). */
 export function register(router: Router): void {
   router
+    .on("GET", "/v1/packages/:id", getPackage)
     .on("PUT", "/v1/packages/:id", putPackage)
     .on("DELETE", "/v1/packages/:id", deletePackage)
     .on("POST", "/v1/packages/:id/refresh", refreshPackage);

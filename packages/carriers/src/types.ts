@@ -52,9 +52,16 @@ export interface TrackResult {
   status: Status;
   /** The carrier's own wording for the latest status. */
   statusDetail: string;
-  /** ETA window, ISO 8601. Only what the carrier said; never computed. */
+  /**
+   * ETA window. Only what the carrier said; never computed. When
+   * `etaDateOnly` is true both are calendar dates ("2026-11-10", the
+   * carrier's local delivery date). When false they are ISO 8601 instants
+   * with a UTC offset or Z.
+   */
   etaStart: string | null;
   etaEnd: string | null;
+  /** True when the ETA is a date with no time. False when there is no ETA. */
+  etaDateOnly: boolean;
   /** ISO 8601, set only when status is `delivered`. */
   deliveredAt: string | null;
   /** Newest first. */

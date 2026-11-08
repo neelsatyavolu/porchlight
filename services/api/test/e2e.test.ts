@@ -53,6 +53,7 @@ const OUT_FOR_DELIVERY: TrackResult = {
   statusDetail: "Out for delivery",
   etaStart: null,
   etaEnd: null,
+  etaDateOnly: false,
   deliveredAt: null,
   events: [{ occurredAt: "2026-11-08T08:00:00.000Z", status: "out_for_delivery", description: "Out for delivery", location: "Oakland, CA" }],
 };

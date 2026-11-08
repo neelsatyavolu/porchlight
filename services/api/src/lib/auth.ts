@@ -121,12 +121,18 @@ export async function requireUserOrToken(
 }
 
 /** Creates a session row and returns the raw token (shown to the client once). */
-export async function createSession(env: Env, userId: string, deviceId: string | null, nowMs: number): Promise<string> {
+export async function createSession(
+  env: Env,
+  userId: string,
+  deviceId: string | null,
+  nowMs: number,
+  client: "ios" | "macos" | "web" | null = null,
+): Promise<string> {
   const token = randomToken();
   await env.DB.prepare(
-    "INSERT INTO sessions (token_hash, user_id, device_id, created_at, last_seen_at) VALUES (?, ?, ?, ?, ?)",
+    "INSERT INTO sessions (token_hash, id, user_id, device_id, client, created_at, last_seen_at) VALUES (?, ?, ?, ?, ?, ?, ?)",
   )
-    .bind(await sha256Hex(token), userId, deviceId, nowMs, nowMs)
+    .bind(await sha256Hex(token), crypto.randomUUID(), userId, deviceId, client, nowMs, nowMs)
     .run();
   return token;
 }

@@ -15,6 +15,7 @@ function pkg(id: string, patch: Partial<Package> = {}): Package {
     statusDetail: null,
     etaStart: null,
     etaEnd: null,
+    etaDateOnly: false,
     deliveredAt: null,
     lastCheckedAt: null,
     archivedAt: null,

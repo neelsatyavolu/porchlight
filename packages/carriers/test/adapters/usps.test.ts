@@ -40,6 +40,7 @@ describe("usps adapter", () => {
     expect(result.statusDetail).toBe("In Transit to Next Facility");
     expect(result.etaStart).toBe("2026-11-05");
     expect(result.etaEnd).toBe("2026-11-05");
+    expect(result.etaDateOnly).toBe(true);
     expect(result.deliveredAt).toBeNull();
     expect(result.events).toHaveLength(4);
     expect(result.events[0]).toEqual({

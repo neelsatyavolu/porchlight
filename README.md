@@ -10,6 +10,7 @@ A delivery tracker for one person's packages: native Mac and iPhone apps plus a 
 | `site` | `@porchlight/site`: marketing pages (plain HTML), served at `/` |
 | `packages/carriers` | `@porchlight/carriers`: carrier detection, adapters and normalized types (TypeScript) |
 | `services/api` | `@porchlight/api`: Cloudflare Worker with D1, Queues, Cron and KV |
+| `apps/apple` | the iPhone and Mac apps (SwiftUI, XcodeGen) and the `PorchKit` Swift package |
 | `docs/API.md` | the HTTP API contract |
 | `DESIGN.md` | the design system for web and Apple apps |
 | `docs/research/` | Phase 1 research: aggregator, number formats, carrier APIs |
@@ -29,6 +30,8 @@ Parallel work depends on these files. Change them only on purpose, and update ev
 - `services/api/src/poll/types.ts`: the queue message
 - `apps/web/src/api/types.ts`: the web's copy of the wire types; `contract.check.ts` fails `tsc` if it drifts from the server's
 - `apps/web/src/styles/tokens.css`: design tokens, also copied into the site
+- `apps/apple/Packages/PorchKit/Sources/PorchKit/Models`, `Wire` and `Contracts`: the Swift copy of the wire format and the protocols the Apple apps are built on
+- `apps/apple/project.yml`: targets, bundle ids, entitlements and Info.plist keys
 
 ## Develop
 
@@ -45,6 +48,37 @@ pnpm dev         # wrangler dev on :8787 and Vite on :5173
 `pnpm dev` builds the site, applies the D1 migrations to the local database, then starts `wrangler dev` (API, site and the last built app on http://localhost:8787) and Vite (the web app with hot reload on http://localhost:5173, `/v1` proxied to :8787). It sets `APP_ORIGIN` to `http://localhost:5173` so the API's Origin check accepts the Vite page. Safari may refuse the `Secure` session cookie on plain-http localhost; use Chrome or Firefox for local sign-in.
 
 Email sign-in sends mail only with `RESEND_API_KEY` in `services/api/.dev.vars`. Without it, `pnpm dev` passes `EMAIL_DEV_LOG=1`, so the link and 6-digit code are printed in the wrangler output instead (localhost origins only). A plain `wrangler dev` without the var answers 503.
+
+## Apple apps
+
+`apps/apple` holds two app targets, `Porchlight-iOS` and `Porchlight-macOS` (the Mac one also adds the menu-bar item), and `PorchlightShare-iOS`, the share extension. All three use the local Swift package `Packages/PorchKit`:
+
+| Target | What |
+|---|---|
+| `PorchKit` | models and wire types matching `docs/API.md`, arrival grouping, and the `APIClient`, `SessionStore`, `SyncEngine`, `PackageRepository` and `CarrierDetector` protocols. Foundation only |
+| `PorchStore` | the SwiftData models and `SwiftDataPackageRepository` |
+| `PorchUI` | `Theme.swift` (colors, fonts, spacing, radii), `StatusDot`, `CarrierBadge`, and `Colors.xcassets` |
+
+Needs Xcode 16 or later and XcodeGen (`brew install xcodegen`). Use the release Xcode, not a beta:
+
+```sh
+export DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer
+cd apps/apple
+xcodegen generate              # writes Porchlight.xcodeproj (gitignored) and the Info.plists and entitlements
+swift test --package-path Packages/PorchKit
+nice -n 15 xcodebuild build -project Porchlight.xcodeproj -scheme Porchlight-iOS -jobs 4 \
+  CODE_SIGNING_ALLOWED=NO -destination 'generic/platform=iOS Simulator'
+nice -n 15 xcodebuild build -project Porchlight.xcodeproj -scheme Porchlight-macOS -jobs 4 \
+  CODE_SIGNING_ALLOWED=NO -destination 'platform=macOS'
+```
+
+Put logic in PorchKit, where `swift test` covers it. App targets are only compiled here; screen behavior is checked on a device. Edit Info.plist keys and entitlements in `project.yml`, since `xcodegen generate` rewrites the files under `*/Support`.
+
+The Swift carrier detector is a hand port of `packages/carriers/src/detect`. After changing `packages/carriers/fixtures/numbers.json` or the TS detection rules, run `apps/apple/scripts/sync-fixtures.sh` (needs Node) to refresh the copied fixtures and the expected TS output that `swift test` compares against.
+
+Signing uses team `VTQW687WBQ`. The bundle ids are `co.xanom.porchlight` (both apps) and `co.xanom.porchlight.share`. No app group is used: the share extension (and the Phase 4 widget) share the sign-in through the `VTQW687WBQ.co.xanom.porchlight` keychain access group and read data from the API.
+
+The Geist fonts in `Porchlight/Resources/Fonts` come from the `geist` npm package (OFL, see `OFL.txt`). `GeistSerif-Regular.ttf` was converted from the package's woff2 with fontTools. The app registers them through `UIAppFonts` (iOS) and `ATSApplicationFontsPath` (macOS).
 
 ## Serving
 

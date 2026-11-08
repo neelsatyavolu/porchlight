@@ -39,9 +39,9 @@ Flint integration ships in the Flint repo (§7). The carrier-detection rules exi
 | Table | Key columns |
 |---|---|
 | `users` | id, apple_sub, email, created_at |
-| `sessions` | token_hash, user_id, device_id, created_at, last_seen_at |
-| `devices` | id, user_id, platform, apns_token, app_version |
-| `packages` | id (uuid), user_id, carrier, tracking_number, title, merchant, order_id, source (`manual`\|`amazon`\|`flint`\|`share`), status, status_detail, eta_start, eta_end, delivered_at, last_checked_at, next_check_at, archived_at, deleted_at, updated_at, UNIQUE(user_id, carrier, tracking_number) |
+| `sessions` | token_hash, id (public), user_id, device_id, client, created_at, last_seen_at |
+| `devices` | id, user_id, platform, apns_token, app_version, apns_environment (`sandbox`\|`production`) |
+| `packages` | id (uuid), user_id, carrier, tracking_number, title, merchant, order_id, source (`manual`\|`amazon`\|`flint`\|`share`), status, status_detail, eta_start, eta_end, eta_date_only, delivered_at, last_checked_at, next_check_at, archived_at, deleted_at, updated_at, UNIQUE(user_id, carrier, tracking_number) |
 | `package_items` | package_id, name, image_url, quantity (from Amazon) |
 | `events` | id, package_id, occurred_at, status, description, location, raw_hash (dedupe) |
 | `imports` | user_id, source, dedupe_key (Flint message id, Amazon order+shipment id), package_id, created_at |

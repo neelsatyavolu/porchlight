@@ -1,0 +1,172 @@
+# XcodeGen spec for the Porchlight Apple apps. Generate with `xcodegen generate`
+# in this folder; Porchlight.xcodeproj is build output and gitignored.
+# Info.plists and entitlements under */Support are written by XcodeGen from
+# the `info` and `entitlements` blocks below: edit them here, not by hand.
+name: Porchlight
+
+options:
+  bundleIdPrefix: co.xanom
+  deploymentTarget:
+    iOS: "18.0"
+    macOS: "15.0"
+  createIntermediateGroups: true
+  groupSortPosition: top
+
+settings:
+  base:
+    DEVELOPMENT_TEAM: VTQW687WBQ
+    CODE_SIGN_STYLE: Automatic
+    SWIFT_VERSION: "6.0"
+    SWIFT_STRICT_CONCURRENCY: complete
+    MARKETING_VERSION: "0.1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    ENABLE_USER_SCRIPT_SANDBOXING: YES
+    DEAD_CODE_STRIPPING: YES
+
+packages:
+  PorchKit:
+    path: Packages/PorchKit
+
+targetTemplates:
+  App:
+    type: application
+    sources:
+      - path: Porchlight
+        excludes:
+          - "Resources/Fonts"
+          - "Resources/Fonts/**"
+          - "Support/**"
+      # Folder reference: lands in the bundle as Fonts/ (iOS: app root,
+      # macOS: Contents/Resources), which UIAppFonts / ATSApplicationFontsPath name.
+      - path: Porchlight/Resources/Fonts
+        type: folder
+        buildPhase: resources
+    dependencies:
+      - package: PorchKit
+        product: PorchKit
+      - package: PorchKit
+        product: PorchStore
+      - package: PorchKit
+        product: PorchUI
+    settings:
+      base:
+        PRODUCT_NAME: Porchlight
+        PRODUCT_MODULE_NAME: Porchlight
+        PRODUCT_BUNDLE_IDENTIFIER: co.xanom.porchlight
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+    scheme: {}
+
+targets:
+  Porchlight-iOS:
+    templates: [App]
+    platform: iOS
+    settings:
+      base:
+        TARGETED_DEVICE_FAMILY: "1"
+        SUPPORTS_MACCATALYST: NO
+    dependencies:
+      - target: PorchlightShare-iOS
+    info:
+      path: Porchlight/Support/Info-iOS.plist
+      properties:
+        CFBundleDisplayName: Porchlight
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        ITSAppUsesNonExemptEncryption: false
+        LSApplicationCategoryType: public.app-category.productivity
+        UILaunchScreen:
+          UIColorName: LaunchBackground
+        UIApplicationSceneManifest:
+          UIApplicationSupportsMultipleScenes: false
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+        UIAppFonts:
+          - Fonts/Geist-Regular.ttf
+          - Fonts/Geist-Medium.ttf
+          - Fonts/GeistMono-Regular.ttf
+          - Fonts/GeistSerif-Regular.ttf
+        UIBackgroundModes:
+          - remote-notification
+          - fetch
+        BGTaskSchedulerPermittedIdentifiers:
+          - co.xanom.porchlight.refresh
+        NSCameraUsageDescription: Porchlight uses the camera to read the barcode on a shipping label.
+        # porchlight://p/<id> opens a package (notification taps, links).
+        CFBundleURLTypes:
+          - CFBundleURLName: co.xanom.porchlight
+            CFBundleURLSchemes: [porchlight]
+    entitlements:
+      path: Porchlight/Support/Porchlight-iOS.entitlements
+      properties:
+        aps-environment: development
+        com.apple.developer.applesignin: [Default]
+        keychain-access-groups: [$(AppIdentifierPrefix)co.xanom.porchlight]
+
+  Porchlight-macOS:
+    templates: [App]
+    platform: macOS
+    settings:
+      base:
+        ENABLE_HARDENED_RUNTIME: YES
+        COMBINE_HIDPI_IMAGES: YES
+    info:
+      path: Porchlight/Support/Info-macOS.plist
+      properties:
+        CFBundleDisplayName: Porchlight
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        ITSAppUsesNonExemptEncryption: false
+        LSApplicationCategoryType: public.app-category.productivity
+        LSMinimumSystemVersion: $(MACOSX_DEPLOYMENT_TARGET)
+        ATSApplicationFontsPath: Fonts
+        # porchlight://p/<id> opens a package (notification taps, links).
+        CFBundleURLTypes:
+          - CFBundleURLName: co.xanom.porchlight
+            CFBundleURLSchemes: [porchlight]
+    entitlements:
+      path: Porchlight/Support/Porchlight-macOS.entitlements
+      properties:
+        com.apple.developer.aps-environment: development
+        com.apple.developer.applesignin: [Default]
+        com.apple.security.app-sandbox: true
+        com.apple.security.network.client: true
+        keychain-access-groups: [$(AppIdentifierPrefix)co.xanom.porchlight]
+
+  PorchlightShare-iOS:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: PorchlightShare
+        excludes:
+          - "Support/**"
+    dependencies:
+      - package: PorchKit
+        product: PorchKit
+      - package: PorchKit
+        product: PorchStore
+      - package: PorchKit
+        product: PorchUI
+    settings:
+      base:
+        PRODUCT_NAME: PorchlightShare
+        PRODUCT_BUNDLE_IDENTIFIER: co.xanom.porchlight.share
+        TARGETED_DEVICE_FAMILY: "1"
+        APPLICATION_EXTENSION_API_ONLY: YES
+    info:
+      path: PorchlightShare/Support/Info.plist
+      properties:
+        CFBundleDisplayName: Porchlight
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.share-services
+          NSExtensionPrincipalClass: $(PRODUCT_MODULE_NAME).ShareViewController
+          NSExtensionAttributes:
+            NSExtensionActivationRule:
+              NSExtensionActivationSupportsText: true
+              NSExtensionActivationSupportsWebURLWithMaxCount: 1
+    entitlements:
+      path: PorchlightShare/Support/PorchlightShare-iOS.entitlements
+      properties:
+        keychain-access-groups: [$(AppIdentifierPrefix)co.xanom.porchlight]
