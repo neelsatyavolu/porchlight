@@ -1,14 +1,17 @@
 import PorchKit
 import PorchUI
 import SwiftUI
+#if os(macOS)
+import AppKit
+#endif
 
-/// Flint pairing (SPEC §7, DESIGN.md §7): a one-time ABCD-EFGH code with a
-/// countdown, and the tokens Flint holds, with Revoke. While a code is live the
-/// token list is checked every few seconds so it updates when Flint claims it.
+/// Flint (SPEC §7, DESIGN.md §7). On the Mac, one "Connect Flint" button makes a
+/// code, opens Flint with a flint: link, and watches the token list until Flint
+/// claims it; Flint asks the person to confirm the account first. The code is
+/// still there under "Use a code instead". Flint is a Mac app, so the iPhone
+/// only explains where to connect it. Both list what is connected, with Revoke.
 struct FlintSection: View {
     @Environment(ScreenServices.self) private var services
-
-    private static let pollInterval: Duration = .seconds(5)
 
     private enum Load {
         case loading
@@ -17,17 +20,19 @@ struct FlintSection: View {
     }
 
     @State private var tokens = Load.loading
-    @State private var pairing: PairingStartResponse?
-    @State private var knownIds: Set<String>?
-    @State private var starting = false
+    @State private var connect = FlintConnectState.idle
+    @State private var showCode = false
+    @State private var flintMissing = false
     @State private var revoking: String?
     @State private var error: String?
 
     var body: some View {
         Section {
-            if let pairing { pairingView(pairing) }
-            Button(pairing == nil ? "Pair Flint" : "Get a new code") { Task { await startPairing() } }
-                .disabled(starting)
+            #if os(macOS)
+            connectRows
+            #else
+            Text(FlintText.phoneNote).font(PorchFont.bodySmall).foregroundStyle(PorchColor.body)
+            #endif
             if let error { ErrorLine(error) }
             tokenRows
         } header: {
@@ -36,10 +41,48 @@ struct FlintSection: View {
             Text("Flint can add packages from your shipping mail. It sends only the carrier, tracking number, sender and subject, never the message itself.")
         }
         .task { await loadTokens() }
-        .task(id: pairing?.code) { await watchForClaim() }
+        .task(id: connect.isPolling) { await watchForFlint() }
     }
 
-    private func pairingView(_ pairing: PairingStartResponse) -> some View {
+    // MARK: Mac: one button
+
+    #if os(macOS)
+    @ViewBuilder
+    private var connectRows: some View {
+        switch connect {
+        case .idle, .failed:
+            Button(FlintText.connectButton) { Task { await startConnect() } }
+            if case let .failed(message) = connect { ErrorLine(message) }
+            if flintMissing {
+                HStack(spacing: PorchSpacing.xs) {
+                    Text(FlintText.notInstalled).font(PorchFont.bodySmall).foregroundStyle(PorchColor.body)
+                    Link(FlintText.getFlint, destination: FlintLink.downloadURL).font(PorchFont.bodySmall)
+                }
+            }
+        case .starting:
+            Text(FlintText.opening).font(PorchFont.bodySmall).foregroundStyle(PorchColor.mute)
+        case let .waiting(attempt, stalled):
+            VStack(alignment: .leading, spacing: PorchSpacing.xs) {
+                Text(stalled ? FlintText.stalled : FlintText.opening)
+                    .font(PorchFont.bodySmall)
+                    .foregroundStyle(stalled ? PorchColor.body : PorchColor.mute)
+                HStack(spacing: PorchSpacing.xs) {
+                    Text(FlintText.notOpening).font(PorchFont.bodySmall).foregroundStyle(PorchColor.mute)
+                    Link(FlintText.getFlint, destination: FlintLink.downloadURL).font(PorchFont.bodySmall)
+                }
+                DisclosureGroup(FlintText.useCode, isExpanded: $showCode) { codeView(attempt.pairing) }
+                    .font(PorchFont.bodySmall)
+                if stalled {
+                    Button(FlintText.retryButton) { Task { await startConnect() } }.buttonStyle(.borderless)
+                }
+            }
+            .padding(.vertical, PorchSpacing.xxs)
+        case let .connected(token):
+            Text(FlintText.connected(token)).font(PorchFont.rowTitle).foregroundStyle(PorchColor.ink)
+        }
+    }
+
+    private func codeView(_ pairing: PairingStartResponse) -> some View {
         TimelineView(.periodic(from: .now, by: 1)) { context in
             let left = pairing.expiresAt.timeIntervalSince(context.date)
             VStack(alignment: .leading, spacing: PorchSpacing.xs) {
@@ -53,31 +96,61 @@ struct FlintSection: View {
                         .font(PorchFont.caption)
                         .monospacedDigit()
                         .foregroundStyle(PorchColor.mute)
-                    Text("In Flint, open Settings, then Connections, then Porchlight, and enter this code.")
-                        .font(PorchFont.bodySmall)
-                        .foregroundStyle(PorchColor.body)
+                    Text(FlintText.codeHelp).font(PorchFont.bodySmall).foregroundStyle(PorchColor.body)
                 } else {
-                    Text("This code has expired. Get a new one to pair Flint.")
-                        .font(PorchFont.bodySmall)
-                        .foregroundStyle(PorchColor.body)
+                    Text(FlintText.codeExpired).font(PorchFont.bodySmall).foregroundStyle(PorchColor.body)
                 }
             }
-            .padding(.vertical, PorchSpacing.xxs)
+            .padding(.top, PorchSpacing.xxs)
         }
     }
+
+    private func startConnect() async {
+        error = nil
+        flintMissing = false
+        showCode = false
+        // Check Flint is installed before making a code nobody can claim.
+        guard NSWorkspace.shared.urlForApplication(toOpen: FlintLink.pair(code: "XXXX-XXXX")) != nil else {
+            flintMissing = true
+            return
+        }
+        connect = .starting
+        do {
+            let existing = await loadTokens() ?? []
+            let pairing = try await services.api.startPairing()
+            let attempt = FlintConnectAttempt(pairing: pairing, existing: existing, startedAt: Date())
+            connect = .waiting(attempt, stalled: false)
+            NSWorkspace.shared.open(attempt.link())
+        } catch {
+            if ErrorText.isUnauthorized(error) { await services.account.signOut() }
+            connect = .failed("Couldn't start connecting. \(ErrorText.sentence(error))")
+        }
+    }
+    #endif
+
+    /// While waiting for Flint, poll the token list; a new token means Flint claimed the code.
+    private func watchForFlint() async {
+        while !Task.isCancelled, connect.isPolling {
+            try? await Task.sleep(for: FlintConnectAttempt.pollInterval)
+            guard !Task.isCancelled, let list = await loadTokens() else { continue }
+            connect = connect.polled(list, at: Date())
+        }
+    }
+
+    // MARK: Connected apps
 
     @ViewBuilder
     private var tokenRows: some View {
         switch tokens {
         case .loading:
-            Text("Loading paired apps").font(PorchFont.bodySmall).foregroundStyle(PorchColor.mute)
+            Text("Loading connected apps").font(PorchFont.bodySmall).foregroundStyle(PorchColor.mute)
         case let .failed(message):
             VStack(alignment: .leading, spacing: PorchSpacing.xs) {
-                Text("Couldn't load paired apps. \(message)").font(PorchFont.bodySmall).foregroundStyle(PorchColor.mute)
+                Text("Couldn't load connected apps. \(message)").font(PorchFont.bodySmall).foregroundStyle(PorchColor.mute)
                 Button("Try again") { Task { await loadTokens() } }.buttonStyle(.borderless)
             }
         case let .ready(list) where list.isEmpty:
-            Text("Nothing is paired yet.").font(PorchFont.bodySmall).foregroundStyle(PorchColor.mute)
+            Text("Nothing is connected yet.").font(PorchFont.bodySmall).foregroundStyle(PorchColor.mute)
         case let .ready(list):
             TimelineView(.periodic(from: .now, by: 60)) { context in
                 ForEach(list) { token in
@@ -101,8 +174,6 @@ struct FlintSection: View {
         }
     }
 
-    // MARK: Actions
-
     @discardableResult
     private func loadTokens() async -> [APITokenInfo]? {
         do {
@@ -116,36 +187,6 @@ struct FlintSection: View {
         }
     }
 
-    private func startPairing() async {
-        error = nil
-        starting = true
-        defer { starting = false }
-        do {
-            let response = try await services.api.startPairing()
-            if case let .ready(list) = tokens { knownIds = Set(list.map(\.id)) } else { knownIds = nil }
-            pairing = response
-        } catch {
-            self.error = "Couldn't start pairing. \(ErrorText.sentence(error))"
-        }
-    }
-
-    /// While the code is live, a token id we haven't seen means Flint claimed it.
-    private func watchForClaim() async {
-        guard let pairing else { return }
-        while !Task.isCancelled, pairing.expiresAt > Date() {
-            try? await Task.sleep(for: Self.pollInterval)
-            guard !Task.isCancelled, let list = await loadTokens() else { continue }
-            if let seen = knownIds {
-                if list.contains(where: { !seen.contains($0.id) }) {
-                    self.pairing = nil
-                    return
-                }
-            } else {
-                knownIds = Set(list.map(\.id))
-            }
-        }
-    }
-
     private func revoke(_ token: APITokenInfo) async {
         error = nil
         revoking = token.id
@@ -153,6 +194,7 @@ struct FlintSection: View {
         do {
             try await services.api.deleteToken(id: token.id)
             if case let .ready(list) = tokens { tokens = .ready(list.filter { $0.id != token.id }) }
+            if case let .connected(connected) = connect, connected.id == token.id { connect = .idle }
         } catch {
             if (error as? APIError)?.code == .notFound {
                 await loadTokens()

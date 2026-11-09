@@ -26,7 +26,7 @@ This is the contract between `services/api` and its clients: the web app, the Ap
 |---|---|---|
 | Session | `Authorization: Bearer <token>` (native) or the `porchlight_session` cookie (web: HttpOnly, Secure, SameSite=Lax, Path=/v1) | everything marked **session** |
 | API token | `Authorization: Bearer plt_<token>` with scope `imports:write` | `POST /v1/imports/flint` only |
-| None | | sign-in, `POST /v1/pairing/claim` |
+| None | | sign-in, `POST /v1/pairing/peek`, `POST /v1/pairing/claim` |
 
 The server stores only SHA-256 hashes of tokens. A request that uses the cookie and changes state (anything but GET) must send an `Origin` that equals `APP_ORIGIN`; if it doesn't, the server answers 403. CORS allows only `APP_ORIGIN`, with credentials.
 
@@ -52,6 +52,7 @@ The server stores only SHA-256 hashes of tokens. A request that uses the cookie 
 | `POST /v1/auth/email/start` per email | 3 per 15 minutes |
 | `POST /v1/auth/email/verify` with code, per email | 5 per 15 minutes |
 | `POST /v1/pairing/claim` per IP | 5 per 10 minutes |
+| `POST /v1/pairing/peek` per IP | 5 per 10 minutes (its own bucket) |
 | `POST /v1/imports/*` per user | 30 a minute |
 | `POST /v1/packages/:id/refresh` per package | 1 per 2 minutes |
 | `POST /v1/packages/:id/observed` per user | 60 a minute |
@@ -421,6 +422,15 @@ Response 200: `{ "deleted": true }`
 ### POST /v1/pairing/start
 Auth: session. Returns a one-time code for Flint to claim. The code is 8 Crockford base32 characters shown as `ABCD-EFGH`, and it expires after 10 minutes. Starting a new pairing does not cancel earlier codes.
 Response 201: `{ "code": "ABCD-EFGH", "expiresAt": "..." }`
+
+Porchlight hands the code to Flint as a link: `flint://porchlight/pair?code=ABCD-EFGH&host=porchlight.xanom.co`. The web app and the Mac app open it right after `start`; `https://porchlight.xanom.co/app/connect/flint` (signed in) does the same, for Flint's own "Connect Porchlight" button. Flint ignores links whose `host` it doesn't know, and asks the user before it claims: any website can open a `flint://` link.
+
+### POST /v1/pairing/peek
+Auth: none. Says which account a code would pair with, so Flint can ask "Connect Flint to Porchlight (n•••@xanom.co)?" before claiming. It doesn't use the code and doesn't count as an attempt.
+
+Request: `{ "code": "ABCD-EFGH" }` (case-insensitive, dash optional)
+Response 200: `{ "account": "n•••@xanom.co" }`. The email keeps its first character and its domain. `account` is `null` when the account has no email.
+Errors: 400, 404 (the code is unknown, used, expired or out of attempts), 429.
 
 ### POST /v1/pairing/claim
 Auth: none (the code is the credential). The claim is case-insensitive and ignores the dash. A code works once, and only 5 attempts are allowed per code.

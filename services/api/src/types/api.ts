@@ -351,6 +351,15 @@ export interface PairingClaimRequest {
   label: string;
 }
 
+export interface PairingPeekRequest {
+  code: string;
+}
+
+export interface PairingPeekResponse {
+  /** The code owner's email, masked like "n•••@xanom.co"; null when the account has none. */
+  account: string | null;
+}
+
 export interface PairingClaimResponse {
   /** "plt_" + random; shown once, store it in the Keychain. */
   token: string;

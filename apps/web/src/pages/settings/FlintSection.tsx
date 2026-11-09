@@ -1,27 +1,22 @@
-// Flint pairing (SPEC §7, DESIGN.md §7 "Settings"): a one-time ABCD-EFGH code
-// that expires in 10 minutes, and the API tokens Flint holds, with Revoke.
-import { useCallback, useEffect, useRef, useState } from "react";
+// Flint (SPEC §7, DESIGN.md §7 "Settings"): one "Connect Flint" button that
+// opens Flint with a one-time code, and the API tokens Flint holds, with Revoke.
+import { useCallback, useEffect, useState } from "react";
 import { isApiError } from "../../api/client";
-import type { ApiTokenInfo, PairingStartResponse } from "../../api/types";
+import type { ApiTokenInfo } from "../../api/types";
 import { Button, Row, SkeletonRows } from "../../components";
 import { useSession } from "../../session";
 import { errorText } from "./errors";
-import { ago, countdown, fullDateTime, shortDate } from "./time";
-
-/** While a code is showing, look for the new token this often so the list updates when Flint claims it. */
-export const PAIRING_POLL_MS = 5_000;
+import { FlintConnectStatus } from "./FlintConnectStatus";
+import { ago, fullDateTime, shortDate } from "./time";
+import { useFlintConnect } from "./useFlintConnect";
 
 type Tokens = { status: "loading" } | { status: "ready"; tokens: ApiTokenInfo[] } | { status: "error"; message: string };
 
 export function FlintSection() {
   const { api, expired } = useSession();
   const [tokens, setTokens] = useState<Tokens>({ status: "loading" });
-  const [pairing, setPairing] = useState<PairingStartResponse | null>(null);
-  const [now, setNow] = useState(() => Date.now());
-  const [starting, setStarting] = useState(false);
   const [revoking, setRevoking] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const knownIds = useRef<Set<string> | null>(null);
 
   const fail = useCallback(
     (err: unknown): string | null => {
@@ -36,13 +31,10 @@ export function FlintSection() {
 
   const loadTokens = useCallback(async () => {
     try {
-      const list = await api.listTokens();
-      setTokens({ status: "ready", tokens: list });
-      return list;
+      setTokens({ status: "ready", tokens: await api.listTokens() });
     } catch (err) {
       const message = fail(err);
       if (message) setTokens({ status: "error", message });
-      return null;
     }
   }, [api, fail]);
 
@@ -50,44 +42,8 @@ export function FlintSection() {
     void loadTokens();
   }, [loadTokens]);
 
-  const expiresAt = pairing ? Date.parse(pairing.expiresAt) : 0;
-  const live = pairing !== null && expiresAt > now;
-
-  // Tick the countdown once a second while a code is live.
-  useEffect(() => {
-    if (!live) return;
-    const timer = window.setInterval(() => setNow(Date.now()), 1_000);
-    return () => window.clearInterval(timer);
-  }, [live]);
-
-  // Watch for Flint claiming the code: a token id we haven't seen means it's paired.
-  useEffect(() => {
-    if (!live) return;
-    const timer = window.setInterval(async () => {
-      const list = await loadTokens();
-      if (!list) return;
-      const seen = knownIds.current;
-      if (!seen) knownIds.current = new Set(list.map((t) => t.id));
-      else if (list.some((t) => !seen.has(t.id))) setPairing(null);
-    }, PAIRING_POLL_MS);
-    return () => window.clearInterval(timer);
-  }, [live, loadTokens]);
-
-  async function onPair() {
-    setError(null);
-    setStarting(true);
-    try {
-      const res = await api.pairingStart();
-      knownIds.current = tokens.status === "ready" ? new Set(tokens.tokens.map((t) => t.id)) : null;
-      setNow(Date.now());
-      setPairing(res);
-    } catch (err) {
-      const message = fail(err);
-      if (message) setError(`Couldn't start pairing. ${message}`);
-    } finally {
-      setStarting(false);
-    }
-  }
+  const connect = useFlintConnect(() => void loadTokens());
+  const waiting = connect.state.phase === "waiting";
 
   async function onRevoke(token: ApiTokenInfo) {
     setError(null);
@@ -117,27 +73,11 @@ export function FlintSection() {
         message itself.
       </p>
 
-      {pairing ? (
-        <div className="settings__pairing">
-          {live ? (
-            <>
-              <p className="settings__code mono">
-                {pairing.code}
-              </p>
-              <p className="settings__caption num" role="timer" aria-live="off">
-                Expires in {countdown(expiresAt - now)}
-              </p>
-              <p className="settings__text">In Flint, open Settings → Connections → Porchlight and enter this code.</p>
-            </>
-          ) : (
-            <p className="settings__text">This code has expired. Get a new one to pair Flint.</p>
-          )}
-        </div>
-      ) : null}
+      <FlintConnectStatus state={connect.state} />
 
       <div className="settings__actions">
-        <Button busy={starting} onClick={onPair}>
-          {pairing ? "Get a new code" : "Pair Flint"}
+        <Button busy={connect.state.phase === "starting"} onClick={() => void connect.start()}>
+          {waiting ? "Try again" : "Connect Flint"}
         </Button>
       </div>
 
@@ -147,7 +87,7 @@ export function FlintSection() {
         </p>
       ) : null}
 
-      <TokenList tokens={tokens} revoking={revoking} onRevoke={onRevoke} onRetry={loadTokens} now={now} />
+      <TokenList tokens={tokens} revoking={revoking} onRevoke={onRevoke} onRetry={loadTokens} now={Date.now()} />
     </section>
   );
 }

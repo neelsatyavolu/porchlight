@@ -88,4 +88,11 @@ describe("serveAssets", () => {
     expect(directive("connect-src")).toBe("connect-src 'self'");
     expect(directive("object-src")).toBe("object-src 'none'");
   });
+
+  it("lets the app open the flint: link (a top-level navigation no directive here governs)", () => {
+    const csp = SECURITY_HEADERS["Content-Security-Policy"];
+    // navigate-to would block it; form-action only covers form posts, and the link is set on window.location.
+    expect(csp).not.toContain("navigate-to");
+    expect(csp).not.toContain("sandbox");
+  });
 });

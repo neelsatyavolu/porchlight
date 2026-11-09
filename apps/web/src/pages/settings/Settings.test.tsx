@@ -4,7 +4,9 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { fail, fakeApi, ok, renderPage, type Handler } from "../../auth/testing";
 import { RequireSession } from "../../session";
 import { Settings } from "../Settings";
-import { PAIRING_POLL_MS } from "./FlintSection";
+import { CONNECT_POLL_MS, CONNECT_TIMEOUT_MS, openFlint } from "./flint";
+
+vi.mock("./flint", async (importOriginal) => ({ ...(await importOriginal<typeof import("./flint")>()), openFlint: vi.fn() }));
 
 const TOKEN = {
   id: "t1",
@@ -40,6 +42,7 @@ function renderSettings(routes: Record<string, Handler>) {
 
 afterEach(() => {
   vi.useRealTimers();
+  vi.mocked(openFlint).mockClear();
   localStorage.clear();
   document.documentElement.removeAttribute("data-theme");
 });
@@ -132,27 +135,7 @@ describe("Settings: Flint", () => {
     expect(fetch).toHaveBeenCalledWith("/v1/tokens/t1", expect.objectContaining({ method: "DELETE" }));
   });
 
-  it("shows the pairing code with a countdown, then says when it expired", async () => {
-    vi.useFakeTimers({ shouldAdvanceTime: true });
-    const start = Date.now();
-    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
-    renderSettings({
-      "POST /v1/pairing/start": () => ok({ code: "ABCD-EFGH", expiresAt: new Date(start + 10 * 60_000).toISOString() }, 201),
-    });
-    await user.click(await screen.findByRole("button", { name: "Pair Flint" }));
-    expect(await screen.findByText("ABCD-EFGH")).toBeInTheDocument();
-    expect(screen.getByRole("timer")).toHaveTextContent(/Expires in (10:00|9:59)/);
-    expect(screen.getByText(/In Flint, open Settings → Connections → Porchlight/)).toBeInTheDocument();
-
-    await act(async () => {
-      vi.advanceTimersByTime(10 * 60_000 + 1_000);
-    });
-    expect(screen.getByText("This code has expired. Get a new one to pair Flint.")).toBeInTheDocument();
-    expect(screen.queryByText("ABCD-EFGH")).not.toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Get a new code" })).toBeInTheDocument();
-  });
-
-  it("hides the code once Flint claims it", async () => {
+  it("Connect Flint opens the flint: link, then says when Flint connected", async () => {
     vi.useFakeTimers({ shouldAdvanceTime: true });
     const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
     let tokens = [TOKEN];
@@ -161,15 +144,58 @@ describe("Settings: Flint", () => {
       "POST /v1/pairing/start": () => ok({ code: "WXYZ-2345", expiresAt: new Date(Date.now() + 600_000).toISOString() }, 201),
     });
     await screen.findByText("Flint on Studio");
-    await user.click(screen.getByRole("button", { name: "Pair Flint" }));
-    expect(await screen.findByText("WXYZ-2345")).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Connect Flint" }));
+    expect(await screen.findByText("Opening Flint…")).toBeInTheDocument();
+    expect(openFlint).toHaveBeenCalledWith(`flint://porchlight/pair?code=WXYZ-2345&host=${encodeURIComponent(window.location.host)}`);
+    expect(screen.getByRole("link", { name: "Get Flint" })).toHaveAttribute("href", "https://flint.xanom.co");
+    expect(screen.queryByText("WXYZ-2345")).not.toBeInTheDocument();
 
     tokens = [...tokens, { ...TOKEN, id: "t2", label: "Flint on Laptop" }];
     await act(async () => {
-      vi.advanceTimersByTime(PAIRING_POLL_MS);
+      vi.advanceTimersByTime(CONNECT_POLL_MS);
     });
-    expect(await screen.findByText("Flint on Laptop")).toBeInTheDocument();
-    expect(screen.queryByText("WXYZ-2345")).not.toBeInTheDocument();
+    expect(await screen.findByText("Connected to Flint on Laptop")).toBeInTheDocument();
+    expect(within(screen.getByRole("list", { name: "Paired apps" })).getByText("Flint on Laptop")).toBeInTheDocument();
+    expect(screen.queryByText("Opening Flint…")).not.toBeInTheDocument();
+  });
+
+  it("shows the code on request, and stops waiting after two minutes", async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    const start = Date.now();
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+    renderSettings({
+      "POST /v1/pairing/start": () => ok({ code: "ABCD-EFGH", expiresAt: new Date(start + 10 * 60_000).toISOString() }, 201),
+    });
+    await user.click(await screen.findByRole("button", { name: "Connect Flint" }));
+    await user.click(await screen.findByRole("button", { name: "Use a code instead" }));
+    expect(screen.getByText("ABCD-EFGH")).toBeInTheDocument();
+    expect(screen.getByRole("timer")).toHaveTextContent(/Expires in (10:00|9:5\d)/);
+    expect(screen.getByText(/In Flint, open Settings, then Porchlight, and enter this code/)).toBeInTheDocument();
+
+    await act(async () => {
+      vi.advanceTimersByTime(10 * 60_000 + 1_000);
+    });
+    expect(screen.getByText("This code has expired.")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Try again" })).toBeInTheDocument();
+  });
+
+  it("says Flint hasn't connected when two minutes pass with no token", async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+    const fetch = renderSettings({
+      "POST /v1/pairing/start": () => ok({ code: "ABCD-EFGH", expiresAt: new Date(Date.now() + 600_000).toISOString() }, 201),
+    });
+    await user.click(await screen.findByRole("button", { name: "Connect Flint" }));
+    await act(async () => {
+      vi.advanceTimersByTime(CONNECT_TIMEOUT_MS + CONNECT_POLL_MS);
+    });
+    expect(screen.getByText("Flint hasn't connected yet.")).toBeInTheDocument();
+    const polls = fetch.mock.calls.filter(([url]) => url === "/v1/tokens").length;
+    await act(async () => {
+      vi.advanceTimersByTime(CONNECT_POLL_MS * 3);
+    });
+    expect(fetch.mock.calls.filter(([url]) => url === "/v1/tokens").length).toBe(polls);
+    expect(screen.getByRole("button", { name: "Try again" })).toBeInTheDocument();
   });
 
   it("offers a retry when tokens fail to load", async () => {

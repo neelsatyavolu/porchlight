@@ -15,6 +15,8 @@ export const LIMITS = {
   emailStartPerEmail: { max: 3, windowSec: 15 * 60 },
   emailVerifyPerEmail: { max: 5, windowSec: 15 * 60 },
   pairingClaimPerIp: { max: 5, windowSec: 10 * 60 },
+  /** Same limit as claim, in its own bucket so Flint's peek doesn't use up the claim. */
+  pairingPeekPerIp: { max: 5, windowSec: 10 * 60 },
 } as const satisfies Record<string, Limit>;
 
 interface Bucket {

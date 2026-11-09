@@ -3,6 +3,7 @@ import { PackagesProvider } from "./data/packages";
 import { AppShell } from "./layout/AppShell";
 import { SessionGate } from "./layout/SessionGate";
 import { AddPackage } from "./pages/AddPackage";
+import { ConnectFlint } from "./pages/ConnectFlint";
 import { NotFound } from "./pages/NotFound";
 import { PackageDetail } from "./pages/PackageDetail";
 import { PackageList } from "./pages/PackageList";
@@ -36,6 +37,7 @@ export function App() {
         <Route path="p/:id" element={<PackageDetail />} />
         <Route path="add" element={<AddPackage />} />
         <Route path="settings" element={<Settings />} />
+        <Route path="connect/flint" element={<ConnectFlint />} />
       </Route>
       <Route path="*" element={<NotFound />} />
     </Routes>

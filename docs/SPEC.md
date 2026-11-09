@@ -117,7 +117,7 @@ You sign into Amazon once, inside the app: Settings → Connected accounts → A
 
 ## 7. Flint integration (in the Flint repo)
 
-- **Pairing.** Porchlight Settings → Connections → Flint shows a one-time pairing code. Flint Settings → Connections → Porchlight takes that code and exchanges it for an `api_token` with the `imports:write` scope, stored in Flint's keychain.
+- **Pairing.** "Connect Flint" in Porchlight Settings (web or Mac), or "Connect Porchlight" in Flint (which opens `/app/connect/flint`), makes a one-time pairing code and opens Flint with `flint://porchlight/pair?code=…&host=porchlight.xanom.co`. Flint looks up the account with `POST /v1/pairing/peek`, asks the user to confirm, then exchanges the code for an `api_token` with the `imports:write` scope, stored in Flint's keychain. The code can still be typed into Flint by hand.
 - **Detection.** `packages/core/src/tracking/detect.ts` grows carriers: UPS, DHL, Amazon (TBA plus Amazon shipped and out-for-delivery mail), Jitsu, OnTrac. Each new carrier comes with a redacted fixture, the same way the existing ones were added.
 - **Import.** For each new message where detection finds a package, Flint posts `{ carrier, tracking_number, merchant (sender name), subject, message_date, dedupe_key: message-id }` to `/v1/imports/flint`. It does this for new mail only, plus a one-time backfill of the last 30 days when pairing. Mail bodies never leave the Mac.
 - **In Flint.** A thread with a detected package shows a small "Tracking in Porchlight" chip that links to the package.
