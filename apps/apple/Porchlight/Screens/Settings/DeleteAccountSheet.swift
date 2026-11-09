@@ -37,6 +37,7 @@ struct DeleteAccountSheet: View {
             .formStyle(.grouped)
             .scrollContentBackground(.hidden)
             .background(PorchColor.canvas)
+            .porchChrome()
             .navigationTitle("Delete account")
             #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)

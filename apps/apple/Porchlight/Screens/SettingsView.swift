@@ -29,6 +29,8 @@ struct SettingsView: View {
                 .disabled(signingOut)
             }
 
+            NotificationsSection()
+
             DevicesSection()
 
             FlintSection()
@@ -52,6 +54,7 @@ struct SettingsView: View {
         .formStyle(.grouped)
         .scrollContentBackground(.hidden)
         .background(PorchColor.canvas)
+        .porchChrome()
         .navigationTitle("Settings")
         .sheet(isPresented: $deleting) {
             DeleteAccountSheet()

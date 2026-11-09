@@ -42,6 +42,7 @@ struct AmazonSignInSheet: View {
                     .padding(PorchSpacing.s)
                     .background(PorchColor.canvas)
             }
+            .porchChrome()
         }
         #if os(macOS)
         .frame(minWidth: 720, minHeight: 640)

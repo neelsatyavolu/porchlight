@@ -17,6 +17,7 @@ struct RootView: View {
             }
         }
         .background(PorchColor.canvas)
+        .porchChrome()
         .environment(model.screens)
         .preferredColorScheme(theme.colorScheme)
     }

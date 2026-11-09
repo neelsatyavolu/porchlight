@@ -72,6 +72,7 @@ struct AddPackageView: View {
         .formStyle(.grouped)
         .scrollContentBackground(.hidden)
         .background(PorchColor.canvas)
+        .porchChrome()
         .navigationTitle("Add a package")
         #if os(iOS)
         .navigationBarTitleDisplayMode(.inline)
