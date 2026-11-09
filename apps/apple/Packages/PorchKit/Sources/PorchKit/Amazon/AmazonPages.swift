@@ -61,8 +61,19 @@ public enum AmazonPages {
         return scheme == "https" || scheme == "http" ? .openExternally : .block
     }
 
-    /// True when `url` is a signed-in Amazon page (not sign-in, not a challenge).
-    /// The Connect sheet closes on the first one.
+    /// True when the page really is the signed-in Your Orders page: the orders
+    /// URL on amazon.com, classified as orders, and carrying the orders
+    /// container. The Connect sheet closes only on this; the URL alone isn't
+    /// enough, because Amazon can serve a sign-in form or a redirect page there.
+    public static func showsSignedInOrders(url: URL, document: HTMLNode) -> Bool {
+        guard isSignedInPage(url), kind(of: url, document: document) == .orders else { return false }
+        return document.first(class: "your-orders-content-container") != nil
+            || document.first(id: "ordersContainer") != nil
+            || document.first(class: "order-card") != nil
+    }
+
+    /// True when `url` is the Your Orders address on amazon.com. Use
+    /// `showsSignedInOrders` to decide whether the person is signed in.
     public static func isSignedInPage(_ url: URL) -> Bool {
         guard let host = url.host?.lowercased(), host == "www.amazon.com" || host == "amazon.com" else { return false }
         let path = url.path.lowercased()

@@ -102,6 +102,19 @@ import Testing
         #expect(!AmazonPages.isSignedInPage(URL(string: "https://evil.example/gp/your-account/order-history")!))
     }
 
+    /// The Connect sheet closed straight away on iPhone: Amazon can answer the
+    /// orders URL with a sign-in form or a blank redirect page. Only a page that
+    /// really shows Your Orders may close it.
+    @Test func connectSheetClosesOnlyOnRealOrdersPage() {
+        let orders = AmazonPages.orderHistory
+        #expect(AmazonPages.showsSignedInOrders(url: orders, document: AmazonFixture.document("order-history")))
+        #expect(!AmazonPages.showsSignedInOrders(url: orders, document: AmazonFixture.document("signin")))
+        #expect(!AmazonPages.showsSignedInOrders(url: orders, document: HTMLDocument.parse("<html><body><script>location='/ap/signin'</script></body></html>")))
+        let empty = HTMLDocument.parse(#"<html><body><div class="your-orders-content-container"><div class="your-orders-content-empty">No orders</div></div></body></html>"#)
+        #expect(AmazonPages.showsSignedInOrders(url: orders, document: empty))
+        #expect(!AmazonPages.showsSignedInOrders(url: URL(string: "https://evil.example/gp/your-account/order-history")!, document: AmazonFixture.document("order-history")))
+    }
+
     @Test func limitsNavigationToAmazon() {
         func policy(_ s: String) -> AmazonPages.NavigationPolicy { AmazonPages.navigationPolicy(for: URL(string: s)) }
         #expect(policy("https://www.amazon.com/ap/signin") == .allow)

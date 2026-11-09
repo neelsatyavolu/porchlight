@@ -10,14 +10,17 @@ struct AmazonSignInSheet: View {
     let onSignedIn: () -> Void
     @Environment(\.dismiss) private var dismiss
     @State private var loading = true
+    @State private var closed = false
 
     var body: some View {
         NavigationStack {
-            AmazonWebView(loading: $loading) { url in
-                if AmazonPages.isSignedInPage(url) {
-                    onSignedIn()
-                    dismiss()
-                }
+            AmazonWebView(loading: $loading) { url, html in
+                // Close only once Your Orders really shows: Amazon can serve a
+                // sign-in form or a redirect page at the orders URL first.
+                guard !closed, AmazonPages.showsSignedInOrders(url: url, document: HTMLDocument.parse(html)) else { return }
+                closed = true
+                onSignedIn()
+                dismiss()
             }
             .overlay(alignment: .top) {
                 if loading { ProgressView().padding(PorchSpacing.m) }
@@ -50,7 +53,8 @@ struct AmazonSignInSheet: View {
 @MainActor
 private struct AmazonWebView {
     @Binding var loading: Bool
-    let didFinish: (URL) -> Void
+    /// Each finished main-frame page with its rendered HTML.
+    let didFinish: (URL, String) -> Void
 
     func makeCoordinator() -> Coordinator { Coordinator(self) }
 
@@ -100,7 +104,11 @@ private struct AmazonWebView {
 
         func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
             parent.loading = false
-            if let url = webView.url { parent.didFinish(url) }
+            guard let url = webView.url, AmazonPages.isSignedInPage(url) else { return }
+            webView.evaluateJavaScript(AmazonPages.outerHTMLScript) { [weak self] result, _ in
+                guard let self, let html = result as? String, webView.url == url else { return }
+                self.parent.didFinish(url, html)
+            }
         }
 
         func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: any Error) {
