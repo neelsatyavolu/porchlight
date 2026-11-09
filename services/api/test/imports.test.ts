@@ -246,6 +246,23 @@ describe("POST /v1/imports/amazon", () => {
     expect(items.results).toEqual([{ name: "Charger" }]);
   });
 
+  it("replaces a title an import set with the app's shorter one, but keeps a title the person typed", async () => {
+    const userId = await seedUser(env);
+    const long = "Anker USB C Cable, 240W Type C Fast Charging Cord (1-Pack, 6 ft, Black)";
+    const item = amazonItem({ title: `${long} and 1 more`, items: [
+      { name: long, imageUrl: null, quantity: 1 },
+      { name: "ZAGG Privacy Screen Protector", imageUrl: null, quantity: 1 },
+    ] });
+    const [first] = await results(await post("/v1/imports/amazon", { items: [item] }, userId));
+    const [short] = await results(await post("/v1/imports/amazon", { items: [{ ...item, title: "Anker USB-C cable and 1 more" }] }, userId));
+    expect(short).toMatchObject({ packageId: first!.packageId, outcome: "updated" });
+    expect((await getPackage(env, first!.packageId!)).title).toBe("Anker USB-C cable and 1 more");
+
+    await env.DB.prepare("UPDATE packages SET title = 'Cable for the desk' WHERE id = ?").bind(first!.packageId).run();
+    await post("/v1/imports/amazon", { items: [{ ...item, title: "Something else" }] }, userId);
+    expect((await getPackage(env, first!.packageId!)).title).toBe("Cable for the desk");
+  });
+
   it("takes a date-only Amazon ETA when etaDateOnly is true, and refuses dates that don't match the flag", async () => {
     const userId = await seedUser(env);
     const item = amazonItem({ etaStart: "2026-11-09", etaEnd: "2026-11-10", etaDateOnly: true });

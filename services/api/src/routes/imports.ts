@@ -245,14 +245,30 @@ function amazonKey(raw: unknown): string {
   return typeof r.orderId === "string" && typeof r.shipmentId === "string" ? `${r.orderId}:${r.shipmentId}` : "";
 }
 
-/** Replaces the package's items when they differ. Returns whether they did. */
-async function replaceItems(c: ImportCtx, packageId: string, items: readonly PackageItem[]): Promise<boolean> {
+async function loadItems(c: ImportCtx, packageId: string): Promise<PackageItem[]> {
   const { results } = await c.env.DB.prepare(
     "SELECT name, image_url AS imageUrl, quantity FROM package_items WHERE package_id = ? ORDER BY rowid",
   )
     .bind(packageId)
     .all<PackageItem>();
-  if (JSON.stringify(results) === JSON.stringify(items)) return false;
+  return results;
+}
+
+/** The title an Amazon import gives a package from its items ("Cable", "Cable and 2 more"). */
+function itemsTitle(items: readonly PackageItem[]): string | null {
+  const [first] = items;
+  if (!first) return null;
+  return items.length === 1 ? first.name : `${first.name} and ${items.length - 1} more`;
+}
+
+/** Replaces the package's items when they differ from `current`. Returns whether they did. */
+async function replaceItems(
+  c: ImportCtx,
+  packageId: string,
+  current: readonly PackageItem[],
+  items: readonly PackageItem[],
+): Promise<boolean> {
+  if (JSON.stringify(current) === JSON.stringify(items)) return false;
   const insert = c.env.DB.prepare("INSERT INTO package_items (package_id, name, image_url, quantity) VALUES (?, ?, ?, ?)");
   await c.env.DB.batch([
     c.env.DB.prepare("DELETE FROM package_items WHERE package_id = ?").bind(packageId),
@@ -268,11 +284,16 @@ async function applyAmazonFields(c: ImportCtx, pkg: PackageRow, item: AmazonItem
   const etaStart = hasEta ? etaToMs(item.etaStart, dateOnly) : pkg.eta_start;
   const etaEnd = hasEta ? etaToMs(item.etaEnd, dateOnly) : pkg.eta_end;
   const etaDateOnly = hasEta ? Number(dateOnly) : pkg.eta_date_only;
-  const title = pkg.title ?? item.title;
+  const current = await loadItems(c, pkg.id);
+  // The app may send a shorter title than the item names (it summarizes them on
+  // device). It replaces a title an import set from the items, never one the
+  // person typed.
+  const importSetTitle = pkg.title === null || pkg.title === itemsTitle(current);
+  const title = importSetTitle ? (item.title ?? pkg.title) : pkg.title;
   const fieldsChanged =
     pkg.order_id !== item.orderId || pkg.eta_start !== etaStart || pkg.eta_end !== etaEnd ||
     pkg.eta_date_only !== etaDateOnly || pkg.title !== title;
-  const itemsChanged = await replaceItems(c, pkg.id, item.items);
+  const itemsChanged = await replaceItems(c, pkg.id, current, item.items);
   if (fieldsChanged || itemsChanged) {
     await c.env.DB.prepare(
       `UPDATE packages SET order_id = ?3, eta_start = ?4, eta_end = ?5, eta_date_only = ?8, title = ?6, updated_at = ${NEXT_UPDATED_AT}

@@ -381,6 +381,7 @@ Request:
 ```
 - The server builds `dedupeKey` as `"<orderId>:<shipmentId>"`, and that is the key the results echo back. When Amazon splits one shipment into several packages, the app sends `shipmentId` as `"<shipmentId>-<n>"` for the n-th package after the first.
 - The import sets `source: "amazon"`, `orderId`, the items (each import replaces them all), and the ETA Amazon showed.
+- `title` is the app's name for the package. The apps shorten the first item's listing name on the device (Apple's on-device model, or rules where it isn't available) and send `"<short name>"` or `"<short name> and <n> more"`. On re-import it replaces a title that is empty or equal to the title built from the stored item names; a title the person typed is kept.
 - `etaDateOnly` is optional and follows the Package rule: `true` means `etaStart`/`etaEnd` are `"YYYY-MM-DD"` (Amazon showed a day, such as "Arriving Monday"); left out or `false` means they are ISO 8601 date-times with an offset (Amazon showed a time window). An ETA that doesn't match the flag rejects the item. Both `null` keeps the stored ETA.
 - `observed` is optional and is sent for Amazon Logistics (TBA) packages. When `observedAt` is newer than the package's last check, the server applies its `status`, `statusDetail` and `deliveredAt`, adds its events (deduped by `raw_hash`) and sets `lastCheckedAt = observedAt` and `dataSource = "amazon"`.
 - The aggregator is never asked about TBA numbers (docs/research/aggregators.md).
