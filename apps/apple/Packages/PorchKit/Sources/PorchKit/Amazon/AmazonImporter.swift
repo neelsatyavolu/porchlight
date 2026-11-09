@@ -50,11 +50,16 @@ public struct AmazonImporter: Sendable {
     /// The time an import may spend reading pages in an iOS background refresh.
     public static let backgroundBudget: TimeInterval = 18
 
+    /// Shortens the first item's name for the package title.
+    public var names: any ItemNameShortening
+
     public init(
         loader: any AmazonPageLoading, api: any APIClient, detector: any CarrierDetector = RuleCarrierDetector(),
         timeZone: TimeZone = .current, now: @escaping @Sendable () -> Date = Date.init,
-        pause: Duration = .seconds(2), maxTrackPages: Int = 15, deadline: Date? = nil
+        pause: Duration = .seconds(2), maxTrackPages: Int = 15, deadline: Date? = nil,
+        names: any ItemNameShortening = RuleItemNames()
     ) {
+        self.names = names
         self.loader = loader
         self.api = api
         self.detector = detector
@@ -107,7 +112,10 @@ public struct AmazonImporter: Sendable {
             }
             let track = AmazonTrackPage.parse(doc, text: builder.text)
             if track.recognized { recognized += 1 }
-            if let item = builder.item(for: shipment, track: track) { items.append(item) }
+            if var item = builder.item(for: shipment, track: track) {
+                item.title = await AmazonImportBuilder.shortTitle(for: item.items, names: names)
+                items.append(item)
+            }
         }
         if !open.isEmpty, recognized == 0 { return .parseFailed(Self.tracksUnreadable) }
 

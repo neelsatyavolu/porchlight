@@ -27,8 +27,9 @@ final class AmazonModel {
     init(api: any APIClient, signedIn: @escaping @MainActor () -> Bool, defaults: UserDefaults = .standard) {
         let store = DefaultsAmazonStatusStore(defaults: defaults)
         let loader = AmazonWebPageLoader(engine: engine)
+        let names = OnDeviceItemNames()
         coordinator = AmazonImportCoordinator(store: store, api: api) {
-            AmazonImporter(loader: loader, api: api)
+            AmazonImporter(loader: loader, api: api, names: names)
         }
         self.api = api
         self.signedIn = signedIn
