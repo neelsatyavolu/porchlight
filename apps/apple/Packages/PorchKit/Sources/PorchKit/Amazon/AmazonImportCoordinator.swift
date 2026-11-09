@@ -48,8 +48,10 @@ public final class DefaultsAmazonStatusStore: AmazonStatusStoring, @unchecked Se
 /// Imports never start less than 15 minutes apart, whoever asks (SPEC §6).
 public actor AmazonImportCoordinator {
     public static let minimumInterval: TimeInterval = 15 * 60
-    /// macOS: how often the app imports while it runs.
-    public static let macInterval: Duration = .seconds(30 * 60)
+    /// macOS: how often the app checks `isDueOnMac()` while it runs.
+    public static let macTick: Duration = .seconds(5 * 60)
+    /// macOS: how old the last good import may get before the next one.
+    public static let macFreshness: TimeInterval = 30 * 60
 
     private let store: any AmazonStatusStoring
     private let api: any APIClient
@@ -74,6 +76,17 @@ public actor AmazonImportCoordinator {
         guard let last = store.load().lastAttemptAt else { return nil }
         let next = last.addingTimeInterval(Self.minimumInterval)
         return next > now() ? next : nil
+    }
+
+    /// The Mac's schedule, checked every `macTick`: due once the last good import
+    /// is over 30 minutes old (or there was none) and the 15-minute floor has
+    /// passed. An attempt that never finished (the app quit mid-run) is retried
+    /// 15 minutes after it started, not half an hour after the next launch.
+    public func isDueOnMac() -> Bool {
+        let s = store.load()
+        guard s.connected, !running, nextAllowedAt() == nil else { return false }
+        guard let last = s.lastImportAt else { return true }
+        return now().timeIntervalSince(last) >= Self.macFreshness
     }
 
     /// Call once the Connect sheet reaches a signed-in page. The first import may run right away.

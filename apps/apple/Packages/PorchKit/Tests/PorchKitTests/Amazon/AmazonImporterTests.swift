@@ -128,6 +128,34 @@ import Testing
         #expect(api.calls.withLock { $0.imports }.count == 2)
     }
 
+    @Test func macRetriesSoonAfterAnAttemptThatDidntFinish() async {
+        let (coordinator, store, clock) = make()
+        #expect(await coordinator.isDueOnMac())
+        // An attempt the app quit in the middle of: started, never finished.
+        var s = store.load()
+        s.lastAttemptAt = NOW
+        s.lastImportAt = NOW.addingTimeInterval(-60 * 60)
+        store.save(s)
+        clock.advance(minutes: 10)
+        #expect(!(await coordinator.isDueOnMac()))   // the 15-minute floor still holds
+        clock.advance(minutes: 6)
+        #expect(await coordinator.isDueOnMac())      // the last good import is stale, so try again now
+    }
+
+    @Test func macWaitsHalfAnHourAfterAGoodImport() async {
+        let (coordinator, _, clock) = make()
+        _ = await coordinator.runIfDue()
+        clock.advance(minutes: 20)
+        #expect(!(await coordinator.isDueOnMac()))
+        clock.advance(minutes: 10)
+        #expect(await coordinator.isDueOnMac())
+    }
+
+    @Test func macIsNeverDueWhenDisconnected() async {
+        let (coordinator, _, _) = make(connected: false)
+        #expect(!(await coordinator.isDueOnMac()))
+    }
+
     @Test func reportsSignInAndKeepsTheLastGoodImport() async {
         let api = AmazonFakeAPI()
         var loader = FixtureLoader.standard()

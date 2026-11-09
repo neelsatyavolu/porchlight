@@ -94,13 +94,14 @@ final class AmazonModel {
     }
 
     #if os(macOS)
-    /// Every 30 minutes while the app runs.
+    /// While the app runs: every 5 minutes, import if the last good import is
+    /// over half an hour old (AmazonImportCoordinator.isDueOnMac).
     func startTimer() {
         guard timer == nil else { return }
         timer = Task { [weak self] in
             while !Task.isCancelled {
-                await self?.importIfDue()
-                try? await Task.sleep(for: AmazonImportCoordinator.macInterval)
+                if let self, await self.coordinator.isDueOnMac() { await self.importIfDue() }
+                try? await Task.sleep(for: AmazonImportCoordinator.macTick)
             }
         }
     }

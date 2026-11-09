@@ -22,6 +22,16 @@ enum SnapshotMain {
     }
 
     static func main() {
+        // PORCHLIGHT_NAMES_TEST="<listing name>": time OnDeviceItemNames on one name and exit.
+        if let name = ProcessInfo.processInfo.environment["PORCHLIGHT_NAMES_TEST"] {
+            Task {
+                let start = Date()
+                let short = await OnDeviceItemNames().shortName(name)
+                print("names: \(short) (\(String(format: "%.1f", Date().timeIntervalSince(start))) s)")
+                exit(0)
+            }
+            RunLoop.main.run()
+        }
         let app = NSApplication.shared
         app.setActivationPolicy(.prohibited)
         let out = URL(fileURLWithPath: ProcessInfo.processInfo.environment["PORCHLIGHT_SNAPSHOTS"] ?? FileManager.default.currentDirectoryPath)
