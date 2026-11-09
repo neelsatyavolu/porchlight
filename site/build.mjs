@@ -22,7 +22,7 @@ const FONTS = [
 ];
 
 /** Everything this script owns in public/. */
-const OWNED_DIRS = ["styles", "fonts", "icons"];
+const OWNED_DIRS = ["styles", "fonts", "icons", "download"];
 
 async function clean() {
   await mkdir(out, { recursive: true });
@@ -68,7 +68,20 @@ async function build() {
   for (const icon of await readdir(path.join(src, "icons"))) {
     await copyFile(path.join(src, "icons", icon), path.join(out, "icons", icon));
   }
+  await copyMacDownload();
   console.info(`site: ${pages.length} pages -> ${path.relative(process.cwd(), out)}`);
+}
+
+// The notarized DMG from apps/apple/scripts/mac-release.sh, served at
+// /download/Porchlight.dmg. The landing page links there, so a deploy without it fails.
+async function copyMacDownload() {
+  const release = path.resolve(here, "../apps/apple/build/release");
+  const dmgs = (await readdir(release).catch(() => [])).filter((f) => /^Porchlight-.+\.dmg$/.test(f));
+  if (dmgs.length === 0) throw new Error(`no Porchlight-<version>.dmg in ${release}; run apps/apple/scripts/mac-release.sh`);
+  const newest = dmgs.sort((a, b) => a.localeCompare(b, "en", { numeric: true })).at(-1);
+  await mkdir(path.join(out, "download"), { recursive: true });
+  await copyFile(path.join(release, newest), path.join(out, "download/Porchlight.dmg"));
+  console.info(`site: ${newest} -> download/Porchlight.dmg`);
 }
 
 build().catch((err) => {
