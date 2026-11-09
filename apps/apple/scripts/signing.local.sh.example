@@ -1,0 +1,7 @@
+# Copy to scripts/signing.local.sh (gitignored). Only names and ids, no secret values.
+OP_ACCOUNT=E3OXZANXQRDOBNXQMPXZ6YBHTY          # 1Password Proton account user id (not the email)
+ASC_ITEM=a2ahwayupzf5uuj5u5famnyx4y            # App Store Connect API key: "issuer id", file AuthKey_<ASC_KEY_ID>.p8
+ASC_KEY_ID=U27MTWCKH5
+DIST_CERT_ITEM=ud4rlsf6n6izuaebyvqscjhs5m      # Apple Distribution: AppleDistribution_VTQW687WBQ.p12, "password", "Apple Certificate ID"
+DEVID_CERT_ITEM=koiijqf7tinx5rhpdegpg6wz6a     # Developer ID Application: "Developer ID Certificate.p12", "password"
+# OP_VAULT=Private                              # vault that holds the items (default Private)

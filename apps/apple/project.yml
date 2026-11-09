@@ -19,9 +19,15 @@ settings:
     SWIFT_VERSION: "6.0"
     SWIFT_STRICT_CONCURRENCY: complete
     MARKETING_VERSION: "0.1.0"
-    CURRENT_PROJECT_VERSION: "1"
+    CURRENT_PROJECT_VERSION: "202611090100"
     ENABLE_USER_SCRIPT_SANDBOXING: YES
     DEAD_CODE_STRIPPING: YES
+    # Push environment in the app entitlements: Debug talks to the sandbox APNs,
+    # Release (TestFlight, Developer ID) to production.
+    PORCHLIGHT_APS_ENVIRONMENT: development
+  configs:
+    Release:
+      PORCHLIGHT_APS_ENVIRONMENT: production
 
 packages:
   PorchKit:
@@ -55,6 +61,9 @@ targetTemplates:
         PRODUCT_BUNDLE_IDENTIFIER: co.xanom.porchlight
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+        # Empty except in scripts/testflight.sh and scripts/mac-release.sh, which set it so
+        # only the app target gets the distribution profile.
+        PROVISIONING_PROFILE_SPECIFIER: $(PORCHLIGHT_APP_PROFILE)
     scheme: {}
 
 targets:
@@ -102,7 +111,7 @@ targets:
     entitlements:
       path: Porchlight/Support/Porchlight-iOS.entitlements
       properties:
-        aps-environment: development
+        aps-environment: $(PORCHLIGHT_APS_ENVIRONMENT)
         com.apple.developer.applesignin: [Default]
         keychain-access-groups: [$(AppIdentifierPrefix)co.xanom.porchlight]
 
@@ -130,7 +139,7 @@ targets:
     entitlements:
       path: Porchlight/Support/Porchlight-macOS.entitlements
       properties:
-        com.apple.developer.aps-environment: development
+        com.apple.developer.aps-environment: $(PORCHLIGHT_APS_ENVIRONMENT)
         com.apple.developer.applesignin: [Default]
         com.apple.security.app-sandbox: true
         com.apple.security.network.client: true
@@ -154,6 +163,7 @@ targets:
       base:
         PRODUCT_NAME: PorchlightShare
         PRODUCT_BUNDLE_IDENTIFIER: co.xanom.porchlight.share
+        PROVISIONING_PROFILE_SPECIFIER: $(PORCHLIGHT_SHARE_PROFILE)
         TARGETED_DEVICE_FAMILY: "1"
         APPLICATION_EXTENSION_API_ONLY: YES
     info:
@@ -198,6 +208,7 @@ targets:
       base:
         PRODUCT_NAME: PorchlightWidget
         PRODUCT_BUNDLE_IDENTIFIER: co.xanom.porchlight.widget
+        PROVISIONING_PROFILE_SPECIFIER: $(PORCHLIGHT_WIDGET_PROFILE)
         TARGETED_DEVICE_FAMILY: "1"
         APPLICATION_EXTENSION_API_ONLY: YES
     info:
