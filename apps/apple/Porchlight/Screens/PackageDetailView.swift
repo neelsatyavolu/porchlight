@@ -73,9 +73,9 @@ struct PackageDetailView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: PorchSpacing.l) {
                 header(pkg, now: now)
+                timeline(pkg, now: now)
                 facts(pkg, now: now)
                 if !pkg.items.isEmpty { items(pkg) }
-                timeline(pkg, now: now)
                 actions(pkg)
             }
             .frame(maxWidth: 720, alignment: .leading)

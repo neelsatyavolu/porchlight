@@ -169,6 +169,26 @@ export function PackageDetail() {
         {pkg.statusDetail ? <p className="detail__carrier-words">{pkg.statusDetail}</p> : null}
       </header>
 
+      <section className="detail__section" aria-labelledby="detail-timeline">
+        <h2 id="detail-timeline" className="detail__section-title">
+          Timeline
+        </h2>
+        {events.length > 0 ? (
+          <Timeline events={events} status={pkg.status} now={now} timeZone={timeZone} />
+        ) : (
+          <EmptyState title="No scans yet">
+            <p>{noScansText(pkg)}</p>
+          </EmptyState>
+        )}
+        {source || pkg.attribution || hint ? (
+          <footer className="detail__provenance">
+            {hint ? <p className="detail__hint">{hint}</p> : null}
+            {source ? <p>{source}</p> : null}
+            {pkg.attribution ? <p className="detail__attribution">{pkg.attribution}</p> : null}
+          </footer>
+        ) : null}
+      </section>
+
       <dl className="facts">
         <div className="facts__row">
           <dt>Carrier</dt>
@@ -236,25 +256,6 @@ export function PackageDetail() {
         </section>
       ) : null}
 
-      <section className="detail__section" aria-labelledby="detail-timeline">
-        <h2 id="detail-timeline" className="detail__section-title">
-          Timeline
-        </h2>
-        {events.length > 0 ? (
-          <Timeline events={events} status={pkg.status} now={now} timeZone={timeZone} />
-        ) : (
-          <EmptyState title="No scans yet">
-            <p>{noScansText(pkg)}</p>
-          </EmptyState>
-        )}
-        {source || pkg.attribution || hint ? (
-          <footer className="detail__provenance">
-            {hint ? <p className="detail__hint">{hint}</p> : null}
-            {source ? <p>{source}</p> : null}
-            {pkg.attribution ? <p className="detail__attribution">{pkg.attribution}</p> : null}
-          </footer>
-        ) : null}
-      </section>
 
       <div className="detail__actions">
         <Button busy={refresh.busy} disabled={waiting} onClick={() => void runRefresh(pkg)}>
