@@ -1,9 +1,9 @@
 // Wire types for the /v1 API, copied by hand from services/api/src/types/api.ts
 // and services/api/src/lib/http.ts (docs/API.md is the contract).
 // contract.check.ts fails `tsc` if these drift from the server's copies.
-import type { CarrierId, Status, TrackEvent } from "@porchlight/carriers";
+import type { CarrierId, DataSource, Status, TrackEvent } from "@porchlight/carriers";
 
-export type { CarrierId, Status, TrackEvent };
+export type { CarrierId, DataSource, Status, TrackEvent };
 
 export type Platform = "ios" | "macos" | "web";
 export type Client = Platform;
@@ -95,6 +95,10 @@ export interface Package {
   archivedAt: string | null;
   updatedAt: string;
   items: PackageItem[];
+  /** Where the current status came from; null until something is read. */
+  dataSource: DataSource | null;
+  /** Line the carrier's terms require in the detail view (DHL API), shown as given; else null. */
+  attribution: string | null;
 }
 
 export interface PackageEvent extends TrackEvent {

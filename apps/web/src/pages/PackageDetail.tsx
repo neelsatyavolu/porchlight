@@ -12,6 +12,7 @@ import { useClock } from "../packages/clock";
 import { carrierTrackingUrl, retryWait, rowTitle, sourceLabel } from "../packages/format";
 import { useHotkeys } from "../packages/hotkeys";
 import { usePending } from "../packages/pending";
+import { deviceHint, noScansText, refreshText, sourceLine } from "../packages/provenance";
 import { ago, fullDateTime } from "../packages/time";
 import { Timeline } from "./detail/Timeline";
 import { TitleEditor } from "./detail/TitleEditor";
@@ -84,6 +85,8 @@ export function PackageDetail() {
   const events = eventsFor(pkg.id);
   const trackingUrl = carrierTrackingUrl(pkg.carrier, pkg.trackingNumber);
   const archived = pkg.archivedAt !== null;
+  const source = sourceLine(pkg, now);
+  const hint = deviceHint(pkg, now);
   const waiting = refresh.nextAllowedAt !== null && Date.parse(refresh.nextAllowedAt) > now.getTime();
 
   async function rename(title: string | null) {
@@ -107,13 +110,13 @@ export function PackageDetail() {
     }
   }
 
-  async function runRefresh() {
+  async function runRefresh(pkg: Package) {
     setRefresh({ ...IDLE_REFRESH, busy: true });
     try {
       const res = await actions.refresh(id);
       setRefresh({
         busy: false,
-        message: `Asked ${carrier} for an update. New scans show up here within a minute or two.`,
+        message: refreshText(pkg),
         nextAllowedAt: res.nextAllowedAt,
       });
     } catch (err) {
@@ -241,13 +244,20 @@ export function PackageDetail() {
           <Timeline events={events} status={pkg.status} now={now} timeZone={timeZone} />
         ) : (
           <EmptyState title="No scans yet">
-            <p>{carrier} hasn't reported this number. Porchlight checks again within the hour.</p>
+            <p>{noScansText(pkg)}</p>
           </EmptyState>
         )}
+        {source || pkg.attribution || hint ? (
+          <footer className="detail__provenance">
+            {hint ? <p className="detail__hint">{hint}</p> : null}
+            {source ? <p>{source}</p> : null}
+            {pkg.attribution ? <p className="detail__attribution">{pkg.attribution}</p> : null}
+          </footer>
+        ) : null}
       </section>
 
       <div className="detail__actions">
-        <Button busy={refresh.busy} disabled={waiting} onClick={() => void runRefresh()}>
+        <Button busy={refresh.busy} disabled={waiting} onClick={() => void runRefresh(pkg)}>
           Refresh
         </Button>
         <Button busy={archiving} onClick={() => void toggleArchive(pkg)}>

@@ -1,0 +1,38 @@
+{
+  "Packages": [
+    {
+      "Tracking": "D10010000000006",
+      "UtcExpectedDeliveryDateTime": "2026-11-11T00:00:00Z",
+      "Consignee": {
+        "Name": "PRIVATE RECIPIENT",
+        "Address": "PRIVATE ADDRESS"
+      },
+      "PodText": null,
+      "PodImageUrl": null,
+      "Events": [
+        {
+          "EventCode": "SFCT",
+          "Status": "In Transit",
+          "EventShortDescription": "Arrived at Final Servicing Facility",
+          "ZonedEventDateTime": "2026-11-09T04:12:00",
+          "City": "Hayward",
+          "State": "CA"
+        },
+        {
+          "EventCode": "ORIG",
+          "Status": "In Transit",
+          "EventShortDescription": "Origin Scan",
+          "ZonedEventDateTime": "2026-11-08T19:30:00",
+          "City": "Commerce",
+          "State": "CA"
+        },
+        {
+          "EventCode": "EXRL",
+          "Status": "Created",
+          "EventShortDescription": "On its way to OnTrac",
+          "ZonedEventDateTime": "2026-11-07T10:00:00"
+        }
+      ]
+    }
+  ]
+}

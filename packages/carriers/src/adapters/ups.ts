@@ -136,6 +136,7 @@ export function createUpsAdapter(options: { tokenCache?: TokenCache } = {}): Reg
 
   return {
     id: ID,
+    source: "api",
     supports: (carrier) => carrier === "ups",
     isConfigured: (env: CarrierEnv) => Boolean(env.UPS_CLIENT_ID && env.UPS_CLIENT_SECRET),
     async track(number: string, _carrier, ctx: TrackContext) {

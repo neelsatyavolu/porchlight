@@ -108,6 +108,7 @@ export function createUspsAdapter(options: { tokenCache?: TokenCache } = {}): Re
 
   return {
     id: ID,
+    source: "api",
     supports: (carrier) => carrier === "usps",
     isConfigured: (env: CarrierEnv) => Boolean(env.USPS_CLIENT_ID && env.USPS_CLIENT_SECRET),
     async track(number: string, _carrier, ctx: TrackContext) {

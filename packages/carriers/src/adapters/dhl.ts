@@ -75,6 +75,7 @@ function parse(body: unknown): TrackResult {
 export function createDhlAdapter(): RegisteredAdapter {
   return {
     id: ID,
+    source: "api",
     supports: (carrier) => carrier === "dhl" || carrier === "dhl_ecommerce",
     isConfigured: (env: CarrierEnv) => Boolean(env.DHL_API_KEY),
     async track(number: string, _carrier, ctx: TrackContext) {

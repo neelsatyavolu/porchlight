@@ -31,6 +31,12 @@ export interface Env extends CarrierEnv {
    * is localhost or 127.0.0.1. Never set in wrangler.jsonc.
    */
   EMAIL_DEV_LOG?: string;
+  /**
+   * Ship24 trackers that may be registered per calendar month (UTC), default
+   * "10" (the free plan). Counted in RATE under key `aggregator:<YYYY-MM>`;
+   * only a tracker's first registration counts (docs/research/scraping.md).
+   */
+  AGGREGATOR_MONTHLY_LIMIT?: string;
   /** Sender for sign-in mail; must be on a Resend-verified domain. Defaults to signin@<APP_ORIGIN host>. */
   EMAIL_FROM?: string;
 

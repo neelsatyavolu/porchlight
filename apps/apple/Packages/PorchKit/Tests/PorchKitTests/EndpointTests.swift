@@ -21,6 +21,8 @@ import Testing
             (try Endpoints.putPackage(id: "p1", PackagePutRequest()), "PUT", "/v1/packages/p1", true),
             (Endpoints.deletePackage(id: "p1"), "DELETE", "/v1/packages/p1", true),
             (Endpoints.refreshPackage(id: "p1"), "POST", "/v1/packages/p1/refresh", true),
+            (Endpoints.deviceTrackingDue, "GET", "/v1/device-tracking/due", true),
+            (try Endpoints.postObserved(packageId: "p1", .withoutData(.failed, observedAt: NOW)), "POST", "/v1/packages/p1/observed", true),
             (try Endpoints.importFlint([]), "POST", "/v1/imports/flint", true),
             (try Endpoints.importAmazon([]), "POST", "/v1/imports/amazon", true),
             (Endpoints.startPairing, "POST", "/v1/pairing/start", true),

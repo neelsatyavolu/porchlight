@@ -1,0 +1,19 @@
+{
+  "statusCode": "200",
+  "statusText": "Successful",
+  "trackDetails": [
+    {
+      "errorCode": "504",
+      "errorText": "Tracking number not found in database",
+      "requestedTrackingNumber": "1Z999AA10000000006",
+      "trackingNumber": "1Z999AA10000000006",
+      "packageStatus": null,
+      "progressBarType": null,
+      "isDelivered": false,
+      "isDeliveredToUAP": false,
+      "scheduledDeliveryDateDetail": null,
+      "returnNumbers": null,
+      "shipmentProgressActivities": null
+    }
+  ]
+}

@@ -20,6 +20,9 @@ final class AppDelegate: NSObject {
     let refresh: RefreshScheduler
     /// The Amazon importer (SPEC §6): on open, on iOS background refresh, every 30 min on the Mac.
     let amazon: AmazonModel
+    /// USPS, UPS and FedEx pages read on the device (docs/API.md, "Device tracking"):
+    /// on open, on iOS background refresh after Amazon, every 5 min on the Mac.
+    let carriers: CarrierTrackingModel
     private let log = Logger(subsystem: "co.xanom.porchlight", category: "links")
 
     override init() {
@@ -29,12 +32,17 @@ final class AppDelegate: NSObject {
         // AppModel's one SyncEngine, so background runs join foreground ones.
         let engine = model.sync
         let screens = model.screens
-        refresh = RefreshScheduler(
+        let refresh = RefreshScheduler(
             sync: BackgroundSync(sessionStore: model.sessionStore, engine: { engine }),
             didChangeStore: { screens.didChange() }
         )
+        self.refresh = refresh
         let sessionStore = model.sessionStore
         amazon = AmazonModel(api: model.api, signedIn: { (try? sessionStore.load()) != nil })
+        carriers = CarrierTrackingModel(
+            api: model.api, signedIn: { (try? sessionStore.load()) != nil },
+            didPost: { Task { _ = await refresh.run() } }
+        )
         super.init()
     }
 
@@ -66,7 +74,11 @@ final class AppDelegate: NSObject {
         push.appIsActive = phase == .active
         switch phase {
         case .active:
-            Task { await amazon.importIfDue() }
+            // Amazon first when it is due; the carrier pages share the time after it.
+            Task {
+                await amazon.importIfDue()
+                await carriers.checkIfDue()
+            }
             Task {
                 // A first sync that brings packages in (one added on the web or
                 // through the share sheet) is also a good time for the prompt.
@@ -87,10 +99,13 @@ final class AppDelegate: NSObject {
     /// The `co.xanom.porchlight.refresh` task: book the next one, then sync.
     func handleAppRefresh() async {
         // The whole refresh gets about 30 seconds, so the Amazon import stops opening pages in time to send what it read.
-        let amazonDeadline = Date().addingTimeInterval(AmazonImporter.backgroundBudget)
+        let started = Date()
+        let amazonDeadline = started.addingTimeInterval(AmazonImporter.backgroundBudget)
         refresh.scheduleAppRefresh()
         _ = await refresh.run()
         await amazon.importIfDue(deadline: amazonDeadline)
+        // Carrier pages get what is left; no lookup starts that can't finish in it.
+        await carriers.checkIfDue(deadline: started.addingTimeInterval(DeviceTrackingCoordinator.backgroundBudget))
     }
     #endif
 
@@ -139,6 +154,7 @@ extension AppDelegate: NSApplicationDelegate {
         push.registerForRemoteNotifications()
         refresh.startTimer()
         amazon.startTimer()
+        carriers.startTimer()
     }
 
     func application(_ application: NSApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {

@@ -2,7 +2,9 @@
 // both together. Every response body is wrapped in the Envelope from
 // lib/http.ts. All timestamps are ISO 8601 UTC strings ("2026-11-08T17:04:00.000Z"),
 // except a date-only ETA, which is a calendar date ("2026-11-10").
-import type { CarrierId, Status, TrackEvent } from "@porchlight/carriers";
+import type { CarrierId, DataSource, DeviceCarrier, Status, TrackEvent } from "@porchlight/carriers";
+
+export type { DataSource, DeviceCarrier };
 
 export type Platform = "ios" | "macos" | "web";
 export type Client = Platform;
@@ -127,6 +129,14 @@ export interface Package {
   archivedAt: string | null;
   updatedAt: string;
   items: PackageItem[];
+  /** Where the current status came from (packages.last_source); null until something is read. */
+  dataSource: DataSource | null;
+  /**
+   * A line the carrier's terms require clients to show in the detail view, as
+   * given. Today only "Delivered by Deutsche Post DHL Group" (dataSource "api",
+   * carrier "dhl" or "dhl_ecommerce"); null otherwise.
+   */
+  attribution: string | null;
 }
 
 export interface PackageEvent extends TrackEvent {
@@ -177,6 +187,65 @@ export interface SyncResponse {
   cursor: string;
   /** True when more changes remain; call again with `cursor` right away. */
   hasMore: boolean;
+}
+
+// ---- Device tracking ------------------------------------------------------
+
+/**
+ * Why the server wants the device to look:
+ * - `new`: a device-carrier package that has never been read.
+ * - `scheduled`: the per-package cadence is due (scraping.md "Polling limits").
+ * - `manual`: the user asked for a refresh.
+ * - `server_blocked`: web:ups threw device_required.
+ */
+export type DeviceJobReason = "new" | "scheduled" | "manual" | "server_blocked";
+
+export interface DeviceJob {
+  packageId: string;
+  carrier: DeviceCarrier;
+  trackingNumber: string;
+  reason: DeviceJobReason;
+}
+
+/** GET /v1/device-tracking/due: at most 10, oldest device_needed_at first. */
+export interface DeviceJobsResponse {
+  jobs: DeviceJob[];
+}
+
+/**
+ * - `ok`: the page loaded and was parsed; status, ETA and events apply.
+ * - `not_found`: the carrier said it doesn't know the number.
+ * - `challenged`: a bot check or CAPTCHA stopped the read.
+ * - `failed`: anything else (timeout, page layout the parser doesn't know).
+ */
+export type DeviceOutcome = "ok" | "not_found" | "challenged" | "failed";
+
+/**
+ * POST /v1/packages/:id/observed. Every key is sent. When outcome isn't "ok"
+ * the server ignores status, ETA, deliveredAt and events (send "unknown",
+ * nulls, false and []).
+ */
+export interface DeviceObservation {
+  /** When the device read the page. ISO 8601 with offset. */
+  observedAt: string;
+  source: "device";
+  status: Status;
+  statusDetail: string | null;
+  /** Form follows etaDateOnly, as in Package. */
+  etaStart: string | null;
+  etaEnd: string | null;
+  etaDateOnly: boolean;
+  deliveredAt: string | null;
+  /** Newest first. */
+  events: TrackEvent[];
+  outcome: DeviceOutcome;
+}
+
+export interface DeviceObservedResponse {
+  /** False when the outcome wasn't "ok" or observedAt was not newer than the last check. */
+  applied: boolean;
+  /** When the server next wants a device read; null when none is wanted. */
+  deviceNeededAt: string | null;
 }
 
 // ---- Imports --------------------------------------------------------------

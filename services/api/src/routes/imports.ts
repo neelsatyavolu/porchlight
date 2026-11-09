@@ -291,7 +291,7 @@ async function applyObserved(c: ImportCtx, packageId: string, item: AmazonItem):
   const observedAt = isoToMs(obs?.observedAt);
   if (!obs || !pkg || observedAt === null || observedAt <= (pkg.last_checked_at ?? -Infinity)) return false;
   const update = { status: obs.status, statusDetail: obs.statusDetail, deliveredAt: obs.deliveredAt, events: obs.events };
-  const outcome = await applyTracking(c.env.DB, pkg, { ...update, checkedAtMs: observedAt }, c.now);
+  const outcome = await applyTracking(c.env.DB, pkg, { ...update, checkedAtMs: observedAt, source: "amazon", onlyIfNewer: true }, c.now);
   if (outcome.changed) {
     const change = { userId: c.userId, packageId, title: pkg.title, ...update, statusChanged: outcome.statusChanged };
     await c.deps.notify(c.env, change).catch((err: unknown) => console.error("imports: push failed", packageId, err));

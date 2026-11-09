@@ -88,6 +88,7 @@ describe("end to end", () => {
     const tracked: string[] = [];
     const ups: CarrierAdapter = {
       id: "ups",
+      source: "api",
       supports: (c) => c === "ups",
       track: async (number) => {
         tracked.push(number);
@@ -98,6 +99,7 @@ describe("end to end", () => {
       ...defaultDeps,
       adaptersFor: () => [ups],
       takeToken: async () => ({ allowed: true, retryAfterSec: 0 }),
+      reserveAggregator: async () => true,
       fetch: (async () => new Response("unexpected live call", { status: 599 })) as typeof fetch,
       notify: async () => 0,
     };

@@ -76,6 +76,7 @@ function parse(body: unknown): TrackResult {
 export function createShip24Adapter(): RegisteredAdapter {
   return {
     id: ID,
+    source: "aggregator",
     // Amazon Logistics (TBA) is billed per number and usually not found; its status comes from the device's Amazon import.
     supports: (carrier) => carrier !== "amazon",
     isConfigured: (env: CarrierEnv) => Boolean(env.AGGREGATOR_API_KEY),

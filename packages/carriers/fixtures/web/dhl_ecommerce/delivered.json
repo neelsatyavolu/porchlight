@@ -1,0 +1,75 @@
+{
+  "total": 1,
+  "limit": 10,
+  "offset": 0,
+  "packages": [
+    {
+      "trackedValue": "GM2951173225174494",
+      "tmiUid": "synthetic-package-id",
+      "trackingId": "GM2951173225174494",
+      "packageId": "SYNTHETICPACKAGE123",
+      "status": "Delivered",
+      "estimatedDeliveryDate": "2026-11-12",
+      "dspName": "USPS",
+      "deliveryConfirmationNumber": "9261299999999999999999",
+      "sender": {
+        "name": "Synthetic Webshop",
+        "postalCode": "PRIVATE POSTCODE"
+      },
+      "recipient": {
+        "name": "PRIVATE RECIPIENT",
+        "address": "PRIVATE ADDRESS"
+      },
+      "events": [
+        {
+          "primaryEventId": "600",
+          "primaryEventDescription": "DELIVERED",
+          "date": "2026-11-10",
+          "time": "14:22:00",
+          "timeZone": "PT",
+          "location": "Oakland, CA, US"
+        },
+        {
+          "primaryEventId": "594",
+          "primaryEventDescription": "OUT FOR DELIVERY",
+          "date": "2026-11-10",
+          "time": "07:01:00",
+          "timeZone": "PT",
+          "location": "Oakland, CA, US"
+        },
+        {
+          "primaryEventId": "600",
+          "primaryEventDescription": "ARRIVAL DESTINATION DHL ECOMMERCE FACILITY",
+          "date": "2026-11-08",
+          "time": "21:04:26",
+          "timeZone": "PT",
+          "location": "Hayward, CA, US"
+        },
+        {
+          "primaryEventId": "600",
+          "primaryEventDescription": "ARRIVAL DESTINATION DHL ECOMMERCE FACILITY",
+          "date": "2026-11-08",
+          "time": "21:04:26",
+          "timeZone": "PT",
+          "location": "Hayward, CA, US"
+        },
+        {
+          "primaryEventId": "520",
+          "primaryEventDescription": "DEPARTURE ORIGIN DHL ECOMMERCE FACILITY",
+          "date": "2026-11-06",
+          "time": "05:04:26",
+          "timeZone": "CT",
+          "location": "Melrose Park, IL, US"
+        },
+        {
+          "primaryEventId": "77",
+          "primaryEventDescription": "LABEL CREATED",
+          "date": "2026-11-05",
+          "time": "03:11:58",
+          "timeZone": "ET",
+          "location": "Hebron, KY, US"
+        }
+      ]
+    }
+  ]
+}

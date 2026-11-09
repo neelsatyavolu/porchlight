@@ -164,6 +164,38 @@ describe("PackageDetail", () => {
     expect(screen.getByRole("button", { name: "Refresh" })).toBeDisabled();
   });
 
+  it("says where the status came from, under the timeline", async () => {
+    renderPages("/app/p/p1", routes, fakeServer({ packages: [{ ...LAMP, dataSource: "device" }], events: EVENTS }));
+    const timeline = within(await screen.findByRole("region", { name: "Timeline" }));
+    expect(timeline.getByText("From UPS's tracking page, checked on your Mac or iPhone 14 min ago.")).toBeInTheDocument();
+    expect(timeline.queryByText(/^Open Porchlight/)).toBeNull();
+    expect(timeline.queryByText("Delivered by Deutsche Post DHL Group")).toBeNull();
+  });
+
+  it("shows the DHL attribution when the server sends one", async () => {
+    const parcel = pkg("p7", {
+      carrier: "dhl",
+      trackingNumber: "1234567890",
+      status: "delivered",
+      dataSource: "api",
+      attribution: "Delivered by Deutsche Post DHL Group",
+      lastCheckedAt: "2026-11-08T17:46:00.000Z",
+    });
+    renderPages("/app/p/p7", routes, fakeServer({ packages: [parcel] }));
+    const timeline = within(await screen.findByRole("region", { name: "Timeline" }));
+    expect(timeline.getByText("Delivered by Deutsche Post DHL Group")).toBeInTheDocument();
+    expect(timeline.getByText("From DHL's tracking API, checked 14 min ago.")).toBeInTheDocument();
+  });
+
+  it("says a device will read a USPS refresh", async () => {
+    const user = userEvent.setup();
+    const handler: Handler = (m) => (m === "POST" ? { status: 202, data: { queued: true, nextAllowedAt: "2026-11-08T18:02:00.000Z" } } : undefined);
+    const letter = pkg("p8", { carrier: "usps", trackingNumber: "9400111206206406260787", status: "in_transit" });
+    renderPages("/app/p/p8", routes, fakeServer({ packages: [letter], handler }));
+    await user.click(await screen.findByRole("button", { name: "Refresh" }));
+    expect(await screen.findByText(/^Asked your Mac or iPhone to check USPS\./)).toHaveAttribute("role", "status");
+  });
+
   it("archives at once and sends archived: true", async () => {
     const user = userEvent.setup();
     const held = hold((m) => m === "PUT");
@@ -223,7 +255,10 @@ describe("PackageDetail", () => {
   it("says when the carrier has no scans or date yet", async () => {
     renderPages("/app/p/p9", routes, fakeServer({ packages: [pkg("p9", { carrier: "fedex", trackingNumber: "986578788855" })] }));
     expect(await screen.findByRole("heading", { name: "No scans yet" })).toBeInTheDocument();
-    expect(screen.getByText("FedEx hasn't reported this number. Porchlight checks again within the hour.")).toBeInTheDocument();
+    expect(
+      screen.getByText("FedEx hasn't reported this number yet. Your Mac or iPhone checks it while Porchlight is open."),
+    ).toBeInTheDocument();
+    expect(screen.getByText("Open Porchlight on your Mac or iPhone to update FedEx packages.")).toBeInTheDocument();
     expect(screen.getByText("No delivery date from FedEx yet")).toBeInTheDocument();
     expect(screen.getByRole("heading", { level: 1, name: "FedEx ···8855" })).toBeInTheDocument();
   });

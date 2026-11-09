@@ -281,6 +281,8 @@ describe("POST /v1/imports/amazon", () => {
     expect(row.last_checked_at).toBe(Date.parse(observed.observedAt));
     expect(await countEvents(env, id)).toBe(2);
     expect(notify).toHaveBeenCalledWith(testEnv, expect.objectContaining({ packageId: id, status: "out_for_delivery", statusChanged: true }));
+    const src = await env.DB.prepare("SELECT last_source FROM packages WHERE id = ?").bind(id).first<{ last_source: string }>();
+    expect(src?.last_source).toBe("amazon");
 
     // Same observation again: no new events; older observation: ignored.
     await post("/v1/imports/amazon", { items: [item] }, userId);

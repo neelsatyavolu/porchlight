@@ -75,6 +75,7 @@ private func packageJSON(etaStart: String?, etaEnd: String?, dateOnly: Bool?) ->
         #expect(Set(object.keys) == [
             "id", "carrier", "trackingNumber", "title", "merchant", "orderId", "source", "status", "statusDetail",
             "etaStart", "etaEnd", "etaDateOnly", "deliveredAt", "lastCheckedAt", "archivedAt", "updatedAt", "items",
+            "dataSource", "attribution",
         ])
         #expect(object["orderId"] is NSNull)
         #expect(object["etaStart"] as? String == "2026-11-10")

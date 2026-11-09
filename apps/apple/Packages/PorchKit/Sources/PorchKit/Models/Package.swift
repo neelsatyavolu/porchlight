@@ -1,7 +1,7 @@
 import Foundation
 
 // CONTRACT: `Package` in docs/API.md and services/api/src/types/api.ts, plus
-// `etaDateOnly`. Decode and encode with WireJSON's coders.
+// `etaDateOnly`, `dataSource` and `attribution`. Decode and encode with WireJSON's coders.
 
 public struct PackageItem: Hashable, Sendable, Codable {
     public var name: String
@@ -40,12 +40,18 @@ public struct Package: Identifiable, Hashable, Sendable, Codable {
     public var archivedAt: Date?
     public var updatedAt: Date
     public var items: [PackageItem]
+    /// Where the current status came from; nil until something is read, or
+    /// when the server sends a value this build doesn't know.
+    public var dataSource: DataSource?
+    /// A line the carrier's terms require in the detail view, shown as given
+    /// ("Delivered by Deutsche Post DHL Group"); nil otherwise.
+    public var attribution: String?
 
     public init(
         id: String, carrier: Carrier, trackingNumber: String, title: String? = nil, merchant: String? = nil,
         orderId: String? = nil, source: Source = .manual, status: Status = .unknown, statusDetail: String? = nil,
         eta: ETA = .none, deliveredAt: Date? = nil, lastCheckedAt: Date? = nil, archivedAt: Date? = nil,
-        updatedAt: Date, items: [PackageItem] = []
+        updatedAt: Date, items: [PackageItem] = [], dataSource: DataSource? = nil, attribution: String? = nil
     ) {
         self.id = id
         self.carrier = carrier
@@ -62,6 +68,8 @@ public struct Package: Identifiable, Hashable, Sendable, Codable {
         self.archivedAt = archivedAt
         self.updatedAt = updatedAt
         self.items = items
+        self.dataSource = dataSource
+        self.attribution = attribution
     }
 
     public var isArchived: Bool { archivedAt != nil }
@@ -77,6 +85,7 @@ public struct Package: Identifiable, Hashable, Sendable, Codable {
         case id, carrier, trackingNumber, title, merchant, orderId, source, status, statusDetail
         case etaStart, etaEnd, etaDateOnly
         case deliveredAt, lastCheckedAt, archivedAt, updatedAt, items
+        case dataSource, attribution
     }
 
     public init(from decoder: any Decoder) throws {
@@ -96,6 +105,9 @@ public struct Package: Identifiable, Hashable, Sendable, Codable {
         archivedAt = try c.decodeIfPresent(Date.self, forKey: .archivedAt)
         updatedAt = try c.decode(Date.self, forKey: .updatedAt)
         items = try c.decodeIfPresent([PackageItem].self, forKey: .items) ?? []
+        // Absent on servers before 0005; an unknown value reads as nil.
+        dataSource = try c.decodeIfPresent(String.self, forKey: .dataSource).flatMap(DataSource.init(rawValue:))
+        attribution = try c.decodeIfPresent(String.self, forKey: .attribution)
     }
 
     public func encode(to encoder: any Encoder) throws {
@@ -115,5 +127,7 @@ public struct Package: Identifiable, Hashable, Sendable, Codable {
         try c.encode(archivedAt, forKey: .archivedAt)
         try c.encode(updatedAt, forKey: .updatedAt)
         try c.encode(items, forKey: .items)
+        try c.encode(dataSource, forKey: .dataSource)
+        try c.encode(attribution, forKey: .attribution)
     }
 }

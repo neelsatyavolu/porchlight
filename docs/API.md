@@ -54,6 +54,7 @@ The server stores only SHA-256 hashes of tokens. A request that uses the cookie 
 | `POST /v1/pairing/claim` per IP | 5 per 10 minutes |
 | `POST /v1/imports/*` per user | 30 a minute |
 | `POST /v1/packages/:id/refresh` per package | 1 per 2 minutes |
+| `POST /v1/packages/:id/observed` per user | 60 a minute |
 
 ---
 
@@ -173,7 +174,8 @@ Response 200:
     "orderId": null, "source": "flint", "status": "in_transit", "statusDetail": "Departed facility",
     "etaStart": "2026-11-10", "etaEnd": "2026-11-10", "etaDateOnly": true, "deliveredAt": null,
     "lastCheckedAt": "2026-11-08T17:00:00.000Z", "archivedAt": null, "updatedAt": "2026-11-08T17:00:01.000Z",
-    "items": [ { "name": "Headphones", "imageUrl": null, "quantity": 1 } ]
+    "items": [ { "name": "Headphones", "imageUrl": null, "quantity": 1 } ],
+    "dataSource": "device", "attribution": null
   } ],
   "events": [ {
     "id": "uuid", "packageId": "uuid", "occurredAt": "2026-11-08T09:12:00.000Z", "status": "in_transit",
@@ -198,7 +200,8 @@ Every endpoint that returns a package (sync, `GET`/`PUT /v1/packages/:id`) uses 
   "etaStart": "2026-11-10", "etaEnd": "2026-11-11", "etaDateOnly": true,
   "deliveredAt": null, "lastCheckedAt": "2026-11-08T17:00:00.000Z", "archivedAt": null,
   "updatedAt": "2026-11-08T17:00:01.000Z",
-  "items": [ { "name": "Headphones", "imageUrl": null, "quantity": 1 } ]
+  "items": [ { "name": "Headphones", "imageUrl": null, "quantity": 1 } ],
+  "dataSource": "device", "attribution": null
 }
 ```
 
@@ -209,7 +212,18 @@ Every endpoint that returns a package (sync, `GET`/`PUT /v1/packages/:id`) uses 
 
 A carrier time with no UTC offset (UPS delivery windows, for example) names no instant, so the server keeps only its date and sends the ETA as date-only.
 
-`title`, `merchant`, `orderId` and `archived` belong to the client. Status, ETA, events, `lastCheckedAt` and `deliveredAt` belong to the server: the client can't write them, and the server ignores them if sent. When two writes touch the same field, the one the server receives last wins (SPEC §3). Fields left out of a PUT are not changed.
+**Data source.** `dataSource` says where the current status came from, and is `null` until something has been read:
+- `api`: the carrier's own API with Porchlight's key (today only DHL).
+- `web`: the carrier's public tracking feed, read by the server.
+- `aggregator`: Ship24.
+- `device`: a native app read the carrier's page (`POST /v1/packages/:id/observed`).
+- `amazon`: the Amazon import's `observed` block.
+
+**Attribution.** `attribution` is a line the carrier's terms require clients to show in the detail view, shown exactly as given. It is `"Delivered by Deutsche Post DHL Group"` when `dataSource` is `api` and `carrier` is `dhl` or `dhl_ecommerce` (the DHL API reads both), and `null` otherwise. The same terms make the server delete the events of those packages 30 days after `deliveredAt`; the package itself stays.
+
+Clients that don't know a `dataSource` value treat it as `null`.
+
+`title`, `merchant`, `orderId` and `archived` belong to the client. Status, ETA, events, `lastCheckedAt`, `deliveredAt`, `dataSource` and `attribution` belong to the server: the client can't write them, and the server ignores them if sent. When two writes touch the same field, the one the server receives last wins (SPEC §3). Fields left out of a PUT are not changed.
 
 ### GET /v1/packages/:id
 Auth: session. One live package with its items and events, for deep links (a push or a Flint chip that names a `packageId`). Native apps can use it to fetch a package that has not synced yet.
@@ -254,9 +268,68 @@ Response 200: `{ "id": "uuid", "deletedAt": "..." }`
 Errors: 404.
 
 ### POST /v1/packages/:id/refresh
-Auth: session. Queues an immediate carrier check with reason `manual`. Allowed once every 2 minutes per package.
+Auth: session. Queues an immediate carrier check with reason `manual`. Allowed once every 2 minutes per package. For a package whose next read belongs to a device (USPS, FedEx, or UPS once the server is blocked), it sets `device_needed_at` to now with reason `manual` instead.
 Response 202: `{ "queued": true, "nextAllowedAt": "..." }`
 Errors: 404, 429 with `Retry-After`.
+
+## Device tracking
+
+USPS, FedEx and UPS block the server, so the native apps read those carriers' public tracking pages in a hidden web view and post what they saw (docs/research/scraping.md). For UPS the server tries its own read first and hands over to the device when that is blocked. Only the native apps call these endpoints.
+
+The server sets a package's `device_needed_at` when a device read is due, following the per-package cadence in scraping.md "Polling limits" (USPS: 30 min out for delivery, 2 h in transit, 6 h label created; UPS and FedEx: 20 to 30 min, 2 h, 6 h; 60 min after a failure). It never asks again once the package is delivered.
+
+### GET /v1/device-tracking/due
+Auth: session. The user's packages a device should read now: live (not deleted), not delivered, and `device_needed_at` at or before now. At most 10, oldest `device_needed_at` first.
+
+Response 200:
+```json
+{ "jobs": [ { "packageId": "uuid", "carrier": "usps", "trackingNumber": "9400111206206406260787", "reason": "scheduled" } ] }
+```
+- `carrier` is `usps`, `ups` or `fedex`.
+- `reason` is one of:
+  - `new`: the package has never been read.
+  - `scheduled`: the cadence is due.
+  - `manual`: the user asked for a refresh.
+  - `server_blocked`: the server's UPS read was blocked.
+- The app runs one lookup per carrier at a time, at least 5 s apart and at most about 20 per carrier an hour, and posts each result before taking the next job. An empty list means nothing is due.
+
+### POST /v1/packages/:id/observed
+Auth: session. What the device read for one package.
+
+Request (every key is sent):
+```json
+{
+  "observedAt": "2026-11-09T14:00:00.000Z", "source": "device", "outcome": "ok",
+  "status": "out_for_delivery", "statusDetail": "Out for Delivery",
+  "etaStart": "2026-11-09", "etaEnd": "2026-11-09", "etaDateOnly": true, "deliveredAt": null,
+  "events": [ { "occurredAt": "2026-11-09T13:05:00.000Z", "status": "out_for_delivery",
+                "description": "Out for Delivery", "location": "San Jose, CA 95112" } ]
+}
+```
+- `observedAt`, `deliveredAt` and each `occurredAt` are ISO 8601 with an offset or `Z`.
+- `source` is always `device`.
+- The ETA follows the Package rule: with `etaDateOnly: true`, `etaStart`/`etaEnd` are `"YYYY-MM-DD"`; with `false` they are instants or both `null`. An ETA that doesn't match the flag answers 400.
+- `events` is newest first, at most 200.
+- `outcome` is one of:
+  - `ok`: the page loaded and was parsed.
+  - `not_found`: the carrier said it doesn't know the number.
+  - `challenged`: a bot check or CAPTCHA stopped the read. The app never solves one.
+  - `failed`: anything else, such as a 25 s timeout or a page the parser doesn't know.
+- When `outcome` isn't `ok`, the server ignores `status`, `statusDetail`, the ETA, `deliveredAt` and `events`. The app sends `"unknown"`, `null`, `false` and `[]`.
+
+What the server does:
+- `ok`, with `observedAt` newer than `lastCheckedAt`: applies the status, detail, ETA and `deliveredAt`, adds the events (deduped by `raw_hash`), and sets `lastCheckedAt = observedAt` and `dataSource = "device"`. An `observedAt` at or before `lastCheckedAt` changes nothing, so an old read never moves a package backwards.
+- `ok` or `not_found`: clears `device_needed_at`; the poller sets it again when the next read is due.
+- `challenged` or `failed`: moves `device_needed_at` later (60 min, longer after repeated failures).
+
+Response 200:
+```json
+{ "applied": true, "deviceNeededAt": null }
+```
+- `applied` is false when the outcome wasn't `ok` or `observedAt` wasn't newer than the last check.
+- `deviceNeededAt` is when the server next wants a device read, or `null`.
+
+Errors: 400 (validation, or the package's carrier isn't `usps`, `ups` or `fedex`), 404 (unknown, deleted, or another user's package), 429.
 
 ## Imports
 
@@ -308,7 +381,7 @@ Request:
 - The server builds `dedupeKey` as `"<orderId>:<shipmentId>"`, and that is the key the results echo back. When Amazon splits one shipment into several packages, the app sends `shipmentId` as `"<shipmentId>-<n>"` for the n-th package after the first.
 - The import sets `source: "amazon"`, `orderId`, the items (each import replaces them all), and the ETA Amazon showed.
 - `etaDateOnly` is optional and follows the Package rule: `true` means `etaStart`/`etaEnd` are `"YYYY-MM-DD"` (Amazon showed a day, such as "Arriving Monday"); left out or `false` means they are ISO 8601 date-times with an offset (Amazon showed a time window). An ETA that doesn't match the flag rejects the item. Both `null` keeps the stored ETA.
-- `observed` is optional and is sent for Amazon Logistics (TBA) packages. When `observedAt` is newer than the package's last check, the server applies its `status`, `statusDetail` and `deliveredAt`, adds its events (deduped by `raw_hash`) and sets `lastCheckedAt = observedAt`.
+- `observed` is optional and is sent for Amazon Logistics (TBA) packages. When `observedAt` is newer than the package's last check, the server applies its `status`, `statusDetail` and `deliveredAt`, adds its events (deduped by `raw_hash`) and sets `lastCheckedAt = observedAt` and `dataSource = "amazon"`.
 - The aggregator is never asked about TBA numbers (docs/research/aggregators.md).
 
 ## Integrations
@@ -367,6 +440,8 @@ Response 200: `{ "deleted": true }`
 Errors: 404.
 
 ## Not in v1 / server-internal
+
+- Aggregator budget: Ship24 is used only when no API, web or device path exists for the carrier (`other`, or a web adapter answered not found or failed for good twice in a row), never for `amazon`, and only while fewer than `AGGREGATOR_MONTHLY_LIMIT` (default 10) trackers were registered this calendar month (UTC). A KV counter holds the count; the first registration of a number counts, later reads of it don't.
 
 - The aggregator webhook endpoint (`POST /v1/hooks/aggregator`) is added when the aggregator account exists. It authenticates with the aggregator's shared secret and is not a client API.
 - Push payloads: APNs `aps.alert` is sent for `out_for_delivery`, `delivered` and `exception`. Every other change sends `content-available: 1` with `{ "packageId": "uuid" }`.

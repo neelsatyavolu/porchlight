@@ -1,0 +1,9 @@
+{
+  "status": "SUCCESS",
+  "ret_msg": "",
+  "err_code": 1,
+  "data": {
+    "invalid_tno": "UUS0000000000000000",
+    "valid_tno": []
+  }
+}

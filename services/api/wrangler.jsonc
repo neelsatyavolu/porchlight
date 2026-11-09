@@ -18,7 +18,9 @@
     "APNS_TOPIC": "co.xanom.porchlight",
     // Host for "production" devices; "sandbox" devices use api.sandbox.push.apple.com.
     "APNS_HOST": "api.push.apple.com",
-    "EMAIL_FROM": "Porchlight <signin@n3el.dev>"
+    "EMAIL_FROM": "Porchlight <signin@n3el.dev>",
+    // New Ship24 trackers per calendar month (UTC); the free plan allows 10.
+    "AGGREGATOR_MONTHLY_LIMIT": "10"
   },
 
   "d1_databases": [
@@ -39,7 +41,10 @@
         "queue": "porchlight-track",
         "max_batch_size": 10,
         "max_batch_timeout": 5,
-        "max_retries": 3
+        "max_retries": 3,
+        // One consumer at a time: the Ship24 budget and the per-carrier buckets
+        // live in KV (read, then write), so parallel consumers could overspend them.
+        "max_concurrency": 1
       }
     ]
   },

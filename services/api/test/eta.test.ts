@@ -40,10 +40,11 @@ function result(over: Partial<TrackResult>): TrackResult {
 }
 
 function deps(r: TrackResult): ConsumeDeps {
-  const adapter: CarrierAdapter = { id: "ups", supports: () => true, track: async () => r };
+  const adapter: CarrierAdapter = { id: "ups", source: "api", supports: () => true, track: async () => r };
   return {
     adaptersFor: () => [adapter],
     takeToken: async () => ({ allowed: true, retryAfterSec: 0 }),
+    reserveAggregator: async () => true,
     fetch: (async () => new Response("unexpected live call", { status: 599 })) as typeof fetch,
     now: () => NOW,
     notify: vi.fn(async () => 0),

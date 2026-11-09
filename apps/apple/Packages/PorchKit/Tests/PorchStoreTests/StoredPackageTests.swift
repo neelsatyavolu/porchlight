@@ -29,4 +29,36 @@ import Testing
         try context.save()
         #expect(try context.fetchCount(FetchDescriptor<StoredEvent>()) == 0)
     }
+
+    @Test func keepsDataSourceAndAttributionAcrossASave() throws {
+        let container = try PorchStore.makeContainer(inMemory: true)
+        let context = ModelContext(container)
+        let pkg = Package(
+            id: "0d3c6f0e-1d7b-4f0a-8b51-6a2f4e9c1b22", carrier: .dhl, trackingNumber: "1234567890", status: .delivered,
+            updatedAt: Date(timeIntervalSince1970: 1_793_000_000), dataSource: .api,
+            attribution: "Delivered by Deutsche Post DHL Group"
+        )
+        let stored = StoredPackage(pkg)
+        context.insert(stored)
+        try context.save()
+
+        let fetched = try #require(try context.fetch(FetchDescriptor<StoredPackage>()).first)
+        #expect(fetched.package.dataSource == .api)
+        #expect(fetched.package.attribution == "Delivered by Deutsche Post DHL Group")
+        #expect(fetched.package == pkg)
+
+        var later = pkg
+        later.dataSource = nil
+        later.attribution = nil
+        fetched.update(from: later)
+        #expect(fetched.package.dataSource == nil)
+        #expect(fetched.package.attribution == nil)
+    }
+
+    @Test func readsAnUnknownStoredDataSourceAsNil() throws {
+        let pkg = Package(id: "p", carrier: .usps, trackingNumber: "9400111206206406260787", updatedAt: .now, dataSource: .device)
+        let stored = StoredPackage(pkg)
+        stored.dataSourceRaw = "carrier_pigeon"
+        #expect(stored.package.dataSource == nil)
+    }
 }

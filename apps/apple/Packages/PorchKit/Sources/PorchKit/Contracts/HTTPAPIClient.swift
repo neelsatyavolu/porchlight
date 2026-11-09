@@ -91,6 +91,17 @@ public struct HTTPAPIClient: APIClient {
         try await send(Endpoints.refreshPackage(id: id))
     }
 
+    // MARK: Device tracking
+
+    public func deviceTrackingDue() async throws -> [DeviceJob] {
+        let response: DeviceJobsResponse = try await send(Endpoints.deviceTrackingDue)
+        return response.jobs
+    }
+
+    public func postObserved(packageId: String, _ observation: DeviceObservation) async throws -> DeviceObservedResponse {
+        try await send(Endpoints.postObserved(packageId: packageId, observation))
+    }
+
     // MARK: Imports, pairing, tokens
 
     public func importFlint(_ items: [FlintImportItem]) async throws -> ImportResponse {

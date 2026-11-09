@@ -29,7 +29,8 @@ function result(over: Partial<TrackResult> = {}): TrackResult {
 }
 
 function adapter(id: string, track: CarrierAdapter["track"]): CarrierAdapter {
-  return { id, supports: () => true, track };
+  const source = id === "aggregator" ? "aggregator" : id.startsWith("web:") ? "web" : "api";
+  return { id, source, supports: () => true, track };
 }
 
 function deps(over: Partial<ConsumeDeps> = {}): ConsumeDeps & { notify: ReturnType<typeof vi.fn> } {
@@ -37,6 +38,7 @@ function deps(over: Partial<ConsumeDeps> = {}): ConsumeDeps & { notify: ReturnTy
   return {
     adaptersFor: () => [adapter("ups", async () => result())],
     takeToken: async () => ({ allowed: true, retryAfterSec: 0 }),
+    reserveAggregator: async () => true,
     fetch: (async () => new Response("unexpected live call", { status: 599 })) as typeof fetch,
     now: () => NOW,
     notify,
@@ -205,14 +207,14 @@ describe("processJob", () => {
 
   it("falls back to the next adapter on a non-retryable error", async () => {
     const userId = await seedUser(env);
-    const id = await seedPackage(env, { userId });
+    const id = await seedPackage(env, { userId, carrier: "dhl" });
     const second = vi.fn(async () => result());
     const d = deps({
       adaptersFor: () => [
-        adapter("ups", async () => {
-          throw new CarrierError("auth", "ups", "bad key");
+        adapter("dhl", async () => {
+          throw new CarrierError("auth", "dhl", "bad key");
         }),
-        adapter("aggregator", second),
+        adapter("web:dhl", second),
       ],
     });
     expect(await processJob(job(id, userId), env, d)).toEqual({ kind: "done" });
@@ -273,11 +275,11 @@ describe("processJob", () => {
     expect((await getPackage(env, none)).next_check_at).toBe(NOW + 24 * HOUR);
     expect((await getPackage(env, none)).last_checked_at).toBeNull();
 
-    const missing = await seedPackage(env, { userId, updatedAt: NOW - HOUR });
+    const missing = await seedPackage(env, { userId, carrier: "ontrac", updatedAt: NOW - HOUR });
     const nf = deps({
       adaptersFor: () => [
-        adapter("ups", async () => {
-          throw new CarrierError("not_found", "ups", "no such number");
+        adapter("web:ontrac", async () => {
+          throw new CarrierError("not_found", "web:ontrac", "no such number");
         }),
       ],
     });
@@ -323,9 +325,9 @@ describe("consumeBatch", () => {
     expect(m2.retry).toHaveBeenCalledWith({ delaySeconds: 120 });
   });
 
-  it("stops retrying after the last attempt and reschedules instead", async () => {
+  it("stops retrying after the last attempt and backs off: 15 min, doubling, at most 2 h", async () => {
     const userId = await seedUser(env);
-    const id = await seedPackage(env, { userId, status: "in_transit" });
+    const id = await seedPackage(env, { userId, status: "in_transit", updatedAt: NOW });
     const d = deps({
       adaptersFor: () => [
         adapter("ups", async () => {
@@ -337,7 +339,21 @@ describe("consumeBatch", () => {
     await consumeBatch({ queue: "porchlight-track", messages: [m] } as unknown as MessageBatch<TrackJob>, env, d);
     expect(m.ack).toHaveBeenCalled();
     expect(m.retry).not.toHaveBeenCalled();
-    expect((await getPackage(env, id)).next_check_at).toBe(NOW + 90 * MIN);
+    expect((await getPackage(env, id)).next_check_at).toBe(NOW + 15 * MIN);
+
+    const expected = [30, 60, 120, 120];
+    for (const minutes of expected) {
+      const again = message(job(id, userId), 3);
+      await consumeBatch({ queue: "porchlight-track", messages: [again] } as unknown as MessageBatch<TrackJob>, env, d);
+      expect((await getPackage(env, id)).next_check_at).toBe(NOW + minutes * MIN);
+    }
+    const row = await env.DB.prepare("SELECT check_failures FROM packages WHERE id = ?").bind(id).first<{ check_failures: number }>();
+    expect(row?.check_failures).toBe(5);
+
+    // A successful check resets the count.
+    await processJob(job(id, userId), env, deps());
+    const reset = await env.DB.prepare("SELECT check_failures FROM packages WHERE id = ?").bind(id).first<{ check_failures: number }>();
+    expect(reset?.check_failures).toBe(0);
   });
 });
 

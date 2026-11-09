@@ -29,6 +29,10 @@ public protocol APIClient: Sendable {
     func deletePackage(id: String) async throws -> PackageDeleteResponse
     func refreshPackage(id: String) async throws -> RefreshResponse
 
+    // Device tracking (usps, ups, fedex read on the device)
+    func deviceTrackingDue() async throws -> [DeviceJob]
+    func postObserved(packageId: String, _ observation: DeviceObservation) async throws -> DeviceObservedResponse
+
     // Imports
     func importFlint(_ items: [FlintImportItem]) async throws -> ImportResponse
     func importAmazon(_ items: [AmazonImportItem]) async throws -> ImportResponse
@@ -111,6 +115,10 @@ public enum Endpoints {
     public static func putPackage(id: String, _ r: PackagePutRequest) throws -> Endpoint { try .json(.put, "/packages/\(segment(id))", r) }
     public static func deletePackage(id: String) -> Endpoint { Endpoint(.delete, "/packages/\(segment(id))") }
     public static func refreshPackage(id: String) -> Endpoint { Endpoint(.post, "/packages/\(segment(id))/refresh") }
+    public static let deviceTrackingDue = Endpoint(.get, "/device-tracking/due")
+    public static func postObserved(packageId: String, _ o: DeviceObservation) throws -> Endpoint {
+        try .json(.post, "/packages/\(segment(packageId))/observed", o)
+    }
     public static func importFlint(_ items: [FlintImportItem]) throws -> Endpoint { try .json(.post, "/imports/flint", ImportRequest(items: items)) }
     public static func importAmazon(_ items: [AmazonImportItem]) throws -> Endpoint { try .json(.post, "/imports/amazon", ImportRequest(items: items)) }
     public static let amazonIntegration = Endpoint(.get, "/integrations/amazon")
@@ -130,4 +138,12 @@ extension APIClient {
         throw PorchError.notImplemented("reportAmazonStatus")
     }
     public func clearAmazonStatus() async throws { throw PorchError.notImplemented("clearAmazonStatus") }
+}
+
+/// Fakes written before device tracking existed keep compiling; HTTPAPIClient implements both.
+extension APIClient {
+    public func deviceTrackingDue() async throws -> [DeviceJob] { throw PorchError.notImplemented("deviceTrackingDue") }
+    public func postObserved(packageId: String, _ observation: DeviceObservation) async throws -> DeviceObservedResponse {
+        throw PorchError.notImplemented("postObserved")
+    }
 }

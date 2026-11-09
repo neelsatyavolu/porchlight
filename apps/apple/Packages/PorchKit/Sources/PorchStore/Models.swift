@@ -4,6 +4,9 @@ import SwiftData
 
 // CONTRACT: the SwiftData schema. Adding a stored property is a schema change:
 // add a VersionedSchema and a migration stage before the first TestFlight build.
+// Optional properties with no default (dataSourceRaw, attribution) are added
+// by SwiftData's automatic lightweight migration; existing rows read nil
+// until the next sync fills them.
 // Views may read these with @Query; writes go through SyncEngine.
 
 @Model
@@ -28,6 +31,10 @@ public final class StoredPackage {
     public var archivedAt: Date?
     public var updatedAt: Date
     public var items: [PackageItem]
+    /// `DataSource.rawValue` (packages.last_source); nil before any read.
+    public var dataSourceRaw: String?
+    /// The carrier-required line for the detail view (DHL API), else nil.
+    public var attribution: String?
     /// True while a local edit hasn't been acknowledged by the server.
     public var hasPendingWrite: Bool
     @Relationship(deleteRule: .cascade, inverse: \StoredEvent.package)
@@ -66,6 +73,8 @@ public final class StoredPackage {
         archivedAt = pkg.archivedAt
         updatedAt = pkg.updatedAt
         items = pkg.items
+        dataSourceRaw = pkg.dataSource?.rawValue
+        attribution = pkg.attribution
     }
 
     public var package: Package {
@@ -84,7 +93,9 @@ public final class StoredPackage {
             lastCheckedAt: lastCheckedAt,
             archivedAt: archivedAt,
             updatedAt: updatedAt,
-            items: items
+            items: items,
+            dataSource: dataSourceRaw.flatMap(DataSource.init(rawValue:)),
+            attribution: attribution
         )
     }
 }

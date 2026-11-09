@@ -103,6 +103,7 @@ export function createFedexAdapter(options: { tokenCache?: TokenCache } = {}): R
 
   return {
     id: ID,
+    source: "api",
     supports: (carrier) => carrier === "fedex",
     isConfigured: (env: CarrierEnv) => Boolean(env.FEDEX_CLIENT_ID && env.FEDEX_CLIENT_SECRET),
     async track(number: string, _carrier, ctx: TrackContext) {

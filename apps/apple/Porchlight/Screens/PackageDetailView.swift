@@ -196,7 +196,7 @@ struct PackageDetailView: View {
             if events.isEmpty {
                 EmptyState(
                     "No scans yet",
-                    message: "\(pkg.carrier.displayName) hasn't reported this number. Porchlight checks again within the hour.",
+                    message: SourceText.noScansText(pkg),
                     size: .inline
                 )
                 .padding(.horizontal, -PorchSpacing.l)
@@ -204,6 +204,25 @@ struct PackageDetailView: View {
             } else {
                 EventTimeline(days: PackageText.timelineDays(events, now: now, timeZone: .current), newestStatus: pkg.status)
             }
+            provenance(pkg, now: now)
+        }
+    }
+
+    /// The device hint, where the status came from, and any line the
+    /// carrier's terms require (DHL API), under the timeline.
+    @ViewBuilder
+    private func provenance(_ pkg: Package, now: Date) -> some View {
+        let hint = SourceText.deviceHint(pkg, now: now)
+        let source = SourceText.sourceLine(pkg, now: now)
+        if hint != nil || source != nil || pkg.attribution != nil {
+            VStack(alignment: .leading, spacing: PorchSpacing.xs) {
+                if let hint { Text(hint).foregroundStyle(PorchColor.body) }
+                if let source { Text(source).monospacedDigit().foregroundStyle(PorchColor.mute) }
+                if let attribution = pkg.attribution { Text(attribution).foregroundStyle(PorchColor.body) }
+            }
+            .font(PorchFont.bodySmall)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.top, PorchSpacing.s)
         }
     }
 
@@ -282,7 +301,7 @@ struct PackageDetailView: View {
         message = nil
         do {
             _ = try await services.sync.refresh(packageId: packageId)
-            message = "Asked \(pkg?.carrier.displayName ?? "the carrier") for an update. New scans appear here when it answers."
+            message = pkg.map(SourceText.refreshText) ?? "Asked the carrier for an update. New scans appear here when it answers."
             _ = try? await services.sync.sync()
             services.didChange()
         } catch {

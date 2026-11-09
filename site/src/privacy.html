@@ -35,7 +35,7 @@
         <div class="fact"><dt>Your account</dt><dd>Your email address, or the account id and email address Apple shares when you use Sign in with Apple.</dd></div>
         <div class="fact"><dt>Sign-ins</dt><dd>For each signed-in device, a session token (stored only as a hash), when it was created and when it was last used.</dd></div>
         <div class="fact"><dt>Devices</dt><dd>The platform (Mac or iPhone), the app version, and the token Apple gives the app for notifications.</dd></div>
-        <div class="fact"><dt>Packages</dt><dd>Carrier, tracking number, the title you give it, merchant, order number, where it came from (added by hand, Amazon, Flint or the share sheet), its status and the carrier's latest wording, delivery dates, and when it was last checked.</dd></div>
+        <div class="fact"><dt>Packages</dt><dd>Carrier, tracking number, the title you give it, merchant, order number, where it came from (added by hand, Amazon, Flint or the share sheet), its status and the carrier's latest wording, delivery dates, when it was last checked, and how (the carrier's API, the carrier's tracking page, Ship24, or one of your devices).</dd></div>
         <div class="fact"><dt>Scan history</dt><dd>Each event the carrier reports, with its time, description and location.</dd></div>
         <div class="fact"><dt>Amazon items</dt><dd>The name and quantity of each item in an order, and the link to its picture on Amazon's servers.</dd></div>
         <div class="fact"><dt>Import records</dt><dd>The Flint message id or the Amazon order and shipment id behind each imported package, so the same email or order is never added twice.</dd></div>
@@ -45,17 +45,18 @@
       <h2>What stays on your devices</h2>
       <dl class="facts">
         <div class="fact"><dt>Amazon</dt><dd>You sign in to Amazon inside the Mac or iPhone app, on Amazon's own page. The cookies from that sign-in are kept in a separate store on that device. They are never sent to the Porchlight server and never synced to your other devices, so each device that imports signs in on its own. The app reads your orders the way you would in a browser and sends Porchlight only the order and shipment numbers, the items, the delivery date, the carrier, the tracking number and, for Amazon Logistics packages, the tracking events. If Amazon signs you out or changes its pages, the app stops importing and says so in Settings.</dd></div>
+        <div class="fact"><dt>Carrier pages</dt><dd>USPS, FedEx and often UPS don't answer the Porchlight server, so the Mac and iPhone apps open those carriers' public tracking pages in a hidden browser view on your device, the way you would in Safari. The app reads the status, delivery date and scan history from the page and sends only that to Porchlight. The carrier sees the tracking number and your device's network address, as it would if you looked the package up yourself. The cookies those pages set stay on that device, in a store kept apart from your Amazon sign-in. If a page asks you to prove you're human, the app stops and doesn't try to get past it.</dd></div>
         <div class="fact"><dt>Flint</dt><dd>You pair Flint once with a one-time code from Porchlight's settings, and you can revoke it there at any time. When Flint finds a shipping email, it sends the carrier, the tracking number, the sender's name, the subject line and the date. Flint also does this once for the last 30 days of mail when you pair it. The body of the email never leaves your Mac.</dd></div>
       </dl>
 
       <h2>Who else receives your data</h2>
       <dl class="facts">
-        <div class="fact"><dt>Carriers and a tracking service</dt><dd>To check a package, the server sends its tracking number to the carrier (USPS, UPS, FedEx or DHL) or to Ship24, a tracking service that covers the other carriers. Nothing else about you goes with it. Amazon Logistics numbers are not sent to Ship24.</dd></div>
+        <div class="fact"><dt>Carriers and a tracking service</dt><dd>To check a package, the server sends its tracking number to the carrier (DHL's tracking API, or the public tracking feed of UPS, DHL eCommerce, Amazon Logistics, OnTrac, UniUni or Jitsu) or to Ship24, a tracking service that covers the other carriers. Nothing else about you goes with it. Amazon Logistics numbers are not sent to Ship24. USPS, FedEx and some UPS checks come from your own device instead, as described above.</dd></div>
         <div class="fact"><dt>Resend</dt><dd>Sends sign-in email. It receives your email address and the message, which holds a sign-in link and a 6-digit code.</dd></div>
         <div class="fact"><dt>Apple</dt><dd>Sign in with Apple tells Porchlight your Apple account id and email address. Notifications go through Apple's push service, which receives your device's notification token and the text of the notification: the package title and its new status.</dd></div>
         <div class="fact"><dt>Cloudflare</dt><dd>Runs the Porchlight server and database.</dd></div>
       </dl>
-      <p>The Porchlight server never contacts Amazon. The web app doesn't show Amazon item pictures, so viewing your packages there sends nothing to Amazon.</p>
+      <p>The Porchlight server never signs in to Amazon or reads your orders. For Amazon Logistics packages it asks Amazon's public tracking page for the status, sending only the tracking number. The web app doesn't show Amazon item pictures, so viewing your packages there sends nothing to Amazon.</p>
 
       <h2>Analytics</h2>
       <p>This website counts page views with a small first-party counter. It sends the page address without any query string and the page you came from. The server adds your country and the type of browser and device. To tell visits apart, it keeps a one-way hash of your IP address and browser mixed with a value that is replaced every day and then deleted. Your IP address itself is not stored, and nothing is saved in your browser.</p>
@@ -66,6 +67,7 @@
 
       <h2>Keeping and deleting</h2>
       <p>Your data is kept while you have an account.</p>
+      <p>For packages tracked through DHL's API, DHL's terms require the scan history to be deleted 30 days after delivery. The package itself stays.</p>
       <p>When you delete a package, its scan history and items are removed right away. A small record with the carrier, tracking number, title and merchant stays so your other devices learn that it was deleted. It is removed when you delete your account.</p>
       <p>Signing out of a device removes its notification token.</p>
       <p>To delete your account, open Settings and choose Delete account. Every record that belongs to you is removed right away. Cloudflare keeps a point-in-time recovery history of the database for up to 30 days, after which the deleted data is gone from that too.</p>

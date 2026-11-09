@@ -1,4 +1,4 @@
-import type { CarrierId, Status } from "@porchlight/carriers";
+import { DHL_ATTRIBUTION, isDhlApiData, type CarrierId, type DataSource, type Status } from "@porchlight/carriers";
 import type { Env } from "../env.js";
 import { requireUser } from "../lib/auth.js";
 import { base64UrlDecodeText, base64UrlEncodeText, toIso } from "../lib/crypto.js";
@@ -30,6 +30,20 @@ export interface PackageRow {
   archived_at: number | null;
   deleted_at: number | null;
   updated_at: number;
+  // migration 0005
+  last_source: DataSource | null;
+  device_needed_at: number | null;
+  device_reason: "new" | "scheduled" | "manual" | "server_blocked" | null;
+  device_failures: number;
+  check_failures: number;
+  web_misses: number;
+  aggregator_registered_at: number | null;
+  events_purged_at: number | null;
+}
+
+/** The line a carrier's terms require clients to show, or null (docs/API.md "The Package object"). */
+export function attributionFor(carrier: CarrierId, source: DataSource | null): string | null {
+  return isDhlApiData(carrier, source) ? DHL_ATTRIBUTION : null;
 }
 
 interface ItemRow {
@@ -67,6 +81,8 @@ export function toPackage(r: PackageRow, items: PackageItem[]): Package {
     archivedAt: toIso(r.archived_at),
     updatedAt: toIso(r.updated_at),
     items,
+    dataSource: r.last_source,
+    attribution: attributionFor(r.carrier, r.last_source),
   };
 }
 

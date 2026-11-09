@@ -1,0 +1,11 @@
+{
+  "status": 200,
+  "contentType": "text/html",
+  "setCookie": [
+    "X-CSRF-TOKEN=csrf-synthetic; path=/; secure; samesite=lax",
+    "X-XSRF-TOKEN-ST=xsrf%2Bsynthetic; path=/; secure; samesite=strict",
+    "AKA_A2=A; expires=Mon, 09-Nov-2026 01:12:57 GMT; path=/; domain=ups.com; secure; HttpOnly",
+    "bm_sz=bmsz-synthetic; Domain=.ups.com; Path=/; Expires=Mon, 09 Nov 2026 04:12:57 GMT; Max-Age=14400"
+  ],
+  "body": "<!DOCTYPE html><html lang=\"en\"><head><title>Tracking | UPS - United States</title></head><body><app-root></app-root></body></html>"
+}

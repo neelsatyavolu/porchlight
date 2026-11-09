@@ -235,3 +235,20 @@
     gap: var(--s-1);
   }
 }
+
+/* Where the status came from, the device hint, and carrier-required attribution. */
+.detail__provenance {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-1);
+  color: var(--mute);
+  font-size: var(--text-body-sm);
+}
+
+.detail__hint {
+  color: var(--body);
+}
+
+.detail__attribution {
+  color: var(--body);
+}

@@ -33,6 +33,8 @@ export function makePackage(id: string, patch: Partial<Package> = {}): Package {
     archivedAt: null,
     updatedAt: "2026-11-08T17:00:00.000Z",
     items: [],
+    dataSource: null,
+    attribution: null,
     ...patch,
   };
 }

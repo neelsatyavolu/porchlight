@@ -1,0 +1,127 @@
+{
+  "total": 2,
+  "limit": 10,
+  "offset": 0,
+  "packages": [
+    {
+      "trackedValue": "GM2951173225174494",
+      "tmiUid": "synthetic-package-id",
+      "trackingId": "GM2951173225174494",
+      "packageId": "SYNTHETICPACKAGE123",
+      "status": "En Route",
+      "estimatedDeliveryDate": "2026-11-12",
+      "dspName": "USPS",
+      "deliveryConfirmationNumber": "9261299999999999999999",
+      "sender": {
+        "name": "Synthetic Webshop",
+        "postalCode": "PRIVATE POSTCODE"
+      },
+      "recipient": {
+        "name": "PRIVATE RECIPIENT",
+        "address": "PRIVATE ADDRESS"
+      },
+      "events": [
+        {
+          "primaryEventId": "990",
+          "primaryEventDescription": "EN ROUTE",
+          "date": "2026-11-09",
+          "time": "05:40:17",
+          "timeZone": "LT",
+          "location": ""
+        },
+        {
+          "primaryEventId": "600",
+          "primaryEventDescription": "ARRIVAL DESTINATION DHL ECOMMERCE FACILITY",
+          "date": "2026-11-08",
+          "time": "21:04:26",
+          "timeZone": "PT",
+          "location": "Hayward, CA, US"
+        },
+        {
+          "primaryEventId": "600",
+          "primaryEventDescription": "ARRIVAL DESTINATION DHL ECOMMERCE FACILITY",
+          "date": "2026-11-08",
+          "time": "21:04:26",
+          "timeZone": "PT",
+          "location": "Hayward, CA, US"
+        },
+        {
+          "primaryEventId": "520",
+          "primaryEventDescription": "DEPARTURE ORIGIN DHL ECOMMERCE FACILITY",
+          "date": "2026-11-06",
+          "time": "05:04:26",
+          "timeZone": "CT",
+          "location": "Melrose Park, IL, US"
+        },
+        {
+          "primaryEventId": "77",
+          "primaryEventDescription": "LABEL CREATED",
+          "date": "2026-11-05",
+          "time": "03:11:58",
+          "timeZone": "ET",
+          "location": "Hebron, KY, US"
+        }
+      ]
+    },
+    {
+      "trackedValue": "GM2951173225174494",
+      "tmiUid": "synthetic-package-id",
+      "trackingId": "GM2951173225174495",
+      "packageId": "SYNTHETICPACKAGE123",
+      "status": "En Route",
+      "estimatedDeliveryDate": "2026-11-12",
+      "dspName": "USPS",
+      "deliveryConfirmationNumber": "9261299999999999999999",
+      "sender": {
+        "name": "Synthetic Webshop",
+        "postalCode": "PRIVATE POSTCODE"
+      },
+      "recipient": {
+        "name": "PRIVATE RECIPIENT",
+        "address": "PRIVATE ADDRESS"
+      },
+      "events": [
+        {
+          "primaryEventId": "990",
+          "primaryEventDescription": "EN ROUTE",
+          "date": "2026-11-09",
+          "time": "05:40:17",
+          "timeZone": "LT",
+          "location": ""
+        },
+        {
+          "primaryEventId": "600",
+          "primaryEventDescription": "ARRIVAL DESTINATION DHL ECOMMERCE FACILITY",
+          "date": "2026-11-08",
+          "time": "21:04:26",
+          "timeZone": "PT",
+          "location": "Hayward, CA, US"
+        },
+        {
+          "primaryEventId": "600",
+          "primaryEventDescription": "ARRIVAL DESTINATION DHL ECOMMERCE FACILITY",
+          "date": "2026-11-08",
+          "time": "21:04:26",
+          "timeZone": "PT",
+          "location": "Hayward, CA, US"
+        },
+        {
+          "primaryEventId": "520",
+          "primaryEventDescription": "DEPARTURE ORIGIN DHL ECOMMERCE FACILITY",
+          "date": "2026-11-06",
+          "time": "05:04:26",
+          "timeZone": "CT",
+          "location": "Melrose Park, IL, US"
+        },
+        {
+          "primaryEventId": "77",
+          "primaryEventDescription": "LABEL CREATED",
+          "date": "2026-11-05",
+          "time": "03:11:58",
+          "timeZone": "ET",
+          "location": "Hebron, KY, US"
+        }
+      ]
+    }
+  ]
+}

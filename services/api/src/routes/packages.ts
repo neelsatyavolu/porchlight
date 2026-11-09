@@ -176,6 +176,16 @@ async function deletePackage({ req, env, params }: RouteContext): Promise<Respon
   return json<PackageDeleteResponse>({ id, deletedAt: toIso(now) });
 }
 
+/**
+ * Whether the package's next read belongs to a device: USPS and FedEx always,
+ * UPS once the server's read was blocked (a device read is pending or the
+ * last status came from a device).
+ */
+export function readsOnDevice(row: Pick<PackageRow, "carrier" | "last_source" | "device_needed_at">): boolean {
+  if (row.carrier === "usps" || row.carrier === "fedex") return true;
+  return row.carrier === "ups" && (row.device_needed_at !== null || row.last_source === "device");
+}
+
 async function refreshPackage({ req, env, params }: RouteContext): Promise<Response> {
   const session = await requireUser(req, env);
   if (session instanceof Response) return session;
@@ -188,7 +198,13 @@ async function refreshPackage({ req, env, params }: RouteContext): Promise<Respo
   if (until > now) throw rateLimited(Math.ceil((until - now) / 1000));
   const nextAllowed = now + REFRESH_INTERVAL_MS;
   await env.RATE.put(key, String(nextAllowed), { expirationTtl: REFRESH_INTERVAL_MS / 1000 });
-  await env.TRACK_QUEUE.send({ packageId: id, userId: session.userId, reason: "manual", enqueuedAt: now });
+  if (readsOnDevice(row)) {
+    await env.DB.prepare("UPDATE packages SET device_needed_at = ?, device_reason = 'manual' WHERE id = ? AND user_id = ?")
+      .bind(now, id, session.userId)
+      .run();
+  } else {
+    await env.TRACK_QUEUE.send({ packageId: id, userId: session.userId, reason: "manual", enqueuedAt: now });
+  }
   return json<RefreshResponse>({ queued: true, nextAllowedAt: toIso(nextAllowed) }, 202);
 }
 

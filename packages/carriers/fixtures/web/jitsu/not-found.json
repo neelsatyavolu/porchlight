@@ -1,0 +1,6 @@
+{
+  "servlet": "jersey",
+  "message": "Not Found",
+  "url": "/delivery/aaaaaaaaaaaaaaaa",
+  "status": "404"
+}
