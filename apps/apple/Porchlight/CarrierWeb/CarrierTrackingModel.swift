@@ -35,6 +35,10 @@ final class CarrierTrackingModel {
         lastCheckedAt = store.load().lastCheckedAt
     }
 
+    /// Refresh on a USPS, UPS or FedEx package: the server has just marked it due,
+    /// so read it now instead of on the next 5-minute tick. Returns once posted.
+    func checkNow() async { await checkIfDue() }
+
     /// Reads whatever is due, unless nobody is signed in or a check is running.
     /// `deadline` bounds an iOS background refresh (DeviceTrackingCoordinator.backgroundBudget).
     func checkIfDue(deadline: Date? = nil) async {

@@ -9,6 +9,9 @@ struct PackageDetailView: View {
     let packageId: String
 
     @Environment(ScreenServices.self) private var services
+    /// The on-device readers, so Refresh can run them now. Absent in previews.
+    @Environment(AmazonModel.self) private var amazon: AmazonModel?
+    @Environment(CarrierTrackingModel.self) private var carriers: CarrierTrackingModel?
     @Environment(\.dismiss) private var dismiss
     @Environment(\.openURL) private var openURL
 
@@ -363,9 +366,19 @@ struct PackageDetailView: View {
         defer { refreshing = false }
         error = nil
         message = nil
+        // Amazon is read on this device (Your Orders), never by the server: read it now.
+        if let pkg, pkg.source == .amazon || pkg.carrier == .amazon, let amazon, amazon.connected {
+            await amazon.importNow()
+            message = AmazonStatusText.refreshed(amazon.status, now: Date())
+            _ = try? await services.sync.sync()
+            services.didChange()
+            return
+        }
         do {
             _ = try await services.sync.refresh(packageId: packageId)
             message = pkg.map(SourceText.refreshText) ?? "Asked the carrier for an update. New scans appear here when it answers."
+            // USPS, UPS and FedEx pages are read on this device: read the one just marked due now.
+            if let pkg, SourceText.readsOnDevice(pkg) { await carriers?.checkNow() }
             _ = try? await services.sync.sync()
             services.didChange()
         } catch {

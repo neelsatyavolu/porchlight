@@ -28,3 +28,17 @@ import Testing
         #expect(line == .init(text: "Connected on another device, but it couldn't read your Amazon orders. An app update may fix it.", isProblem: true))
     }
 }
+
+@Suite struct AmazonRefreshTextTests {
+    @Test func saysWhatRefreshDid() {
+        var s = AmazonLocalStatus()
+        s.connected = true
+        s.state = .ok
+        s.lastImportAt = NOW.addingTimeInterval(-20)
+        #expect(AmazonStatusText.refreshed(s, now: NOW) == "Checked Amazon just now.")
+        s.lastImportAt = NOW.addingTimeInterval(-10 * 60)
+        #expect(AmazonStatusText.refreshed(s, now: NOW).hasPrefix("Checked Amazon a few minutes ago"))
+        s.state = .needsSignIn
+        #expect(AmazonStatusText.refreshed(s, now: NOW).hasPrefix("Amazon wants you to sign in again"))
+    }
+}

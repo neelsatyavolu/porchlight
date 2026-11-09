@@ -151,6 +151,22 @@ import Testing
         #expect(await coordinator.isDueOnMac())
     }
 
+    @Test func aManualRefreshOnlyWaitsTwoMinutes() async {
+        let api = AmazonFakeAPI()
+        let (coordinator, _, clock) = make(api: api)
+        _ = await coordinator.runIfDue()
+        clock.advance(minutes: 1)
+        _ = await coordinator.runIfDue(minimumInterval: AmazonImportCoordinator.manualMinimumInterval)
+        #expect(api.calls.withLock { $0.imports }.count == 1)
+        clock.advance(minutes: 1.5)
+        _ = await coordinator.runIfDue(minimumInterval: AmazonImportCoordinator.manualMinimumInterval)
+        #expect(api.calls.withLock { $0.imports }.count == 2)
+        // The scheduled runs still keep 15 minutes from the last attempt.
+        clock.advance(minutes: 5)
+        _ = await coordinator.runIfDue()
+        #expect(api.calls.withLock { $0.imports }.count == 2)
+    }
+
     @Test func macIsNeverDueWhenDisconnected() async {
         let (coordinator, _, _) = make(connected: false)
         #expect(!(await coordinator.isDueOnMac()))

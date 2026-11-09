@@ -48,6 +48,8 @@ public final class DefaultsAmazonStatusStore: AmazonStatusStoring, @unchecked Se
 /// Imports never start less than 15 minutes apart, whoever asks (SPEC §6).
 public actor AmazonImportCoordinator {
     public static let minimumInterval: TimeInterval = 15 * 60
+    /// The floor for a Refresh someone pressed on an Amazon package.
+    public static let manualMinimumInterval: TimeInterval = 2 * 60
     /// macOS: how often the app checks `isDueOnMac()` while it runs.
     public static let macTick: Duration = .seconds(5 * 60)
     /// macOS: how old the last good import may get before the next one.
@@ -72,9 +74,9 @@ public actor AmazonImportCoordinator {
     public var status: AmazonLocalStatus { store.load() }
 
     /// The earliest time the next import may start, or nil if it may start now.
-    public func nextAllowedAt() -> Date? {
+    public func nextAllowedAt(minimumInterval: TimeInterval = AmazonImportCoordinator.minimumInterval) -> Date? {
         guard let last = store.load().lastAttemptAt else { return nil }
-        let next = last.addingTimeInterval(Self.minimumInterval)
+        let next = last.addingTimeInterval(minimumInterval)
         return next > now() ? next : nil
     }
 
@@ -107,12 +109,15 @@ public actor AmazonImportCoordinator {
     }
 
     /// Runs an import unless one is running, the device isn't connected, or
-    /// the last one started under 15 minutes ago. Returns the status after.
+    /// the last one started under `minimumInterval` ago (15 minutes; 2 for a
+    /// Refresh someone pressed). Returns the status after.
     /// `deadline` is passed to the importer (AmazonImporter.deadline).
     @discardableResult
-    public func runIfDue(deadline: Date? = nil) async -> AmazonLocalStatus {
+    public func runIfDue(
+        deadline: Date? = nil, minimumInterval: TimeInterval = AmazonImportCoordinator.minimumInterval
+    ) async -> AmazonLocalStatus {
         var s = store.load()
-        guard s.connected, !running, nextAllowedAt() == nil else { return s }
+        guard s.connected, !running, nextAllowedAt(minimumInterval: minimumInterval) == nil else { return s }
         running = true
         defer { running = false }
         s.lastAttemptAt = now()

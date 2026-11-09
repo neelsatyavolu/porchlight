@@ -21,10 +21,15 @@ final class AmazonModel {
     @ObservationIgnored private let coordinator: AmazonImportCoordinator
     @ObservationIgnored private let api: any APIClient
     @ObservationIgnored private let signedIn: @MainActor () -> Bool
+    /// Called after an import that sent packages, so the app syncs and shows them.
+    @ObservationIgnored private let didImport: @MainActor () -> Void
     @ObservationIgnored private var timer: Task<Void, Never>?
     @ObservationIgnored private let log = Logger(subsystem: "co.xanom.porchlight", category: "amazon")
 
-    init(api: any APIClient, signedIn: @escaping @MainActor () -> Bool, defaults: UserDefaults = .standard) {
+    init(
+        api: any APIClient, signedIn: @escaping @MainActor () -> Bool,
+        didImport: @escaping @MainActor () -> Void = {}, defaults: UserDefaults = .standard
+    ) {
         let store = DefaultsAmazonStatusStore(defaults: defaults)
         let loader = AmazonWebPageLoader(engine: engine)
         let names = OnDeviceItemNames()
@@ -33,6 +38,7 @@ final class AmazonModel {
         }
         self.api = api
         self.signedIn = signedIn
+        self.didImport = didImport
         status = store.load()
     }
 
@@ -67,11 +73,23 @@ final class AmazonModel {
     /// Porchlight, or Amazon isn't connected. Safe to call often. `deadline`
     /// caps the time spent reading track pages (an iOS background refresh).
     func importIfDue(deadline: Date? = nil) async {
+        await run(deadline: deadline, minimumInterval: AmazonImportCoordinator.minimumInterval)
+    }
+
+    /// Refresh on an Amazon package: import now unless one started in the last 2 minutes.
+    func importNow() async {
+        await run(deadline: nil, minimumInterval: AmazonImportCoordinator.manualMinimumInterval)
+    }
+
+    private func run(deadline: Date?, minimumInterval: TimeInterval) async {
         guard signedIn(), status.connected, !running else { return }
         running = true
-        status = await coordinator.runIfDue(deadline: deadline)
+        let before = status.lastImportAt
+        status = await coordinator.runIfDue(deadline: deadline, minimumInterval: minimumInterval)
         running = false
         await reload()
+        // A background refresh has synced already and has no time for another.
+        if status.lastImportAt != before, (status.lastCount ?? 0) > 0, deadline == nil { didImport() }
     }
 
     func reload() async {

@@ -40,6 +40,7 @@ struct PorchlightApp: App {
                 .environment(appDelegate.router)
                 .environment(appDelegate.push)
                 .environment(appDelegate.amazon)
+                .environment(appDelegate.carriers)
                 .onOpenURL { url in appDelegate.openURL(url) }
                 .onChange(of: appDelegate.model.phase, initial: true) { _, phase in appDelegate.sessionChanged(phase) }
                 .onChange(of: scenePhase, initial: true) { _, phase in appDelegate.scenePhaseChanged(phase) }

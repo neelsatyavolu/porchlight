@@ -42,7 +42,10 @@ final class AppDelegate: NSObject {
         )
         self.refresh = refresh
         let sessionStore = model.sessionStore
-        amazon = AmazonModel(api: model.api, signedIn: { (try? sessionStore.load()) != nil })
+        amazon = AmazonModel(
+            api: model.api, signedIn: { (try? sessionStore.load()) != nil },
+            didImport: { Task { _ = await refresh.run() } }
+        )
         carriers = CarrierTrackingModel(
             api: model.api, signedIn: { (try? sessionStore.load()) != nil },
             didPost: { Task { _ = await refresh.run() } }
