@@ -13,9 +13,13 @@ final class AmazonModel {
     private(set) var status: AmazonLocalStatus
     private(set) var running = false
     private(set) var nextAllowedAt: Date?
+    /// While this device isn't signed in to Amazon: the status another device
+    /// reported, so Settings can say Amazon is already connected there.
+    private(set) var elsewhere: AmazonIntegration?
 
     @ObservationIgnored private let engine = AmazonWebEngine()
     @ObservationIgnored private let coordinator: AmazonImportCoordinator
+    @ObservationIgnored private let api: any APIClient
     @ObservationIgnored private let signedIn: @MainActor () -> Bool
     @ObservationIgnored private var timer: Task<Void, Never>?
     @ObservationIgnored private let log = Logger(subsystem: "co.xanom.porchlight", category: "amazon")
@@ -26,6 +30,7 @@ final class AmazonModel {
         coordinator = AmazonImportCoordinator(store: store, api: api) {
             AmazonImporter(loader: loader, api: api)
         }
+        self.api = api
         self.signedIn = signedIn
         status = store.load()
     }
@@ -71,6 +76,20 @@ final class AmazonModel {
     func reload() async {
         status = await coordinator.status
         nextAllowedAt = await coordinator.nextAllowedAt()
+        await loadElsewhere()
+    }
+
+    private func loadElsewhere() async {
+        guard !status.connected, signedIn() else {
+            elsewhere = nil
+            return
+        }
+        do {
+            elsewhere = try await api.amazonIntegration()
+        } catch {
+            // Settings then just offers Connect, as before.
+            log.error("could not load the Amazon status: \(String(describing: error), privacy: .public)")
+        }
     }
 
     #if os(macOS)

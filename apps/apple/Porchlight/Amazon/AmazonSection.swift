@@ -12,6 +12,14 @@ struct AmazonSection: View {
         Section {
             if amazon.connected {
                 connectedRows
+            } else if let elsewhere = amazon.elsewhere {
+                TimelineView(.periodic(from: .now, by: 60)) { context in
+                    let line = AmazonStatusText.elsewhere(elsewhere, now: context.date, timeZone: .current)
+                    Text(line.text)
+                        .font(PorchFont.bodySmall)
+                        .foregroundStyle(line.isProblem ? PorchColor.warn : PorchColor.body)
+                }
+                Button("Also connect on this device") { signingIn = true }
             } else {
                 Button("Connect Amazon") { signingIn = true }
             }
@@ -20,6 +28,8 @@ struct AmazonSection: View {
         } footer: {
             Text(amazon.connected
                  ? "Porchlight reads Your Orders on this device every so often. Amazon can change its pages at any time, so this is best effort."
+                 : amazon.elsewhere != nil
+                 ? "You don't need to sign in here too. Connecting this device as well lets it check Amazon when the other one is off."
                  : "Sign in to Amazon once, on Amazon's own page. Your sign-in stays on this device and is never sent to Porchlight.")
         }
         .task { await amazon.reload() }

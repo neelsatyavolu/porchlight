@@ -26,4 +26,23 @@ public enum AmazonStatusText {
             return Line(text: "Connected. The first import starts soon.", isProblem: false)
         }
     }
+
+    /// One line for a device that isn't signed in to Amazon while another one
+    /// is (GET /v1/integrations/amazon): its imports reach this device too.
+    public static func elsewhere(_ i: AmazonIntegration, now: Date, timeZone: TimeZone) -> Line {
+        let device = switch i.platform {
+        case .macos?: "your Mac"
+        case .ios?: "your iPhone"
+        default: "another device"
+        }
+        switch i.state {
+        case .needsSignIn:
+            return Line(text: "Amazon wants you to sign in again on \(device).", isProblem: true)
+        case .parseFailed:
+            return Line(text: "Connected on \(device), but it couldn't read your Amazon orders. An app update may fix it.", isProblem: true)
+        case .ok:
+            let last = i.lastImportAt.map { " Last import \(SettingsText.ago($0, now: now, timeZone: timeZone))." } ?? ""
+            return Line(text: "Connected on \(device).\(last) Its packages show up here too.", isProblem: false)
+        }
+    }
 }
