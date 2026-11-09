@@ -93,7 +93,7 @@ You sign into Amazon once, inside the app: Settings → Connected accounts → A
   - iPhone: on open, and through `BGAppRefreshTask`, which iOS limits.
   - Never more than once every 15 min.
 - **Failure is visible.** When Amazon asks you to sign in again, or the page layout changes and the parser finds nothing, the Amazon row in Settings says so with a time. Packages are never silently dropped.
-- **Parser tests.** The parser is tested against saved, redacted Amazon pages in `PorchKit/Tests/Fixtures/amazon/`.
+- **Parser tests.** The parser is tested against saved, redacted Amazon pages in `PorchKit/Tests/PorchKitTests/Amazon/Fixtures/` (made with `scripts/redact-amazon-fixture.py`).
 - **Scope:** amazon.com first; other Amazon sites later.
 - **Web.** The web app shows Amazon packages that the native apps synced. It cannot sign into Amazon itself; a browser won't let one site read another's pages. Instead it tells you to connect Amazon in the Mac or iPhone app.
 - **Risk.** This reads your own account the way a person would, at a low rate. Amazon could change the page or challenge the session at any time, so it is best effort, and it's described that way in the app.

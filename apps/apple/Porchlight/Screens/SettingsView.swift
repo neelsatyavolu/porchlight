@@ -33,17 +33,9 @@ struct SettingsView: View {
 
             FlintSection()
 
-            Section {
-                LabeledContent("Amazon") {
-                    Text("Coming in the next update")
-                        .font(PorchFont.bodySmall)
-                        .foregroundStyle(PorchColor.mute)
-                }
-            } header: {
-                Text("Amazon")
-            } footer: {
-                Text("Porchlight will read your Amazon orders on this device. Your Amazon sign-in will stay on the device.")
-            }
+            LiveActivitySection()
+
+            AmazonSection()
 
             Section("Appearance") {
                 Picker("Theme", selection: $theme) {
@@ -74,5 +66,9 @@ struct SettingsView: View {
 }
 
 #if DEBUG // ScreenServices.preview() exists only in Debug builds.
-#Preview { NavigationStack { SettingsView() }.environment(ScreenServices.preview()) }
+#Preview {
+    NavigationStack { SettingsView() }
+        .environment(ScreenServices.preview())
+        .environment(AmazonModel(api: PreviewAPI(), signedIn: { true }))
+}
 #endif

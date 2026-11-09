@@ -2,6 +2,8 @@
 // porchlight_session HttpOnly cookie, so every call sends credentials and the
 // browser adds the Origin header the server checks on writes.
 import type {
+  AmazonIntegration,
+  AmazonIntegrationResponse,
   ApiErrorBody,
   ApiTokenInfo,
   AppleSignInRequest,
@@ -178,6 +180,10 @@ export function createClient(options: ClientOptions = {}) {
     putPackage: (packageId: string, body: PackagePutRequest) => request<Package>("PUT", `/packages/${id(packageId)}`, body),
     deletePackage: (packageId: string) => request<PackageDeleteResponse>("DELETE", `/packages/${id(packageId)}`),
     refreshPackage: (packageId: string) => request<RefreshResponse>("POST", `/packages/${id(packageId)}/refresh`),
+
+    // Integrations
+    amazonIntegration: async (): Promise<AmazonIntegration | null> =>
+      (await request<AmazonIntegrationResponse>("GET", "/integrations/amazon")).amazon,
 
     // Pairing and API tokens
     pairingStart: () => request<PairingStartResponse>("POST", "/pairing/start"),

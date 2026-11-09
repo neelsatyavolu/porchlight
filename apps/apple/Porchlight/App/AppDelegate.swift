@@ -18,6 +18,8 @@ final class AppDelegate: NSObject {
     let router = DeepLinkRouter()
     let push: PushController
     let refresh: RefreshScheduler
+    /// The Amazon importer (SPEC §6): on open, on iOS background refresh, every 30 min on the Mac.
+    let amazon: AmazonModel
     private let log = Logger(subsystem: "co.xanom.porchlight", category: "links")
 
     override init() {
@@ -31,6 +33,8 @@ final class AppDelegate: NSObject {
             sync: BackgroundSync(sessionStore: model.sessionStore, engine: { engine }),
             didChangeStore: { screens.didChange() }
         )
+        let sessionStore = model.sessionStore
+        amazon = AmazonModel(api: model.api, signedIn: { (try? sessionStore.load()) != nil })
         super.init()
     }
 
@@ -62,6 +66,7 @@ final class AppDelegate: NSObject {
         push.appIsActive = phase == .active
         switch phase {
         case .active:
+            Task { await amazon.importIfDue() }
             Task {
                 // A first sync that brings packages in (one added on the web or
                 // through the share sheet) is also a good time for the prompt.
@@ -81,8 +86,11 @@ final class AppDelegate: NSObject {
     #if os(iOS)
     /// The `co.xanom.porchlight.refresh` task: book the next one, then sync.
     func handleAppRefresh() async {
+        // The whole refresh gets about 30 seconds, so the Amazon import stops opening pages in time to send what it read.
+        let amazonDeadline = Date().addingTimeInterval(AmazonImporter.backgroundBudget)
         refresh.scheduleAppRefresh()
         _ = await refresh.run()
+        await amazon.importIfDue(deadline: amazonDeadline)
     }
     #endif
 
@@ -130,6 +138,7 @@ extension AppDelegate: NSApplicationDelegate {
         UNUserNotificationCenter.current().delegate = self
         push.registerForRemoteNotifications()
         refresh.startTimer()
+        amazon.startTimer()
     }
 
     func application(_ application: NSApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {

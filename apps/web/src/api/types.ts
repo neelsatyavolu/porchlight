@@ -155,6 +155,28 @@ export interface SessionDeleteResponse {
   signedOut: boolean;
 }
 
+// ---- Integrations -----------------------------------------------------------
+
+export type AmazonImportState = "ok" | "needs_sign_in" | "parse_failed";
+
+export interface AmazonStatusReport {
+  state: AmazonImportState;
+  lastImportAt: string | null;
+  lastError?: string | null;
+}
+
+export interface AmazonIntegration {
+  state: AmazonImportState;
+  lastImportAt: string | null;
+  lastError: string | null;
+  reportedAt: string;
+  platform: Platform | null;
+}
+
+export interface AmazonIntegrationResponse {
+  amazon: AmazonIntegration | null;
+}
+
 // ---- Pairing and API tokens -------------------------------------------------
 
 export interface PairingStartResponse {

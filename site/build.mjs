@@ -50,9 +50,13 @@ async function build() {
   await mkdir(path.join(out, "styles"), { recursive: true });
   await mkdir(path.join(out, "fonts"), { recursive: true });
 
-  const pages = (await readdir(src)).filter((f) => f.endsWith(".html"));
+  const files = await readdir(src);
+  const pages = files.filter((f) => f.endsWith(".html"));
   for (const page of pages) await copyFile(path.join(src, page), path.join(out, page));
-  await copyFile(path.join(src, "site.css"), path.join(out, "styles/site.css"));
+  // site.css (every page); home.css and sections.css (the home page only).
+  for (const sheet of files.filter((f) => f.endsWith(".css"))) {
+    await copyFile(path.join(src, sheet), path.join(out, "styles", sheet));
+  }
   await copyFile(tokens, path.join(out, "styles/tokens.css"));
   await writeFile(path.join(out, "styles/fonts.css"), `${fontFaces()}\n`);
   await writeFile(path.join(out, "_headers"), await headersFile());

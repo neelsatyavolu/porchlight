@@ -44,13 +44,13 @@
 
       <h2>What stays on your devices</h2>
       <dl class="facts">
-        <div class="fact"><dt>Amazon</dt><dd>You sign in to Amazon inside the Mac or iPhone app, on Amazon's own page. The cookies from that sign-in are kept in a separate store on that device. They are never sent to the Porchlight server and never synced to your other devices. The app reads your orders the way you would in a browser and sends Porchlight only the order and shipment numbers, the items, the delivery date, the carrier, the tracking number and, for Amazon Logistics packages, the tracking events.</dd></div>
-        <div class="fact"><dt>Flint</dt><dd>When Flint finds a shipping email, it sends the carrier, the tracking number, the sender's name, the subject line and the date. Flint also does this once for the last 30 days of mail when you pair it. The body of the email never leaves your Mac.</dd></div>
+        <div class="fact"><dt>Amazon</dt><dd>You sign in to Amazon inside the Mac or iPhone app, on Amazon's own page. The cookies from that sign-in are kept in a separate store on that device. They are never sent to the Porchlight server and never synced to your other devices, so each device that imports signs in on its own. The app reads your orders the way you would in a browser and sends Porchlight only the order and shipment numbers, the items, the delivery date, the carrier, the tracking number and, for Amazon Logistics packages, the tracking events. If Amazon signs you out or changes its pages, the app stops importing and says so in Settings.</dd></div>
+        <div class="fact"><dt>Flint</dt><dd>You pair Flint once with a one-time code from Porchlight's settings, and you can revoke it there at any time. When Flint finds a shipping email, it sends the carrier, the tracking number, the sender's name, the subject line and the date. Flint also does this once for the last 30 days of mail when you pair it. The body of the email never leaves your Mac.</dd></div>
       </dl>
 
       <h2>Who else receives your data</h2>
       <dl class="facts">
-        <div class="fact"><dt>Carriers and a tracking service</dt><dd>To check a package, the server sends its tracking number to the carrier (USPS, UPS, FedEx or DHL) or to a third-party tracking service that covers other carriers. Nothing else about you goes with it. Amazon Logistics numbers are not sent to the tracking service.</dd></div>
+        <div class="fact"><dt>Carriers and a tracking service</dt><dd>To check a package, the server sends its tracking number to the carrier (USPS, UPS, FedEx or DHL) or to Ship24, a tracking service that covers the other carriers. Nothing else about you goes with it. Amazon Logistics numbers are not sent to Ship24.</dd></div>
         <div class="fact"><dt>Resend</dt><dd>Sends sign-in email. It receives your email address and the message, which holds a sign-in link and a 6-digit code.</dd></div>
         <div class="fact"><dt>Apple</dt><dd>Sign in with Apple tells Porchlight your Apple account id and email address. Notifications go through Apple's push service, which receives your device's notification token and the text of the notification: the package title and its new status.</dd></div>
         <div class="fact"><dt>Cloudflare</dt><dd>Runs the Porchlight server and database.</dd></div>
@@ -81,6 +81,7 @@
       <a href="/app">Web app</a>
       <a href="/privacy" aria-current="page">Privacy</a>
       <a href="/terms">Terms</a>
+      <a href="https://xanom.co">xanom.co</a>
     </div>
   </footer>
 </body>

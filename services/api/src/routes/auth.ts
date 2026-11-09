@@ -216,6 +216,7 @@ async function deleteMe({ req, env }: RouteContext): Promise<Response> {
     env.DB.prepare("DELETE FROM imports WHERE user_id = ?").bind(uid),
     env.DB.prepare("DELETE FROM packages WHERE user_id = ?").bind(uid),
     env.DB.prepare("DELETE FROM api_tokens WHERE user_id = ?").bind(uid),
+    env.DB.prepare("DELETE FROM integrations WHERE user_id = ?").bind(uid),
     env.DB.prepare("DELETE FROM sessions WHERE user_id = ?").bind(uid),
     env.DB.prepare("DELETE FROM devices WHERE user_id = ?").bind(uid),
     env.DB.prepare(

@@ -41,6 +41,8 @@
 	<string>public.app-category.productivity</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Porchlight uses the camera to read the barcode on a shipping label.</string>
+	<key>NSSupportsLiveActivities</key>
+	<true/>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Fonts/Geist-Regular.ttf</string>

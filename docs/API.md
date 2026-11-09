@@ -305,11 +305,43 @@ Request:
   }
 } ] }
 ```
-- The server builds `dedupeKey` as `"<orderId>:<shipmentId>"`, and that is the key the results echo back.
+- The server builds `dedupeKey` as `"<orderId>:<shipmentId>"`, and that is the key the results echo back. When Amazon splits one shipment into several packages, the app sends `shipmentId` as `"<shipmentId>-<n>"` for the n-th package after the first.
 - The import sets `source: "amazon"`, `orderId`, the items (each import replaces them all), and the ETA Amazon showed.
 - `etaDateOnly` is optional and follows the Package rule: `true` means `etaStart`/`etaEnd` are `"YYYY-MM-DD"` (Amazon showed a day, such as "Arriving Monday"); left out or `false` means they are ISO 8601 date-times with an offset (Amazon showed a time window). An ETA that doesn't match the flag rejects the item. Both `null` keeps the stored ETA.
 - `observed` is optional and is sent for Amazon Logistics (TBA) packages. When `observedAt` is newer than the package's last check, the server applies its `status`, `statusDetail` and `deliveredAt`, adds its events (deduped by `raw_hash`) and sets `lastCheckedAt = observedAt`.
 - The aggregator is never asked about TBA numbers (docs/research/aggregators.md).
+
+## Integrations
+
+### GET /v1/integrations/amazon
+Auth: session. How the last Amazon import went, as the native app that ran it reported (SPEC §6, "Failure is visible"). The web shows it in Settings. The server stores no Amazon data: only the state, two times and one sentence of error text.
+
+Response 200:
+```json
+{ "amazon": {
+  "state": "needs_sign_in", "lastImportAt": "2026-11-08T17:00:00.000Z",
+  "lastError": "Amazon asked you to sign in again.", "reportedAt": "2026-11-08T17:30:02.000Z", "platform": "macos"
+} }
+```
+- `amazon` is `null` until a device reports, and after `DELETE`.
+- `state` is `ok`, `needs_sign_in` (Amazon wants a new sign-in or a captcha on the device) or `parse_failed` (the pages loaded but the parser found nothing it knows).
+- `lastImportAt` is the last import that worked, or `null`.
+- `lastError` is `null` when `state` is `ok`.
+- `reportedAt` is when the server got the report. `platform` is the reporting session's device platform, else its sign-in `client`.
+- One row per account: when several devices import, the latest report wins.
+
+### PUT /v1/integrations/amazon
+Auth: session. A native app sends this after each import that ends in one of the three states. A network failure is not reported.
+
+Request: `{ "state": "ok", "lastImportAt": "2026-11-08T17:00:00.000Z", "lastError": null }`
+- `state` and `lastImportAt` (nullable) are required. `lastError` is optional, up to 300 characters, and is dropped when `state` is `ok`.
+
+Response 200: the same body as `GET`.
+Errors: 400.
+
+### DELETE /v1/integrations/amazon
+Auth: session. Clears the status. The app calls it on Disconnect.
+Response 200: `{ "deleted": true }`
 
 ## Pairing and API tokens
 

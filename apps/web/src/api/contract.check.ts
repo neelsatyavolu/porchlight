@@ -26,7 +26,10 @@ export const contractChecks: [
   Same<Web.SyncResponse, Server.SyncResponse>,
   Same<Web.PairingStartResponse, Server.PairingStartResponse>,
   Same<Web.TokensResponse, Server.TokensResponse>,
+  Same<Web.AmazonStatusReport, Server.AmazonStatusReport>,
+  Same<Web.AmazonIntegration, Server.AmazonIntegration>,
+  Same<Web.AmazonIntegrationResponse, Server.AmazonIntegrationResponse>,
   Same<Web.ErrorCode, Http.ErrorCode>,
   Same<Web.ApiErrorBody, Http.ApiError>,
   Same<Web.Envelope<unknown>, Http.Envelope<unknown>>,
-] = [true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true];
+] = [true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true];

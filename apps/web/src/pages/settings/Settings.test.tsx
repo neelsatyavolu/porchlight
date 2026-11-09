@@ -194,8 +194,56 @@ describe("Settings: Flint", () => {
 
 describe("Settings: Amazon and appearance", () => {
   it("explains Amazon connects from the native apps", async () => {
+    renderSettings({ "GET /v1/integrations/amazon": () => ok({ amazon: null }) });
+    expect(await screen.findByText(/Connect Amazon in the Porchlight app on your Mac or iPhone/)).toBeInTheDocument();
+  });
+
+  it("treats a server without the status endpoint as not connected", async () => {
     renderSettings({});
     expect(await screen.findByText(/Connect Amazon in the Porchlight app on your Mac or iPhone/)).toBeInTheDocument();
+  });
+
+  it("shows the last import from the device that ran it", async () => {
+    const lastImportAt = new Date(Date.now() - 20 * 60_000).toISOString();
+    renderSettings({
+      "GET /v1/integrations/amazon": () =>
+        ok({ amazon: { state: "ok", lastImportAt, lastError: null, reportedAt: lastImportAt, platform: "macos" } }),
+    });
+    expect(await screen.findByText(/Connected on your Mac\./)).toBeInTheDocument();
+    expect(screen.getByText("Last import 20 min ago")).toBeInTheDocument();
+  });
+
+  it("says when Amazon wants a new sign-in", async () => {
+    const reportedAt = new Date(Date.now() - 5 * 60_000).toISOString();
+    renderSettings({
+      "GET /v1/integrations/amazon": () =>
+        ok({ amazon: { state: "needs_sign_in", lastImportAt: null, lastError: "x", reportedAt, platform: "ios" } }),
+    });
+    expect(await screen.findByText(/^Amazon wants you to sign in again\. Open Porchlight on your iPhone/)).toHaveClass("settings__warn");
+    expect(screen.getByText(/No import has worked yet\./)).toBeInTheDocument();
+  });
+
+  it("says when the pages couldn't be read", async () => {
+    const now = new Date().toISOString();
+    renderSettings({
+      "GET /v1/integrations/amazon": () =>
+        ok({ amazon: { state: "parse_failed", lastImportAt: now, lastError: "x", reportedAt: now, platform: "macos" } }),
+    });
+    expect(await screen.findByText(/^Porchlight couldn't read your Amazon orders\./)).toHaveClass("settings__warn");
+  });
+
+  it("offers a retry when the status fails to load", async () => {
+    const user = userEvent.setup();
+    let calls = 0;
+    renderSettings({
+      "GET /v1/integrations/amazon": () => {
+        calls += 1;
+        return calls === 1 ? fail(500, "internal", "Server error") : ok({ amazon: null });
+      },
+    });
+    const retry = await screen.findByText(/Couldn't load the Amazon status/);
+    await user.click(within(retry).getByRole("button", { name: "Try again" }));
+    expect(await screen.findByText(/Connect Amazon in the Porchlight app/)).toBeInTheDocument();
   });
 
   it("switches and remembers the theme", async () => {

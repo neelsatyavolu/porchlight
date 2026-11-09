@@ -98,7 +98,7 @@ public enum AuthError: Error, Hashable, Sendable {
 }
 
 /// This install's device id: a lowercase UUID created once and kept in the
-/// given defaults (the app group's, so the extension sees the same one).
+/// given defaults (the app's own; there is no app group).
 public enum DeviceID {
     public static let defaultsKey = "porchlight.deviceId"
 

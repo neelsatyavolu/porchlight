@@ -47,7 +47,7 @@ final class AppModel: AccountActions {
         self.container = container
         let repository = SwiftDataPackageRepository(modelContainer: container)
         self.repository = repository
-        sync = DefaultSyncEngine(api: api, repository: repository)
+        sync = WidgetSyncEngine(base: DefaultSyncEngine(api: api, repository: repository), repository: repository)
         let defaults = UserDefaults.standard
         deviceDefaults = defaults
         auth = AuthService(api: api, store: sessionStore, deviceId: DeviceID.load(from: defaults))
@@ -138,8 +138,8 @@ final class AppModel: AccountActions {
         return PorchConfig.productionBaseURL
     }
 
-    /// The app group store; if the group isn't provisioned yet, the app's own
-    /// container, so a missing portal setting doesn't crash at launch.
+    /// The app's own store (no app group); if it can't open, a default
+    /// container, then an in-memory one, so launch never crashes on it.
     private static func makeContainer() -> ModelContainer {
         if let container = try? PorchStore.makeContainer() { return container }
         let schema = Schema(PorchStore.models)

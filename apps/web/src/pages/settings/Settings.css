@@ -35,6 +35,12 @@
   font-size: var(--text-body-sm);
 }
 
+/* A problem with a connection (Amazon needs a sign-in): amber, as for a package problem. */
+.settings__warn {
+  color: var(--warn);
+  font-size: var(--text-body-sm);
+}
+
 .settings__list {
   margin: 0;
   padding: 0;

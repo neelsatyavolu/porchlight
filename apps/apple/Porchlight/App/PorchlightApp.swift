@@ -25,6 +25,7 @@ struct PorchlightApp: App {
                 .environment(appDelegate.model)
                 .environment(appDelegate.router)
                 .environment(appDelegate.push)
+                .environment(appDelegate.amazon)
                 .modelContainer(appDelegate.model.container)
         }
         .menuBarExtraStyle(.window)
@@ -37,6 +38,7 @@ struct PorchlightApp: App {
                 .environment(appDelegate.model)
                 .environment(appDelegate.router)
                 .environment(appDelegate.push)
+                .environment(appDelegate.amazon)
                 .onOpenURL { url in appDelegate.openURL(url) }
                 .onChange(of: appDelegate.model.phase, initial: true) { _, phase in appDelegate.sessionChanged(phase) }
                 .onChange(of: scenePhase, initial: true) { _, phase in appDelegate.scenePhaseChanged(phase) }

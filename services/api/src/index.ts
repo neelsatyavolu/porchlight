@@ -7,13 +7,14 @@ import { schedule } from "./poll/schedule.js";
 import type { TrackJob } from "./poll/types.js";
 import * as auth from "./routes/auth.js";
 import * as imports from "./routes/imports.js";
+import * as integrations from "./routes/integrations.js";
 import * as packages from "./routes/packages.js";
 import * as sessions from "./routes/sessions.js";
 import * as sync from "./routes/sync.js";
 import * as tokens from "./routes/tokens.js";
 
 const router = new Router();
-for (const mod of [auth, sessions, sync, packages, imports, tokens]) mod.register(router);
+for (const mod of [auth, sessions, sync, packages, imports, integrations, tokens]) mod.register(router);
 
 function corsHeaders(req: Request, env: Env): Record<string, string> {
   const origin = req.headers.get("origin");

@@ -33,6 +33,11 @@ public protocol APIClient: Sendable {
     func importFlint(_ items: [FlintImportItem]) async throws -> ImportResponse
     func importAmazon(_ items: [AmazonImportItem]) async throws -> ImportResponse
 
+    // Integrations (Amazon import status)
+    func amazonIntegration() async throws -> AmazonIntegration?
+    func reportAmazonStatus(_ report: AmazonStatusReport) async throws -> AmazonIntegration
+    func clearAmazonStatus() async throws
+
     // Pairing and API tokens
     func startPairing() async throws -> PairingStartResponse
     func claimPairing(_ request: PairingClaimRequest) async throws -> PairingClaimResponse
@@ -108,8 +113,21 @@ public enum Endpoints {
     public static func refreshPackage(id: String) -> Endpoint { Endpoint(.post, "/packages/\(segment(id))/refresh") }
     public static func importFlint(_ items: [FlintImportItem]) throws -> Endpoint { try .json(.post, "/imports/flint", ImportRequest(items: items)) }
     public static func importAmazon(_ items: [AmazonImportItem]) throws -> Endpoint { try .json(.post, "/imports/amazon", ImportRequest(items: items)) }
+    public static let amazonIntegration = Endpoint(.get, "/integrations/amazon")
+    public static func reportAmazonStatus(_ r: AmazonStatusReport) throws -> Endpoint { try .json(.put, "/integrations/amazon", r) }
+    public static let clearAmazonStatus = Endpoint(.delete, "/integrations/amazon")
     public static let startPairing = Endpoint(.post, "/pairing/start")
     public static func claimPairing(_ r: PairingClaimRequest) throws -> Endpoint { try .json(.post, "/pairing/claim", needsSession: false, r) }
     public static let listTokens = Endpoint(.get, "/tokens")
     public static func deleteToken(id: String) -> Endpoint { Endpoint(.delete, "/tokens/\(segment(id))") }
+}
+
+/// Fakes written before the integration endpoints existed keep compiling;
+/// HTTPAPIClient implements all three.
+extension APIClient {
+    public func amazonIntegration() async throws -> AmazonIntegration? { throw PorchError.notImplemented("amazonIntegration") }
+    public func reportAmazonStatus(_ report: AmazonStatusReport) async throws -> AmazonIntegration {
+        throw PorchError.notImplemented("reportAmazonStatus")
+    }
+    public func clearAmazonStatus() async throws { throw PorchError.notImplemented("clearAmazonStatus") }
 }

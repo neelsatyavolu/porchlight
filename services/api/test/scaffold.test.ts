@@ -2,7 +2,7 @@ import { env, SELF } from "cloudflare:test";
 import { describe, expect, it } from "vitest";
 
 describe("scaffold", () => {
-  it("applies the 0001 migration", async () => {
+  it("applies the migrations", async () => {
     const { results } = await env.DB.prepare(
       "SELECT name FROM sqlite_master WHERE type = 'table' AND name NOT LIKE '\\_%' ESCAPE '\\' AND name NOT LIKE 'sqlite%' AND name != 'd1_migrations' ORDER BY name",
     ).all<{ name: string }>();
@@ -12,6 +12,7 @@ describe("scaffold", () => {
       "devices",
       "events",
       "imports",
+      "integrations",
       "package_items",
       "packages",
       "sessions",

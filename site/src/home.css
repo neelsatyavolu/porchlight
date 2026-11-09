@@ -1,0 +1,569 @@
+/* Home page: hero, product mocks and sections. The mocks reuse the app's row,
+   group, dot and badge rules (DESIGN.md §4–§6) at the same sizes. */
+
+/* The phone is dark hardware in both themes, so its screen keeps one set of colors. */
+:root {
+  --device: #000000;
+  --device-frame: #1b1b1f;
+  --device-card: #1c1c20;
+  --device-ink: #fcfdff;
+  --device-mute: rgba(252, 253, 255, 0.62);
+  --device-line: rgba(255, 255, 255, 0.16);
+  --device-accent: #4c8dff;
+  --system: -apple-system, BlinkMacSystemFont, system-ui, var(--sans);
+}
+
+.muted {
+  color: var(--mute);
+}
+
+/* Hero */
+.hero {
+  padding-top: 128px;
+  padding-bottom: 64px;
+}
+.hero h1 {
+  max-width: 13ch;
+  margin: 0 0 24px;
+  color: var(--ink);
+  font: 400 clamp(52px, 9vw, 96px) / 1 var(--serif);
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+.lede {
+  max-width: 44ch;
+  margin: 0 0 40px;
+  font-size: 19px;
+  line-height: 1.45;
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+@media (max-width: 600px) {
+  .hero {
+    padding-top: 80px;
+    padding-bottom: 48px;
+  }
+}
+
+/* Shared list pieces (DESIGN.md §6) */
+.dot {
+  display: inline-block;
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: var(--r-full);
+  background: var(--status-neutral);
+}
+.dot-out {
+  background: var(--status-out);
+}
+.dot-ok {
+  background: var(--status-delivered);
+}
+.dot-warn {
+  background: var(--status-exception);
+}
+.dot-hollow {
+  background: none;
+  border: 1.5px solid var(--status-neutral);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  height: 20px;
+  padding: 0 6px;
+  border: 1px solid var(--line-2);
+  border-radius: var(--r-sm);
+  color: var(--mute);
+  font: 400 var(--text-caption) / 1 var(--sans);
+  white-space: nowrap;
+}
+
+.g-head {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  height: 32px;
+  margin: 0;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--line);
+  color: var(--mute);
+  font: 500 var(--text-label) / 18px var(--sans);
+}
+
+.r {
+  display: grid;
+  grid-template-columns: 8px minmax(0, 1fr) auto;
+  column-gap: 12px;
+  row-gap: 2px;
+  align-items: center;
+  min-height: var(--row-h);
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--line);
+}
+.r > .dot {
+  grid-column: 1;
+  grid-row: 1;
+}
+.r-title {
+  grid-column: 2;
+  grid-row: 1;
+  overflow: hidden;
+  color: var(--ink);
+  font: 500 var(--text-body) / 22px var(--sans);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.r-eta {
+  grid-column: 3;
+  grid-row: 1;
+  color: var(--body);
+  font-size: var(--text-body-sm);
+  line-height: 22px;
+  text-align: right;
+  white-space: nowrap;
+}
+.r-eta.muted {
+  color: var(--mute);
+}
+.r-meta {
+  grid-column: 2;
+  grid-row: 2;
+  overflow: hidden;
+  color: var(--mute);
+  font-size: var(--text-body-sm);
+  line-height: 20px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.r > .badge {
+  grid-column: 3;
+  grid-row: 2;
+  justify-self: end;
+}
+.r-sel {
+  background: var(--tint);
+}
+
+/* Stage: Mac window with the iPhone overlapping it */
+.stage {
+  position: relative;
+  margin-bottom: 128px;
+}
+.stage figcaption {
+  max-width: 60ch;
+  margin-top: 16px;
+  color: var(--mute);
+  font-size: var(--text-body-sm);
+}
+
+.mac {
+  overflow: hidden;
+  border: 1px solid var(--line-2);
+  border-radius: var(--r-lg);
+  background: var(--canvas);
+}
+.mac-bar,
+.browser {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  height: 40px;
+  padding: 0 14px;
+  border-bottom: 1px solid var(--line);
+  background: var(--card);
+}
+.lights {
+  display: inline-flex;
+  gap: 8px;
+}
+.lights i {
+  width: 12px;
+  height: 12px;
+  border-radius: var(--r-full);
+  background: var(--line-2);
+}
+.mac-title {
+  flex: 1;
+  margin-right: 60px;
+  color: var(--mute);
+  font: 500 var(--text-label) / 1 var(--system);
+  text-align: center;
+}
+.mac-body {
+  display: grid;
+  grid-template-columns: minmax(0, 380px) minmax(0, 1fr);
+}
+.pane-list {
+  border-right: 1px solid var(--line);
+}
+.pane-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 44px;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--line);
+  color: var(--ink);
+  font: 500 var(--text-body) / 1 var(--sans);
+}
+.plus {
+  display: inline-flex;
+  color: var(--mute);
+}
+
+.pane-detail {
+  padding: 32px 32px 40px;
+}
+.d-title {
+  margin: 0 0 8px;
+  color: var(--ink);
+  font: 500 var(--text-heading) / 31px var(--sans);
+}
+.d-status {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 24px;
+  color: var(--ink);
+  font-size: var(--text-body);
+}
+.d-sep {
+  color: var(--mute);
+}
+.d-facts {
+  margin: 0 0 32px;
+  border-top: 1px solid var(--line);
+}
+.d-facts div {
+  display: grid;
+  grid-template-columns: 136px minmax(0, 1fr);
+  align-items: center;
+  gap: 16px;
+  min-height: 44px;
+  border-bottom: 1px solid var(--line);
+  font-size: var(--text-body-sm);
+}
+.d-facts dt {
+  color: var(--mute);
+}
+.d-facts dd {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  margin: 0;
+  color: var(--ink);
+}
+.d-facts .mono {
+  overflow: hidden;
+  font-size: var(--text-mono);
+  text-overflow: ellipsis;
+}
+.copy {
+  padding: 2px 8px;
+  border: 1px solid var(--line-2);
+  border-radius: var(--r-sm);
+  background: var(--elev);
+  color: var(--ink);
+  font-size: var(--text-caption);
+}
+.t-day {
+  margin: 0 0 12px;
+  color: var(--mute);
+  font: 500 var(--text-label) / 18px var(--sans);
+}
+.tl {
+  position: relative;
+  margin: 0 0 16px;
+  padding: 0 0 0 24px;
+  list-style: none;
+}
+.tl::before {
+  content: "";
+  position: absolute;
+  top: 8px;
+  bottom: 0;
+  left: 3.5px;
+  width: 1px;
+  background: var(--line-2);
+}
+.tl li {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 14px;
+}
+.tl-dot {
+  position: absolute;
+  top: 8px;
+  left: -24px;
+  width: 8px;
+  height: 8px;
+  border-radius: var(--r-full);
+  background: var(--stone);
+}
+.tl-now .tl-dot {
+  background: var(--status-out);
+}
+.tl-what {
+  color: var(--body);
+  font-size: var(--text-body);
+  line-height: 23px;
+}
+.tl-now .tl-what {
+  color: var(--ink);
+}
+.tl-where {
+  color: var(--mute);
+  font-size: var(--text-body-sm);
+  line-height: 20px;
+}
+
+/* iPhone Lock Screen with a notification and a Live Activity */
+.phone {
+  width: 288px;
+  height: 600px;
+  padding: 10px;
+  border-radius: 48px;
+  background: var(--device-frame);
+  outline: 10px solid var(--canvas);
+}
+.screen {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 14px 12px 20px;
+  overflow: hidden;
+  border-radius: 38px;
+  background: var(--device);
+  color: var(--device-ink);
+  font-family: var(--system);
+}
+.island {
+  align-self: center;
+  width: 86px;
+  height: 25px;
+  border-radius: var(--r-full);
+  background: var(--device-frame);
+}
+.ls-date {
+  margin: 26px 0 0;
+  color: var(--device-mute);
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.2;
+  text-align: center;
+}
+.ls-time {
+  margin: 0;
+  font-size: 80px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-align: center;
+}
+.ls-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: auto;
+  margin-bottom: 64px;
+}
+.note,
+.live {
+  border-radius: 20px;
+  background: var(--device-card);
+}
+.note {
+  display: flex;
+  gap: 10px;
+  padding: 11px 12px;
+  font-size: 13px;
+  line-height: 17px;
+}
+.note-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  color: var(--device-mute);
+}
+.note-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+.note-top b {
+  overflow: hidden;
+  color: var(--device-ink);
+  font-weight: 600;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.app-icon {
+  position: relative;
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--device-line);
+  border-radius: 9px;
+  background: var(--device);
+}
+.app-icon::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: 10px;
+  height: 10px;
+  margin: auto;
+  border-radius: var(--r-full);
+  background: var(--device-accent);
+}
+.app-icon-sm {
+  width: 18px;
+  height: 18px;
+  border-radius: 5px;
+}
+.app-icon-sm::after {
+  width: 6px;
+  height: 6px;
+}
+.live {
+  padding: 14px 14px 12px;
+}
+.live-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  font-size: 12px;
+}
+.live-app {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--device-mute);
+}
+.live-eta {
+  color: var(--device-ink);
+  font-size: 15px;
+  font-weight: 600;
+}
+.live-title {
+  margin: 0;
+  font: 500 15px / 20px var(--sans);
+}
+.live-meta {
+  margin: 0 0 12px;
+  color: var(--device-mute);
+  font-size: 13px;
+  line-height: 18px;
+}
+.track {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+}
+.step {
+  height: 4px;
+  border-radius: var(--r-full);
+  background: var(--device-line);
+}
+.step.done,
+.step.now {
+  background: var(--device-accent);
+}
+.track-labels {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+  margin-top: 6px;
+  color: var(--device-mute);
+  font-size: 10px;
+  line-height: 12px;
+}
+.ls-btn {
+  position: absolute;
+  bottom: 20px;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--r-full);
+  background: var(--device-card);
+}
+.ls-left {
+  left: 30px;
+}
+.ls-right {
+  right: 30px;
+}
+
+@media (min-width: 1080px) {
+  .mac {
+    margin-right: 224px;
+  }
+  .phone {
+    position: absolute;
+    top: 72px;
+    right: var(--gutter);
+  }
+  .stage figcaption {
+    max-width: calc(100% - 288px - 64px);
+  }
+}
+@media (max-width: 1079px) {
+  .phone {
+    margin: -160px 24px 0 auto;
+    position: relative;
+  }
+}
+@media (max-width: 820px) {
+  .mac-body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .pane-list {
+    border-right: 0;
+  }
+  .pane-detail {
+    display: none;
+  }
+  .phone {
+    margin-top: -120px;
+  }
+}
+@media (max-width: 600px) {
+  .phone {
+    width: 272px;
+    height: 568px;
+    margin: -96px auto 0;
+  }
+  .mac-title {
+    margin-right: 0;
+  }
+}
+
+/* The list fills itself in once, the way packages arrive in the real app. */
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes arrive {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+  }
+  .arrive,
+  .live {
+    animation: arrive 500ms var(--ease) both;
+  }
+  .a1 { animation-delay: 200ms; }
+  .a2 { animation-delay: 300ms; }
+  .a3 { animation-delay: 400ms; }
+  .a4 { animation-delay: 500ms; }
+  .a5 { animation-delay: 600ms; }
+  .live { animation-delay: 900ms; }
+}

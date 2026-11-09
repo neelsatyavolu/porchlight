@@ -67,6 +67,7 @@ targets:
         SUPPORTS_MACCATALYST: NO
     dependencies:
       - target: PorchlightShare-iOS
+      - target: PorchlightWidget-iOS
     info:
       path: Porchlight/Support/Info-iOS.plist
       properties:
@@ -92,6 +93,8 @@ targets:
         BGTaskSchedulerPermittedIdentifiers:
           - co.xanom.porchlight.refresh
         NSCameraUsageDescription: Porchlight uses the camera to read the barcode on a shipping label.
+        # The out-for-delivery Live Activity (PorchlightWidget-iOS draws it).
+        NSSupportsLiveActivities: true
         # porchlight://p/<id> opens a package (notification taps, links).
         CFBundleURLTypes:
           - CFBundleURLName: co.xanom.porchlight
@@ -168,5 +171,48 @@ targets:
               NSExtensionActivationSupportsWebURLWithMaxCount: 1
     entitlements:
       path: PorchlightShare/Support/PorchlightShare-iOS.entitlements
+      properties:
+        keychain-access-groups: [$(AppIdentifierPrefix)co.xanom.porchlight]
+
+  # The Today widget and the out-for-delivery Live Activity UI. No app group:
+  # it reads the session from the shared Keychain item and fetches from the API.
+  PorchlightWidget-iOS:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: PorchlightWidget
+        excludes:
+          - "Support/**"
+      # Same Geist files as the app, for package titles (UIAppFonts below).
+      - path: Porchlight/Resources/Fonts
+        type: folder
+        buildPhase: resources
+    dependencies:
+      - package: PorchKit
+        product: PorchKit
+      - package: PorchKit
+        product: PorchUI
+      - sdk: WidgetKit.framework
+      - sdk: SwiftUI.framework
+    settings:
+      base:
+        PRODUCT_NAME: PorchlightWidget
+        PRODUCT_BUNDLE_IDENTIFIER: co.xanom.porchlight.widget
+        TARGETED_DEVICE_FAMILY: "1"
+        APPLICATION_EXTENSION_API_ONLY: YES
+    info:
+      path: PorchlightWidget/Support/Info.plist
+      properties:
+        CFBundleDisplayName: Porchlight
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+        UIAppFonts:
+          - Fonts/Geist-Regular.ttf
+          - Fonts/Geist-Medium.ttf
+          - Fonts/GeistMono-Regular.ttf
+    entitlements:
+      path: PorchlightWidget/Support/PorchlightWidget-iOS.entitlements
       properties:
         keychain-access-groups: [$(AppIdentifierPrefix)co.xanom.porchlight]

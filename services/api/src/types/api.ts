@@ -228,6 +228,34 @@ export interface AmazonImportRequest {
 
 export type ImportOutcome = "created" | "updated" | "unchanged" | "rejected";
 
+// ---- Integrations ---------------------------------------------------------
+
+export type AmazonImportState = "ok" | "needs_sign_in" | "parse_failed";
+
+/** PUT /v1/integrations/amazon: what a device reports after an import. */
+export interface AmazonStatusReport {
+  state: AmazonImportState;
+  /** The last import that worked; null if none has yet. */
+  lastImportAt: string | null;
+  /** One sentence for Settings when state isn't "ok". */
+  lastError?: string | null;
+}
+
+export interface AmazonIntegration {
+  state: AmazonImportState;
+  lastImportAt: string | null;
+  lastError: string | null;
+  /** When the server received the report. */
+  reportedAt: string;
+  /** Platform of the device that sent it. */
+  platform: Platform | null;
+}
+
+export interface AmazonIntegrationResponse {
+  /** null until a device reports, and after DELETE. */
+  amazon: AmazonIntegration | null;
+}
+
 export interface ImportResult {
   dedupeKey: string;
   packageId: string | null;

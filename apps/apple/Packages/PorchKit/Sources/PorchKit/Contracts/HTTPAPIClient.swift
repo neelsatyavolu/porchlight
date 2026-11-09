@@ -101,6 +101,21 @@ public struct HTTPAPIClient: APIClient {
         try await send(Endpoints.importAmazon(items))
     }
 
+    public func amazonIntegration() async throws -> AmazonIntegration? {
+        let response: AmazonIntegrationResponse = try await send(Endpoints.amazonIntegration)
+        return response.amazon
+    }
+
+    public func reportAmazonStatus(_ report: AmazonStatusReport) async throws -> AmazonIntegration {
+        let response: AmazonIntegrationResponse = try await send(Endpoints.reportAmazonStatus(report))
+        guard let amazon = response.amazon else { throw APIError.invalidResponse("No Amazon status in the reply") }
+        return amazon
+    }
+
+    public func clearAmazonStatus() async throws {
+        let _: DeletedResponse = try await send(Endpoints.clearAmazonStatus)
+    }
+
     public func startPairing() async throws -> PairingStartResponse {
         try await send(Endpoints.startPairing)
     }
