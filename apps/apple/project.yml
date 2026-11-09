@@ -165,6 +165,50 @@ targets:
           - $(PRODUCT_BUNDLE_IDENTIFIER)-spks
           - $(PRODUCT_BUNDLE_IDENTIFIER)-spki
 
+  # Debug tool, never shipped: renders the Mac screens with sample data into PNGs
+  # off screen (Snapshots/SnapshotMain.swift). Same sources as the app, with
+  # SnapshotMain as the entry point instead of PorchlightApp.
+  Porchlight-Snapshots:
+    type: application
+    platform: macOS
+    sources:
+      - path: Snapshots
+        excludes:
+          - "Info.plist"
+      - path: Porchlight
+        excludes:
+          - "Resources/Fonts"
+          - "Resources/Fonts/**"
+          - "Support/**"
+          - "App/PorchlightApp.swift"
+      - path: Porchlight/Resources/Fonts
+        type: folder
+        buildPhase: resources
+    dependencies:
+      - package: PorchKit
+        product: PorchKit
+      - package: PorchKit
+        product: PorchStore
+      - package: PorchKit
+        product: PorchUI
+      - package: Sparkle
+    settings:
+      base:
+        PRODUCT_NAME: Porchlight-Snapshots
+        PRODUCT_MODULE_NAME: PorchlightSnapshots
+        PRODUCT_BUNDLE_IDENTIFIER: co.xanom.porchlight.snapshots
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+        CODE_SIGN_IDENTITY: "-"
+    info:
+      path: Snapshots/Info.plist
+      properties:
+        CFBundleDisplayName: Porchlight Snapshots
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        ATSApplicationFontsPath: Fonts
+        LSUIElement: true
+    scheme: {}
+
   PorchlightShare-iOS:
     type: app-extension
     platform: iOS
