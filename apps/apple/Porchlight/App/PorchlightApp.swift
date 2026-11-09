@@ -20,6 +20,7 @@ struct PorchlightApp: App {
             }
         #else
         mainWindow
+            .commands { UpdaterCommands(updater: appDelegate.updater) }
         MenuBarExtra("Porchlight", systemImage: "shippingbox") {
             MenuBarView()
                 .environment(appDelegate.model)

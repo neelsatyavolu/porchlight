@@ -22,7 +22,7 @@ const FONTS = [
 ];
 
 /** Everything this script owns in public/. */
-const OWNED_DIRS = ["styles", "fonts", "icons", "download"];
+const OWNED_DIRS = ["styles", "fonts", "icons", "download", "updates"];
 
 async function clean() {
   await mkdir(out, { recursive: true });
@@ -72,16 +72,26 @@ async function build() {
   console.info(`site: ${pages.length} pages -> ${path.relative(process.cwd(), out)}`);
 }
 
-// The notarized DMG from apps/apple/scripts/mac-release.sh, served at
-// /download/Porchlight.dmg. The landing page links there, so a deploy without it fails.
+// The notarized DMG and Sparkle feed from apps/apple/scripts/mac-release.sh. The DMG is
+// served under its own name (the feed's enclosure URL) and as /download/Porchlight.dmg
+// (the landing page's link); the feed is /updates/appcast.xml, which installed Mac apps poll.
+// A deploy without them, or with a feed that names another DMG, fails.
 async function copyMacDownload() {
   const release = path.resolve(here, "../apps/apple/build/release");
+  const hint = "run apps/apple/scripts/mac-release.sh";
   const dmgs = (await readdir(release).catch(() => [])).filter((f) => /^Porchlight-.+\.dmg$/.test(f));
-  if (dmgs.length === 0) throw new Error(`no Porchlight-<version>.dmg in ${release}; run apps/apple/scripts/mac-release.sh`);
-  const newest = dmgs.sort((a, b) => a.localeCompare(b, "en", { numeric: true })).at(-1);
+  if (dmgs.length !== 1) throw new Error(`expected one Porchlight-<version>-<build>.dmg in ${release}, found ${dmgs.length}; ${hint}`);
+  const [dmg] = dmgs;
+  const appcast = await readFile(path.join(release, "appcast.xml"), "utf8").catch(() => {
+    throw new Error(`no appcast.xml in ${release}; ${hint}`);
+  });
+  if (!appcast.includes(`/download/${dmg}"`)) throw new Error(`appcast.xml doesn't point at ${dmg}; ${hint}`);
   await mkdir(path.join(out, "download"), { recursive: true });
-  await copyFile(path.join(release, newest), path.join(out, "download/Porchlight.dmg"));
-  console.info(`site: ${newest} -> download/Porchlight.dmg`);
+  await mkdir(path.join(out, "updates"), { recursive: true });
+  await copyFile(path.join(release, dmg), path.join(out, "download", dmg));
+  await copyFile(path.join(release, dmg), path.join(out, "download/Porchlight.dmg"));
+  await writeFile(path.join(out, "updates/appcast.xml"), appcast);
+  console.info(`site: ${dmg} -> download/, appcast -> updates/appcast.xml`);
 }
 
 build().catch((err) => {

@@ -10,6 +10,7 @@
 #   ASC_KEY_ID        App Store Connect API key id
 #   DIST_CERT_ITEM    Apple Distribution certificate (file AppleDistribution_<team>.p12, "password", "Apple Certificate ID")
 #   DEVID_CERT_ITEM   Developer ID Application certificate (file "Developer ID Certificate.p12", "password")
+#   SPARKLE_KEY_ITEM  Sparkle EdDSA private key that signs Mac updates ("password")
 
 LOCAL=scripts/signing.local.sh
 [[ -f "$LOCAL" ]] && source "$LOCAL"

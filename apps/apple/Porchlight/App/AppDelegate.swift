@@ -23,6 +23,10 @@ final class AppDelegate: NSObject {
     /// USPS, UPS and FedEx pages read on the device (docs/API.md, "Device tracking"):
     /// on open, on iOS background refresh after Amazon, every 5 min on the Mac.
     let carriers: CarrierTrackingModel
+    #if os(macOS)
+    /// Sparkle auto-update; starts checking as soon as the app launches.
+    let updater = Updater()
+    #endif
     private let log = Logger(subsystem: "co.xanom.porchlight", category: "links")
 
     override init() {

@@ -39,5 +39,13 @@
 	<string>public.app-category.productivity</string>
 	<key>LSMinimumSystemVersion</key>
 	<string>$(MACOSX_DEPLOYMENT_TARGET)</string>
+	<key>SUEnableAutomaticChecks</key>
+	<true/>
+	<key>SUEnableInstallerLauncherService</key>
+	<true/>
+	<key>SUFeedURL</key>
+	<string>https://porchlight.xanom.co/updates/appcast.xml</string>
+	<key>SUPublicEDKey</key>
+	<string>$(PORCHLIGHT_SPARKLE_PUBLIC_KEY)</string>
 </dict>
 </plist>

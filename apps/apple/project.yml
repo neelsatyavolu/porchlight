@@ -25,6 +25,8 @@ settings:
     # Push environment in the app entitlements: Debug talks to the sandbox APNs,
     # Release (TestFlight, Developer ID) to production.
     PORCHLIGHT_APS_ENVIRONMENT: development
+    # Public half of the Sparkle update key (Info-macOS.plist SUPublicEDKey).
+    PORCHLIGHT_SPARKLE_PUBLIC_KEY: jS4j5HXrCDNuZ+NTBdVFHUlYYW+9+Ag2JQP1QsGlvfI=
   configs:
     Release:
       PORCHLIGHT_APS_ENVIRONMENT: production
@@ -32,6 +34,10 @@ settings:
 packages:
   PorchKit:
     path: Packages/PorchKit
+  # Mac auto-update (Developer ID builds; the App Store updates the iPhone app).
+  Sparkle:
+    url: https://github.com/sparkle-project/Sparkle
+    exactVersion: 2.9.6
 
 targetTemplates:
   App:
@@ -118,6 +124,8 @@ targets:
   Porchlight-macOS:
     templates: [App]
     platform: macOS
+    dependencies:
+      - package: Sparkle
     settings:
       base:
         ENABLE_HARDENED_RUNTIME: YES
@@ -132,6 +140,13 @@ targets:
         LSApplicationCategoryType: public.app-category.productivity
         LSMinimumSystemVersion: $(MACOSX_DEPLOYMENT_TARGET)
         ATSApplicationFontsPath: Fonts
+        # Sparkle: the feed scripts/mac-release.sh writes and the site serves, and the public
+        # half of the EdDSA key that signs updates (private half: 1Password "Porchlight Sparkle
+        # Update Key"). The app is sandboxed, so Sparkle installs through its launcher service.
+        SUFeedURL: https://porchlight.xanom.co/updates/appcast.xml
+        SUPublicEDKey: $(PORCHLIGHT_SPARKLE_PUBLIC_KEY)
+        SUEnableAutomaticChecks: true
+        SUEnableInstallerLauncherService: true
         # porchlight://p/<id> opens a package (notification taps, links).
         CFBundleURLTypes:
           - CFBundleURLName: co.xanom.porchlight
@@ -145,6 +160,10 @@ targets:
         com.apple.security.app-sandbox: true
         com.apple.security.network.client: true
         keychain-access-groups: [$(AppIdentifierPrefix)co.xanom.porchlight]
+        # Sparkle's installer launcher and status services (sandboxed apps only).
+        com.apple.security.temporary-exception.mach-lookup.global-name:
+          - $(PRODUCT_BUNDLE_IDENTIFIER)-spks
+          - $(PRODUCT_BUNDLE_IDENTIFIER)-spki
 
   PorchlightShare-iOS:
     type: app-extension

@@ -4,4 +4,5 @@ ASC_ITEM=a2ahwayupzf5uuj5u5famnyx4y            # App Store Connect API key: "iss
 ASC_KEY_ID=U27MTWCKH5
 DIST_CERT_ITEM=ud4rlsf6n6izuaebyvqscjhs5m      # Apple Distribution: AppleDistribution_VTQW687WBQ.p12, "password", "Apple Certificate ID"
 DEVID_CERT_ITEM=koiijqf7tinx5rhpdegpg6wz6a     # Developer ID Application: "Developer ID Certificate.p12", "password"
+SPARKLE_KEY_ITEM=jtw22zj2afot66mlmkwvi4nvf4   # Porchlight Sparkle Update Key: EdDSA private key in "password"
 # OP_VAULT=Private                              # vault that holds the items (default Private)
