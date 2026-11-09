@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <!-- Porchlight app icon (iOS, full bleed). A wall lantern lit in the accent blue
+       throws its light onto a parcel waiting on the step. Flat: no gradients, no glow. -->
+  <rect width="1024" height="1024" fill="#050507"/>
+
+  <!-- light on the step: one flat translucent wedge -->
+  <path d="M336 628 L262 884 L912 884 L508 628 Z" fill="#4C8DFF" opacity="0.14"/>
+
+  <!-- wall plate and bracket arm -->
+  <rect x="132" y="190" width="44" height="150" rx="14" fill="#F4F5F7"/>
+  <rect x="160" y="240" width="276" height="26" rx="13" fill="#F4F5F7"/>
+  <rect x="408" y="240" width="24" height="84" rx="8" fill="#F4F5F7"/>
+
+  <!-- roof -->
+  <path d="M300 406 L420 314 L540 406 Z" fill="#F4F5F7"/>
+  <rect x="286" y="398" width="268" height="30" rx="10" fill="#F4F5F7"/>
+
+  <!-- glass, frame, mullion -->
+  <rect x="320" y="428" width="200" height="176" fill="#4C8DFF"/>
+  <rect x="320" y="428" width="200" height="176" fill="none" stroke="#F4F5F7" stroke-width="24"/>
+  <rect x="408" y="428" width="24" height="176" fill="#F4F5F7"/>
+
+  <!-- base and finial -->
+  <rect x="294" y="600" width="252" height="28" rx="10" fill="#F4F5F7"/>
+  <path d="M362 628 L478 628 L452 662 L388 662 Z" fill="#F4F5F7"/>
+
+  <!-- step -->
+  <rect x="112" y="884" width="800" height="14" rx="7" fill="#3A3F48"/>
+
+  <!-- parcel in 3/4 view: top, side, front, then tape -->
+  <path d="M556 760 L628 704 L852 704 L780 760 Z" fill="#FFFFFF"/>
+  <path d="M780 760 L852 704 L852 828 L780 884 Z" fill="#9EA3AD"/>
+  <rect x="556" y="760" width="224" height="124" fill="#DADCE1"/>
+  <path d="M652 760 L684 760 L756 704 L724 704 Z" fill="#7C828D"/>
+  <rect x="652" y="760" width="32" height="124" fill="#7C828D"/>
+</svg>

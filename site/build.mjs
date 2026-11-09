@@ -22,7 +22,7 @@ const FONTS = [
 ];
 
 /** Everything this script owns in public/. */
-const OWNED_DIRS = ["styles", "fonts"];
+const OWNED_DIRS = ["styles", "fonts", "icons"];
 
 async function clean() {
   await mkdir(out, { recursive: true });
@@ -62,6 +62,11 @@ async function build() {
   await writeFile(path.join(out, "_headers"), await headersFile());
   for (const [, from, to] of FONTS) {
     await copyFile(path.join(geistRoot, "dist/fonts", from), path.join(out, "fonts", to));
+  }
+  // Favicons made by apps/apple/scripts/make-icons.sh from apps/apple/Design/AppIcon.svg.
+  await mkdir(path.join(out, "icons"), { recursive: true });
+  for (const icon of await readdir(path.join(src, "icons"))) {
+    await copyFile(path.join(src, "icons", icon), path.join(out, "icons", icon));
   }
   console.info(`site: ${pages.length} pages -> ${path.relative(process.cwd(), out)}`);
 }
