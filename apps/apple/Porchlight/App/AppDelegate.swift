@@ -80,11 +80,9 @@ final class AppDelegate: NSObject {
                 await carriers.checkIfDue()
             }
             Task {
-                // A first sync that brings packages in (one added on the web or
-                // through the share sheet) is also a good time for the prompt.
-                if await refresh.run() == .newData {
-                    await push.askIfNeeded(hasPackages: true)
-                }
+                _ = await refresh.run()
+                // Asks for notification permission the first time, once signed in.
+                await push.askIfNeeded()
             }
         case .background:
             #if os(iOS)

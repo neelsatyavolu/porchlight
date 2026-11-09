@@ -55,10 +55,11 @@ public enum NotificationAuthorization: Hashable, Sendable {
     case notDetermined, denied, authorized, provisional, ephemeral
 }
 
-/// When to show the system notification prompt: once the person has a
-/// package to be told about, and only while the app is on screen.
+/// When to show the system notification prompt: once someone is signed in,
+/// only while the app is on screen, and only until they answer it.
 public enum NotificationPrompt {
-    public static func shouldAsk(authorization: NotificationAuthorization, hasPackages: Bool, appIsActive: Bool) -> Bool {
-        authorization == .notDetermined && hasPackages && appIsActive
+    public static func shouldAsk(authorization: NotificationAuthorization, signedIn: Bool, appIsActive: Bool) -> Bool {
+        authorization == .notDetermined && signedIn && appIsActive
     }
 }
+

@@ -112,12 +112,12 @@ private func profile(_ entitlements: [String: Any]) throws -> Data {
 }
 
 @Suite struct NotificationPromptTests {
-    @Test func asksOnlyOnceThereIsAPackageAndTheAppIsInFront() {
-        #expect(NotificationPrompt.shouldAsk(authorization: .notDetermined, hasPackages: true, appIsActive: true))
-        #expect(!NotificationPrompt.shouldAsk(authorization: .notDetermined, hasPackages: false, appIsActive: true))
-        #expect(!NotificationPrompt.shouldAsk(authorization: .notDetermined, hasPackages: true, appIsActive: false))
+    @Test func asksOnceSignedInWithTheAppInFront() {
+        #expect(NotificationPrompt.shouldAsk(authorization: .notDetermined, signedIn: true, appIsActive: true))
+        #expect(!NotificationPrompt.shouldAsk(authorization: .notDetermined, signedIn: false, appIsActive: true))
+        #expect(!NotificationPrompt.shouldAsk(authorization: .notDetermined, signedIn: true, appIsActive: false))
         for state in [NotificationAuthorization.denied, .authorized, .provisional, .ephemeral] {
-            #expect(!NotificationPrompt.shouldAsk(authorization: state, hasPackages: true, appIsActive: true))
+            #expect(!NotificationPrompt.shouldAsk(authorization: state, signedIn: true, appIsActive: true))
         }
     }
 }
