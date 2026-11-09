@@ -3,7 +3,8 @@ import PorchUI
 import SwiftUI
 
 /// Package detail (DESIGN.md §6 "Detail"): title, status and ETA sentence,
-/// facts, items, timeline, then Refresh, Archive and Delete.
+/// the route map when a stop could be located, timeline, facts, items,
+/// then Refresh, Archive and Delete.
 struct PackageDetailView: View {
     let packageId: String
 
@@ -21,6 +22,7 @@ struct PackageDetailView: View {
     @State private var draftTitle = ""
     @State private var confirmingDelete = false
     @State private var copied = false
+    @State private var route: [RouteStop] = []
 
     var body: some View {
         Group {
@@ -42,14 +44,19 @@ struct PackageDetailView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(PorchColor.canvas)
-        .navigationTitle(pkg?.displayTitle ?? "")
+        .porchChrome()
         #if os(iOS)
+        // The 22pt heading already names the package; a nav title would repeat it.
+        .navigationTitle("")
         .navigationBarTitleDisplayMode(.inline)
+        #else
+        .navigationTitle(pkg?.displayTitle ?? "")
         #endif
         .toolbar { toolbar }
         .task(id: TaskKey(id: packageId, revision: services.revision)) { await load() }
+        .task(id: routePlaces) { route = await PlaceLocator.locate(routePlaces) }
         .alert("Rename package", isPresented: $renaming) {
-            TextField("Title", text: $draftTitle)
+            TextField(pkg.map(Self.untitledName) ?? "Title", text: $draftTitle)
             Button("Cancel", role: .cancel) {}
             Button("Save") { Task { await saveTitle() } }
         } message: {
@@ -67,6 +74,24 @@ struct PackageDetailView: View {
         var revision: Int
     }
 
+    private var routePlaces: [String] { EventWords.route(events) }
+
+    /// What the package is called with no title: the rename field's placeholder.
+    private static func untitledName(_ pkg: Package) -> String {
+        var untitled = pkg
+        untitled.title = nil
+        return untitled.displayTitle
+    }
+
+    /// 24pt gutters on the Mac, 16pt on the narrow iPhone column (DESIGN.md §8).
+    private var gutter: CGFloat {
+        #if os(iOS)
+        PorchSpacing.m
+        #else
+        PorchSpacing.l
+        #endif
+    }
+
     // MARK: Content
 
     private func content(_ pkg: Package, now: Date) -> some View {
@@ -74,12 +99,14 @@ struct PackageDetailView: View {
             VStack(alignment: .leading, spacing: PorchSpacing.l) {
                 header(pkg, now: now)
                 timeline(pkg, now: now)
+                // The route under the scans it was drawn from (the owner's pick, after Parcel).
+                if !route.isEmpty { RouteMap(stops: route) }
                 facts(pkg, now: now)
                 if !pkg.items.isEmpty { items(pkg) }
                 actions(pkg)
             }
             .frame(maxWidth: 720, alignment: .leading)
-            .padding(.horizontal, PorchSpacing.l)
+            .padding(.horizontal, gutter)
             .padding(.vertical, PorchSpacing.l)
             .frame(maxWidth: .infinity)
         }
@@ -98,16 +125,26 @@ struct PackageDetailView: View {
                     .multilineTextAlignment(.leading)
             }
             .buttonStyle(.plain)
+            .help("Rename")
             .accessibilityHint("Renames the package")
             .accessibilityAddTraits(.isHeader)
 
-            HStack(alignment: .firstTextBaseline, spacing: PorchSpacing.xs) {
-                StatusDot(pkg.status, withLabel: true)
-                Text("·").foregroundStyle(PorchColor.mute).accessibilityHidden(true)
-                Text(ArrivalPhrases.sentence(pkg, now: now, timeZone: .current))
-                    .font(PorchFont.body)
-                    .monospacedDigit()
-                    .foregroundStyle(PorchColor.body)
+            // One line when it fits; on a narrow iPhone the sentence goes
+            // under the status instead of wrapping in a column beside it.
+            let sentence = Text(ArrivalPhrases.sentence(pkg, now: now, timeZone: .current))
+                .font(PorchFont.body)
+                .monospacedDigit()
+                .foregroundStyle(PorchColor.body)
+            ViewThatFits(in: .horizontal) {
+                HStack(alignment: .firstTextBaseline, spacing: PorchSpacing.xs) {
+                    StatusDot(pkg.status, withLabel: true)
+                    Text("·").foregroundStyle(PorchColor.mute).accessibilityHidden(true)
+                    sentence.fixedSize()
+                }
+                VStack(alignment: .leading, spacing: PorchSpacing.xxs) {
+                    StatusDot(pkg.status, withLabel: true)
+                    sentence.fixedSize(horizontal: false, vertical: true)
+                }
             }
             if let detail = pkg.statusDetail, !detail.isEmpty {
                 Text(detail)
@@ -123,9 +160,10 @@ struct PackageDetailView: View {
 
     private func facts(_ pkg: Package, now: Date) -> some View {
         VStack(alignment: .leading, spacing: 0) {
+            sectionLabel("Details")
             FactRow("Carrier") { CarrierBadge(pkg.carrier) }
             FactRow("Tracking number") {
-                HStack(spacing: PorchSpacing.xs) {
+                HStack(alignment: .firstTextBaseline, spacing: PorchSpacing.xs) {
                     Text(pkg.trackingNumber)
                         .porchMono()
                         .textSelection(.enabled)
@@ -140,8 +178,10 @@ struct PackageDetailView: View {
                             copied = false
                         }
                     }
-                    .buttonStyle(.bordered)
-                    .controlSize(.small)
+                    // Accent text, like the carrier link below: keeps the row as tall as its neighbours.
+                    .buttonStyle(.borderless)
+                    .font(PorchFont.bodySmall)
+                    .foregroundStyle(PorchColor.accent)
                     .accessibilityLabel(copied ? "Copied" : "Copy tracking number")
                 }
             }
@@ -161,6 +201,7 @@ struct PackageDetailView: View {
                 FactRow("Carrier site") {
                     Button("Open \(pkg.carrier.displayName) tracking") { openURL(url) }
                         .buttonStyle(.borderless)
+                        .foregroundStyle(PorchColor.accent) // a link; FactRow paints values Ink
                 }
             }
         }
@@ -183,7 +224,7 @@ struct PackageDetailView: View {
                             .accessibilityLabel("Quantity \(item.quantity)")
                     }
                 }
-                .padding(.vertical, PorchSpacing.xs)
+                .padding(.vertical, PorchSpacing.s) // same row height as the facts above
                 .overlay(alignment: .bottom) { Rectangle().fill(PorchColor.line).frame(height: 1) }
             }
         }
@@ -194,13 +235,10 @@ struct PackageDetailView: View {
         VStack(alignment: .leading, spacing: 0) {
             sectionLabel("Timeline")
             if events.isEmpty {
-                EmptyState(
-                    "No scans yet",
-                    message: SourceText.noScansText(pkg),
-                    size: .inline
-                )
-                .padding(.horizontal, -PorchSpacing.l)
-                .padding(.top, -PorchSpacing.l)
+                Text("No scans yet. \(SourceText.noScansText(pkg))")
+                    .font(PorchFont.body)
+                    .foregroundStyle(PorchColor.mute)
+                    .fixedSize(horizontal: false, vertical: true)
             } else {
                 EventTimeline(days: PackageText.timelineDays(events, now: now, timeZone: .current), newestStatus: pkg.status)
             }
@@ -226,33 +264,55 @@ struct PackageDetailView: View {
         }
     }
 
+    /// Refresh and Archive on the left, Delete on the right; when they don't
+    /// fit on one line (large text on an iPhone), they stack instead of clipping.
     private func actions(_ pkg: Package) -> some View {
-        HStack(spacing: PorchSpacing.xs) {
-            Button {
-                Task { await refresh() }
-            } label: {
-                Label("Refresh", systemImage: "arrow.clockwise")
+        ViewThatFits(in: .horizontal) {
+            HStack(spacing: PorchSpacing.xs) {
+                refreshButton
+                archiveButton(pkg)
+                Spacer(minLength: PorchSpacing.m)
+                deleteButton
             }
-            .buttonStyle(.bordered)
-            .disabled(refreshing)
-
-            Button(pkg.isArchived ? "Unarchive" : "Archive") {
-                Task { await setArchived(!pkg.isArchived) }
+            VStack(alignment: .leading, spacing: PorchSpacing.xs) {
+                refreshButton
+                archiveButton(pkg)
+                deleteButton
             }
-            .buttonStyle(.bordered)
-
-            Spacer()
-
-            Button("Delete", role: .destructive) { confirmingDelete = true }
-                .buttonStyle(.bordered)
         }
+        .buttonStyle(.bordered)
         .padding(.top, PorchSpacing.xs)
+        .padding(.bottom, PorchSpacing.m)
     }
 
+    private var refreshButton: some View {
+        Button {
+            Task { await refresh() }
+        } label: {
+            Label("Refresh", systemImage: "arrow.clockwise")
+        }
+        .disabled(refreshing)
+        .fixedSize()
+    }
+
+    private func archiveButton(_ pkg: Package) -> some View {
+        Button(pkg.isArchived ? "Unarchive" : "Archive", systemImage: "archivebox") {
+            Task { await setArchived(!pkg.isArchived) }
+        }
+        .fixedSize()
+    }
+
+    private var deleteButton: some View {
+        Button("Delete", systemImage: "trash", role: .destructive) { confirmingDelete = true }
+            .buttonStyle(.porchDanger)
+            .fixedSize()
+    }
+
+    /// A step above the timeline's Label-style day headers, so sections read as sections.
     private func sectionLabel(_ text: String) -> some View {
         Text(text)
-            .font(PorchFont.label)
-            .foregroundStyle(PorchColor.mute)
+            .font(PorchFont.headingSmall)
+            .foregroundStyle(PorchColor.ink)
             .frame(minHeight: 32, alignment: .leading)
             .accessibilityAddTraits(.isHeader)
     }
@@ -275,6 +335,10 @@ struct PackageDetailView: View {
                         Task { await setArchived(!pkg.isArchived) }
                     }
                     Button("Delete", systemImage: "trash", role: .destructive) { confirmingDelete = true }
+            #if os(macOS)
+            // The Mac draws a destructive bordered button like any other; Delete is red text (DESIGN.md §5).
+            .foregroundStyle(PorchColor.danger)
+            #endif
                 }
             }
         }

@@ -47,7 +47,7 @@ public struct EventTimeline: View {
             }
             .frame(width: 8)
             VStack(alignment: .leading, spacing: 2) {
-                Text(entry.event.description)
+                Text(entry.title)
                     .font(PorchFont.body)
                     .foregroundStyle(isNewest ? PorchColor.ink : PorchColor.body)
                     .fixedSize(horizontal: false, vertical: true)

@@ -15,13 +15,15 @@ struct AmazonSection: View {
             } else if let elsewhere = amazon.elsewhere {
                 TimelineView(.periodic(from: .now, by: 60)) { context in
                     let line = AmazonStatusText.elsewhere(elsewhere, now: context.date, timeZone: .current)
-                    Text(line.text)
-                        .font(PorchFont.bodySmall)
-                        .foregroundStyle(line.isProblem ? PorchColor.warn : PorchColor.body)
+                    SettingsRow("Not connected on this device", detail: line.text, detailColor: line.isProblem ? PorchColor.warn : PorchColor.mute) {
+                        Button("Connect") { signingIn = true }
+                            .accessibilityLabel("Also connect Amazon on this device")
+                    }
                 }
-                Button("Also connect on this device") { signingIn = true }
             } else {
-                Button("Connect Amazon") { signingIn = true }
+                SettingsRow("Not connected") {
+                    Button("Connect Amazon") { signingIn = true }
+                }
             }
         } header: {
             Text("Amazon")
@@ -52,20 +54,27 @@ struct AmazonSection: View {
     @ViewBuilder private var connectedRows: some View {
         TimelineView(.periodic(from: .now, by: 60)) { context in
             let line = AmazonStatusText.line(amazon.status, now: context.date, timeZone: .current)
-            Text(amazon.running ? "Importing…" : line.text)
-                .font(PorchFont.bodySmall)
-                .foregroundStyle(line.isProblem && !amazon.running ? PorchColor.warn : PorchColor.body)
+            SettingsRow(
+                amazon.running ? "Importing…" : "Connected on this device",
+                detail: amazon.running ? nil : statusDetail(line),
+                detailColor: line.isProblem ? PorchColor.warn : PorchColor.mute
+            ) {
+                if amazon.status.state == .needsSignIn {
+                    Button("Sign in again") { signingIn = true }
+                } else {
+                    Button("Import now") { Task { await amazon.importIfDue() } }
+                        .disabled(amazon.running || amazon.nextAllowedAt != nil)
+                }
+            }
         }
-        if amazon.status.state == .needsSignIn {
-            Button("Sign in again") { signingIn = true }
+        SettingsRow("Disconnect Amazon", detail: "Signs Amazon out on this device. Packages already imported stay.") {
+            DangerButton("Disconnect") { confirmingDisconnect = true }
         }
-        Button("Import now") { Task { await amazon.importIfDue() } }
-            .disabled(amazon.running || amazon.nextAllowedAt != nil)
-        if let next = amazon.nextAllowedAt, !amazon.running {
-            Text("Porchlight checks Amazon at most every 15 minutes. Next check after \(next.formatted(date: .omitted, time: .shortened)).")
-                .font(PorchFont.caption)
-                .foregroundStyle(PorchColor.mute)
-        }
-        Button("Disconnect", role: .destructive) { confirmingDisconnect = true }
+    }
+
+    /// The status sentence, and when the next import can run if one just did.
+    private func statusDetail(_ line: AmazonStatusText.Line) -> String {
+        guard let next = amazon.nextAllowedAt else { return line.text }
+        return line.text + " Porchlight checks Amazon at most every 15 minutes. Next check after \(next.formatted(date: .omitted, time: .shortened))."
     }
 }

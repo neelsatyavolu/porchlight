@@ -29,11 +29,6 @@ struct AmazonSignInSheet: View {
             #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
             #endif
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") { dismiss() }
-                }
-            }
             .safeAreaInset(edge: .bottom) {
                 Text("You sign in on Amazon's page. Your password and cookies stay on this device.")
                     .font(PorchFont.caption)
@@ -42,6 +37,7 @@ struct AmazonSignInSheet: View {
                     .padding(PorchSpacing.s)
                     .background(PorchColor.canvas)
             }
+            .sheetActions(cancel: SheetButton("Cancel") { dismiss() })
             .porchChrome()
         }
         #if os(macOS)

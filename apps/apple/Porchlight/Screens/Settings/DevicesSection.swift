@@ -22,15 +22,15 @@ struct DevicesSection: View {
         Section {
             switch state {
             case .loading:
-                Text("Loading your devices").font(PorchFont.bodySmall).foregroundStyle(PorchColor.mute)
+                Text("Loading your devices").foregroundStyle(PorchColor.mute)
             case let .failed(message):
-                VStack(alignment: .leading, spacing: PorchSpacing.xs) {
-                    Text("Couldn't load your devices. \(message)").font(PorchFont.bodySmall).foregroundStyle(PorchColor.mute)
-                    Button("Try again") { Task { await load() } }.buttonStyle(.borderless)
+                SettingsRow("Couldn't load your devices.", detail: message) {
+                    Button("Try again") { Task { await load() } }
                 }
             case let .ready(sessions):
-                TimelineView(.periodic(from: .now, by: 60)) { context in
-                    ForEach(sessions) { row($0, now: context.date) }
+                // One timer per row, so the form draws a hairline between rows.
+                ForEach(sessions) { session in
+                    TimelineView(.periodic(from: .now, by: 60)) { context in row(session, now: context.date) }
                 }
             }
             if let error { ErrorLine(error) }
@@ -44,24 +44,14 @@ struct DevicesSection: View {
 
     private func row(_ s: SessionInfo, now: Date) -> some View {
         let label = SettingsText.platformLabel(s.platform)
-        return HStack(alignment: .center, spacing: PorchSpacing.s) {
-            VStack(alignment: .leading, spacing: 2) {
-                Text(label).font(PorchFont.rowTitle).foregroundStyle(PorchColor.ink)
-                Text(SettingsText.sessionMeta(s, now: now, timeZone: .current))
-                    .font(PorchFont.bodySmall)
-                    .monospacedDigit()
-                    .foregroundStyle(PorchColor.mute)
-                    .help(TimeWords.fullDateTime(s.lastSeenAt, timeZone: .current))
-            }
-            Spacer()
+        return SettingsRow(label, detail: SettingsText.sessionMeta(s, now: now, timeZone: .current)) {
             if !s.current {
                 Button("Sign out") { Task { await signOut(s) } }
-                    .buttonStyle(.bordered)
-                    .controlSize(.small)
                     .disabled(removing == s.id)
                     .accessibilityLabel("Sign out \(label)")
             }
         }
+        .help(TimeWords.fullDateTime(s.lastSeenAt, timeZone: .current))
     }
 
     private func load() async {

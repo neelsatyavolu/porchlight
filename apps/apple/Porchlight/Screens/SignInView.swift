@@ -69,6 +69,8 @@ struct SignInView: View {
             }
             .signInWithAppleButtonStyle(colorScheme == .dark ? .white : .black)
             .frame(height: 44)
+            // The 8pt control radius, like the field and button below.
+            .clipShape(RoundedRectangle(cornerRadius: PorchRadius.control, style: .continuous))
 
             Text("Or use your email")
                 .font(PorchFont.caption)
@@ -76,7 +78,8 @@ struct SignInView: View {
                 .padding(.top, PorchSpacing.xs)
             #endif
 
-            TextField("Email", text: $email, prompt: Text("you@example.com"))
+            // Verbatim: a string literal is Markdown, which would turn the address into a link.
+            TextField("Email", text: $email, prompt: Text(verbatim: "you@example.com").foregroundStyle(PorchColor.mute))
                 .labelsHidden()
                 .accessibilityLabel("Email")
                 .textContentType(.emailAddress)
@@ -86,7 +89,7 @@ struct SignInView: View {
                 #endif
                 .autocorrectionDisabled()
                 .font(PorchFont.body)
-                .textFieldStyle(.roundedBorder)
+                .porchInput(focused: focused)
                 .focused($focused)
                 .onSubmit { Task { await sendEmail() } }
 
@@ -95,8 +98,9 @@ struct SignInView: View {
             } label: {
                 Text("Email me a code").frame(maxWidth: .infinity)
             }
-            .buttonStyle(.bordered)
+            .buttonStyle(.borderedProminent)
             .controlSize(.large)
+            .buttonBorderShape(.roundedRectangle(radius: PorchRadius.control))
         }
     }
 
@@ -116,7 +120,7 @@ struct SignInView: View {
                     .foregroundStyle(PorchColor.ink)
             }
 
-            TextField("Code", text: $code, prompt: Text("123456"))
+            TextField("Code", text: $code, prompt: Text(verbatim: "123456").foregroundStyle(PorchColor.mute))
                 .labelsHidden()
                 .accessibilityLabel("Code from the email")
                 .textContentType(.oneTimeCode)
@@ -124,7 +128,7 @@ struct SignInView: View {
                 .keyboardType(.numberPad)
                 #endif
                 .porchMono(size: 22)
-                .textFieldStyle(.roundedBorder)
+                .porchInput(focused: focused)
                 .focused($focused)
                 .onChange(of: code) { _, new in
                     let clean = SignInText.cleanCode(new)
@@ -140,6 +144,7 @@ struct SignInView: View {
             }
             .buttonStyle(.borderedProminent)
             .controlSize(.large)
+            .buttonBorderShape(.roundedRectangle(radius: PorchRadius.control))
             .disabled(!SignInText.isCompleteCode(code))
 
             Button("Use a different email") {

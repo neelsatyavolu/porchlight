@@ -10,8 +10,15 @@ struct PackageListView: View {
     @Binding var selection: String?
     /// Opens a package after Add (iPhone pushes it, the Mac selects it).
     var open: (String) -> Void
+    /// Mac: told whether nothing is on the way. The sidebar then stays blank
+    /// and the detail pane shows the empty state (`WindowPlaceholder`).
+    var onEmptyChange: (Bool) -> Void = { _ in }
 
     @Environment(ScreenServices.self) private var services
+    #if os(macOS)
+    /// False when the window is in the background: the selection turns from accent to a quiet fill.
+    @Environment(\.appearsActive) private var appearsActive
+    #endif
     @State private var model = PackageListModel()
     @State private var query = ""
     @State private var showingAdd = false
@@ -25,6 +32,7 @@ struct PackageListView: View {
             content(now: context.date)
         }
         .background(PorchColor.canvas)
+        .porchChrome()
         .navigationTitle("Packages")
         .searchable(text: $query, prompt: "Search packages")
         .searchFocused($searchFocused)
@@ -33,6 +41,7 @@ struct PackageListView: View {
         #endif
         .toolbar { toolbar }
         .task(id: services.revision) { await model.load(services) }
+        .onChange(of: showsEmptyState, initial: true) { _, empty in onEmptyChange(empty) }
         .task {
             guard !didFirstSync else { return }
             didFirstSync = true
@@ -46,15 +55,13 @@ struct PackageListView: View {
                 }
             }
             #if os(macOS)
-            .frame(minWidth: 460, minHeight: 420)
+            .frame(minWidth: 480, minHeight: 420)
             #endif
         }
         .sheet(isPresented: $showingSettings) {
             NavigationStack {
                 SettingsView()
-                    .toolbar {
-                        ToolbarItem(placement: .confirmationAction) { Button("Done") { showingSettings = false } }
-                    }
+                    .sheetActions(primary: SheetButton("Done") { showingSettings = false })
             }
             #if os(macOS)
             .frame(minWidth: 520, minHeight: 560)
@@ -90,6 +97,7 @@ struct PackageListView: View {
                 }
             }
         } else if model.packages.allSatisfy(\.isArchived), query.isEmpty {
+            #if os(iOS)
             ScrollView {
                 EmptyState("Nothing on the way", message: emptyMessage) {
                     Button("Add a package") { showingAdd = true }
@@ -97,21 +105,26 @@ struct PackageListView: View {
                 }
             }
             .refreshable { await model.refresh(services) }
+            #else
+            Color.clear // the detail pane says "Nothing on the way"
+            #endif
         } else {
             list(groups, now: now)
         }
     }
 
-    private var emptyMessage: String {
-        #if os(iOS)
-        "Paste a tracking number or scan the barcode on a shipping label."
-        #else
-        "Paste a tracking number to start tracking a package."
-        #endif
+    private var showsEmptyState: Bool {
+        model.loaded && model.packages.allSatisfy(\.isArchived)
     }
 
+    #if os(iOS)
+    private var emptyMessage: String {
+        "Paste a tracking number or scan the barcode on a shipping label."
+    }
+    #endif
+
     private func list(_ groups: [ArrivalGroup], now: Date) -> some View {
-        List(selection: listSelection) {
+        List {
             if let stale = model.staleLine(now: now) {
                 HStack(spacing: PorchSpacing.xs) {
                     Text(stale).font(PorchFont.bodySmall).foregroundStyle(PorchColor.mute)
@@ -146,13 +159,19 @@ struct PackageListView: View {
         }
         #if os(iOS)
         .listStyle(.plain)
-        .scrollContentBackground(.hidden)
         #else
         .listStyle(.sidebar)
         #endif
+        // The canvas shows through on both platforms, so the Mac sidebar and
+        // the detail pane read as one black (or white) window.
+        .scrollContentBackground(.hidden)
         .listRowSeparatorTint(PorchColor.line)
         .refreshable { await model.refresh(services) }
         #if os(macOS)
+        // Up and down move the selection, as the system list's did.
+        .focusable()
+        .focusEffectDisabled()
+        .onMoveCommand { direction in moveSelection(direction, in: groups) }
         // The Delete key (and Edit > Delete) on the selected row asks first.
         .onDeleteCommand {
             guard let selection, let pkg = model.packages.first(where: { $0.id == selection }) else { return }
@@ -173,13 +192,18 @@ struct PackageListView: View {
     }
     #endif
 
-    private var listSelection: Binding<String?>? {
-        #if os(macOS)
-        $selection
-        #else
-        nil
-        #endif
+    #if os(macOS)
+    private func moveSelection(_ direction: MoveCommandDirection, in groups: [ArrivalGroup]) {
+        let ids = groups.flatMap { $0.packages.map(\.id) }
+        guard !ids.isEmpty else { return }
+        let index = selection.flatMap { ids.firstIndex(of: $0) }
+        switch direction {
+        case .down: selection = ids[min((index ?? -1) + 1, ids.count - 1)]
+        case .up: selection = ids[max((index ?? ids.count) - 1, 0)]
+        default: break
+        }
     }
+    #endif
 
     @ViewBuilder
     private func row(_ pkg: Package, now: Date) -> some View {
@@ -192,8 +216,12 @@ struct PackageListView: View {
             }
             .contextMenu { rowMenu(pkg) }
         #else
-        PackageRow(pkg, now: now)
-            .tag(pkg.id)
+        // The Mac list draws its own selection (SelectionFill) and tells the row,
+        // instead of relying on the sidebar's, whose text colors didn't follow.
+        PackageRow(pkg, now: now, highlighted: selection == pkg.id && appearsActive)
+            .background { if selection == pkg.id { SelectionFill(active: appearsActive) } }
+            .contentShape(Rectangle())
+            .onTapGesture { selection = pkg.id }
             .contextMenu { rowMenu(pkg) }
         #endif
     }
@@ -236,6 +264,27 @@ struct PackageListView: View {
         #endif
     }
 }
+
+#if os(macOS)
+/// The selected row's fill: the accent while the window is active (the row's
+/// text turns white), an Elev fill with a hairline when it isn't.
+private struct SelectionFill: View {
+    let active: Bool
+
+    var body: some View {
+        let shape = RoundedRectangle(cornerRadius: PorchRadius.control)
+        Group {
+            if active {
+                shape.fill(PorchColor.accent)
+            } else {
+                shape.fill(PorchColor.elev).strokeBorder(PorchColor.line2)
+            }
+        }
+        .padding(.horizontal, -PorchSpacing.xs)
+        .padding(.vertical, -PorchSpacing.xxs)
+    }
+}
+#endif
 
 #if DEBUG // ScreenServices.preview() exists only in Debug builds.
 #Preview {

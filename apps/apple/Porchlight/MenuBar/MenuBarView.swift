@@ -17,7 +17,7 @@ struct MenuBarView: View {
     }
 }
 
-private struct MenuBarContent: View {
+struct MenuBarContent: View {
     let signedIn: Bool
 
     @Environment(ScreenServices.self) private var services
@@ -27,13 +27,16 @@ private struct MenuBarContent: View {
         VStack(alignment: .leading, spacing: PorchSpacing.xs) {
             if signedIn {
                 TimelineView(.periodic(from: .now, by: 60)) { context in
-                    today(now: context.date)
+                    VStack(alignment: .leading, spacing: PorchSpacing.xs) {
+                        today(now: context.date)
+                    }
                 }
             } else {
                 Text("Open Porchlight to sign in.")
                     .font(PorchFont.body)
                     .foregroundStyle(PorchColor.body)
             }
+            Spacer(minLength: 0)
             Divider().overlay(PorchColor.line)
             HStack {
                 Button("Open Porchlight") { openMainWindow() }
@@ -72,18 +75,24 @@ private struct MenuBarContent: View {
                 .foregroundStyle(PorchColor.body)
                 .padding(.vertical, PorchSpacing.xs)
         } else {
-            ScrollView {
-                VStack(spacing: 0) {
-                    ForEach(todays) { pkg in
-                        PackageRow(pkg, now: now, showsChecked: false)
-                        if pkg.id != todays.last?.id { Divider().overlay(PorchColor.line) }
-                    }
-                }
+            // A few rows take only their own height; a long day scrolls past 360.
+            ViewThatFits(in: .vertical) {
+                rows(todays, now: now)
+                ScrollView { rows(todays, now: now) }
             }
-            .frame(maxHeight: 360)
+            .frame(maxHeight: 360, alignment: .top)
         }
         if let stale = model.staleLine(now: now) {
             Text(stale).font(PorchFont.caption).foregroundStyle(PorchColor.mute)
+        }
+    }
+
+    private func rows(_ todays: [Package], now: Date) -> some View {
+        VStack(spacing: 0) {
+            ForEach(todays) { pkg in
+                PackageRow(pkg, now: now, showsChecked: false)
+                if pkg.id != todays.last?.id { Divider().overlay(PorchColor.line) }
+            }
         }
     }
 

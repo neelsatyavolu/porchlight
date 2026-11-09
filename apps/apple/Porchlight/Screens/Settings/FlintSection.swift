@@ -31,7 +31,7 @@ struct FlintSection: View {
             #if os(macOS)
             connectRows
             #else
-            Text(FlintText.phoneNote).font(PorchFont.bodySmall).foregroundStyle(PorchColor.body)
+            Text(FlintText.phoneNote).font(.subheadline).foregroundStyle(PorchColor.body)
             #endif
             if let error { ErrorLine(error) }
             tokenRows
@@ -51,34 +51,30 @@ struct FlintSection: View {
     private var connectRows: some View {
         switch connect {
         case .idle, .failed:
-            Button(FlintText.connectButton) { Task { await startConnect() } }
-            if case let .failed(message) = connect { ErrorLine(message) }
-            if flintMissing {
-                HStack(spacing: PorchSpacing.xs) {
-                    Text(FlintText.notInstalled).font(PorchFont.bodySmall).foregroundStyle(PorchColor.body)
-                    Link(FlintText.getFlint, destination: FlintLink.downloadURL).font(PorchFont.bodySmall)
-                }
+            SettingsRow("Flint for Mac", detail: flintMissing ? FlintText.notInstalled : nil) {
+                if flintMissing { Link(FlintText.getFlint, destination: FlintLink.downloadURL) }
+                Button(FlintText.connectButton) { Task { await startConnect() } }
             }
+            if case let .failed(message) = connect { ErrorLine(message) }
         case .starting:
-            Text(FlintText.opening).font(PorchFont.bodySmall).foregroundStyle(PorchColor.mute)
+            Text(FlintText.opening).foregroundStyle(PorchColor.mute)
         case let .waiting(attempt, stalled):
             VStack(alignment: .leading, spacing: PorchSpacing.xs) {
                 Text(stalled ? FlintText.stalled : FlintText.opening)
-                    .font(PorchFont.bodySmall)
                     .foregroundStyle(stalled ? PorchColor.body : PorchColor.mute)
                 HStack(spacing: PorchSpacing.xs) {
-                    Text(FlintText.notOpening).font(PorchFont.bodySmall).foregroundStyle(PorchColor.mute)
-                    Link(FlintText.getFlint, destination: FlintLink.downloadURL).font(PorchFont.bodySmall)
+                    Text(FlintText.notOpening).font(.subheadline).foregroundStyle(PorchColor.mute)
+                    Link(FlintText.getFlint, destination: FlintLink.downloadURL).font(.subheadline)
                 }
                 DisclosureGroup(FlintText.useCode, isExpanded: $showCode) { codeView(attempt.pairing) }
-                    .font(PorchFont.bodySmall)
+                    .font(.subheadline)
                 if stalled {
-                    Button(FlintText.retryButton) { Task { await startConnect() } }.buttonStyle(.borderless)
+                    Button(FlintText.retryButton) { Task { await startConnect() } }.buttonStyle(.bordered)
                 }
             }
             .padding(.vertical, PorchSpacing.xxs)
         case let .connected(token):
-            Text(FlintText.connected(token)).font(PorchFont.rowTitle).foregroundStyle(PorchColor.ink)
+            SettingsRow(FlintText.connected(token))
         }
     }
 
@@ -96,9 +92,9 @@ struct FlintSection: View {
                         .font(PorchFont.caption)
                         .monospacedDigit()
                         .foregroundStyle(PorchColor.mute)
-                    Text(FlintText.codeHelp).font(PorchFont.bodySmall).foregroundStyle(PorchColor.body)
+                    Text(FlintText.codeHelp).font(.subheadline).foregroundStyle(PorchColor.body)
                 } else {
-                    Text(FlintText.codeExpired).font(PorchFont.bodySmall).foregroundStyle(PorchColor.body)
+                    Text(FlintText.codeExpired).font(.subheadline).foregroundStyle(PorchColor.body)
                 }
             }
             .padding(.top, PorchSpacing.xxs)
@@ -143,29 +139,24 @@ struct FlintSection: View {
     private var tokenRows: some View {
         switch tokens {
         case .loading:
-            Text("Loading connected apps").font(PorchFont.bodySmall).foregroundStyle(PorchColor.mute)
+            Text("Loading connected apps").foregroundStyle(PorchColor.mute)
         case let .failed(message):
-            VStack(alignment: .leading, spacing: PorchSpacing.xs) {
-                Text("Couldn't load connected apps. \(message)").font(PorchFont.bodySmall).foregroundStyle(PorchColor.mute)
-                Button("Try again") { Task { await loadTokens() } }.buttonStyle(.borderless)
+            SettingsRow("Couldn't load connected apps.", detail: message) {
+                Button("Try again") { Task { await loadTokens() } }
             }
         case let .ready(list) where list.isEmpty:
-            Text("Nothing is connected yet.").font(PorchFont.bodySmall).foregroundStyle(PorchColor.mute)
+            // On the Mac the Connect row above already says nothing is connected.
+            #if os(iOS)
+            Text("Nothing is connected yet.").foregroundStyle(PorchColor.mute)
+            #else
+            EmptyView()
+            #endif
         case let .ready(list):
-            TimelineView(.periodic(from: .now, by: 60)) { context in
-                ForEach(list) { token in
-                    HStack(spacing: PorchSpacing.s) {
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text(token.label).font(PorchFont.rowTitle).foregroundStyle(PorchColor.ink)
-                            Text(SettingsText.tokenMeta(token, now: context.date, timeZone: .current))
-                                .font(PorchFont.bodySmall)
-                                .monospacedDigit()
-                                .foregroundStyle(PorchColor.mute)
-                        }
-                        Spacer()
+            // One timer per row, so the form draws a hairline between rows.
+            ForEach(list) { token in
+                TimelineView(.periodic(from: .now, by: 60)) { context in
+                    SettingsRow(token.label, detail: SettingsText.tokenMeta(token, now: context.date, timeZone: .current)) {
                         Button("Revoke") { Task { await revoke(token) } }
-                            .buttonStyle(.bordered)
-                            .controlSize(.small)
                             .disabled(revoking == token.id)
                             .accessibilityLabel("Revoke \(token.label)")
                     }

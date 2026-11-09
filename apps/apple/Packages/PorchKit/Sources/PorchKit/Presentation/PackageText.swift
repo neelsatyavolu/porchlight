@@ -41,6 +41,8 @@ public enum PackageText {
     /// One timeline event with its formatted time and meta line.
     public struct TimelineEntry: Hashable, Sendable, Identifiable {
         public var event: TrackEvent
+        /// The description, with the town in it for a generic facility (EventWords).
+        public var title: String
         /// "9:12 AM"
         public var time: String
         /// "Oakland, CA · 9:12 AM", or just the time with no location.
@@ -63,9 +65,10 @@ public enum PackageText {
         for event in events {
             let day = CalendarDate(event.occurredAt, in: timeZone)
             let time = TimeWords.clockTime(event.occurredAt, timeZone: timeZone)
-            let location = event.location?.trimmingCharacters(in: .whitespacesAndNewlines)
-            let meta = location.flatMap { $0.isEmpty ? nil : "\($0) · \(time)" } ?? time
-            let entry = TimelineEntry(event: event, time: time, meta: meta)
+            let words = EventWords.describe(event.description, location: event.location)
+            let place = words.placeInTitle ? nil : EventWords.place(event.location)
+            let meta = place.map { "\($0) · \(time)" } ?? time
+            let entry = TimelineEntry(event: event, title: words.title, time: time, meta: meta)
             if let last = days.last, last.day == day {
                 days[days.count - 1].entries.append(entry)
             } else {

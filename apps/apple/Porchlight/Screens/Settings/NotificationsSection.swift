@@ -16,16 +16,16 @@ struct NotificationsSection: View {
         Section {
             switch push.authorization {
             case .authorized, .provisional, .ephemeral:
-                Text("On. Porchlight tells you when a package is out for delivery, delivered, or has a problem.")
-                    .font(PorchFont.bodySmall)
-                    .foregroundStyle(PorchColor.body)
+                SettingsRow("On", detail: "Porchlight tells you when a package is out for delivery, delivered, or has a problem.")
             case .notDetermined:
-                Button("Turn on notifications") { Task { await push.turnOn() } }
+                SettingsRow("Off", detail: "Turn them on to hear when a package is out for delivery or delivered.") {
+                    Button("Turn on") { Task { await push.turnOn() } }
+                        .accessibilityLabel("Turn on notifications")
+                }
             case .denied:
-                Text("Off. Turn them on to hear when a package is out for delivery or delivered.")
-                    .font(PorchFont.bodySmall)
-                    .foregroundStyle(PorchColor.body)
-                Button(openSettingsLabel) { Task { await push.turnOn() } }
+                SettingsRow("Off", detail: "Turn them on to hear when a package is out for delivery or delivered.") {
+                    Button(openSettingsLabel) { Task { await push.turnOn() } }
+                }
             }
         } header: {
             Text("Notifications")

@@ -2,8 +2,8 @@ import PorchKit
 import PorchUI
 import SwiftUI
 
-/// Settings (DESIGN.md §7): account, signed-in devices, Flint pairing, Amazon,
-/// appearance, sign out and delete account.
+/// Settings (DESIGN.md §7): account (sign out, delete account), signed-in
+/// devices, Flint pairing, Amazon, appearance.
 struct SettingsView: View {
     @Environment(ScreenServices.self) private var services
     @AppStorage(ThemePreference.storageKey) private var theme = ThemePreference.system
@@ -11,22 +11,27 @@ struct SettingsView: View {
     @State private var signingOut = false
 
     var body: some View {
-        Form {
+        PorchForm {
             Section("Account") {
-                LabeledContent("Signed in as") {
-                    Text(accountLine)
-                        .font(PorchFont.body)
-                        .foregroundStyle(PorchColor.ink)
-                        .textSelection(.enabled)
-                }
-                Button("Sign out") {
-                    signingOut = true
-                    Task {
-                        await services.account.signOut()
-                        signingOut = false
+                SettingsRow(accountLine) {
+                    Button("Sign out") {
+                        signingOut = true
+                        Task {
+                            await services.account.signOut()
+                            signingOut = false
+                        }
                     }
+                    .disabled(signingOut)
                 }
-                .disabled(signingOut)
+                .textSelection(.enabled)
+                // In Account, as DESIGN.md §7 lists it; on its own at the end
+                // it read as part of Appearance.
+                SettingsRow(
+                    "Delete account",
+                    detail: "Deletes your packages, devices and paired apps from Porchlight right away. This can't be undone."
+                ) {
+                    DangerButton("Delete…") { deleting = true }
+                }
             }
 
             NotificationsSection()
@@ -44,16 +49,7 @@ struct SettingsView: View {
                     ForEach(ThemePreference.allCases) { Text($0.label).tag($0) }
                 }
             }
-
-            Section {
-                Button("Delete account", role: .destructive) { deleting = true }
-            } footer: {
-                Text("Deletes your packages, devices and paired apps from Porchlight right away. This can't be undone.")
-            }
         }
-        .formStyle(.grouped)
-        .scrollContentBackground(.hidden)
-        .background(PorchColor.canvas)
         .porchChrome()
         .navigationTitle("Settings")
         .sheet(isPresented: $deleting) {

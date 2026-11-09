@@ -13,6 +13,7 @@ struct ShareSheetView: View {
             content
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(PorchColor.canvas)
+                .porchChrome()
                 .navigationTitle("Add to Porchlight")
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
@@ -79,12 +80,12 @@ struct ShareSheetView: View {
                 Text(error)
                     .font(PorchFont.bodySmall)
                     .foregroundStyle(PorchColor.danger)
-                    .listRowBackground(PorchColor.card)
+                    .porchFormRow()
             }
             Section {
                 ForEach(model.numbers) { number in
                     Button { model.toggle(number) } label: { row(number) }
-                        .listRowBackground(PorchColor.card)
+                        .porchFormRow()
                 }
             } footer: {
                 Text("Porchlight checks the carrier and adds each package to your list.")
@@ -100,15 +101,13 @@ struct ShareSheetView: View {
         return HStack(spacing: PorchSpacing.s) {
             Image(systemName: isOn ? "checkmark.circle.fill" : "circle")
                 .foregroundStyle(isOn ? PorchColor.accent : PorchColor.mute)
-            VStack(alignment: .leading, spacing: PorchSpacing.xxs) {
-                Text(number.number)
-                    .porchMono()
-                    .foregroundStyle(PorchColor.ink)
-                Text(number.carrier.displayName)
-                    .font(PorchFont.caption)
-                    .foregroundStyle(PorchColor.mute)
-            }
-            Spacer(minLength: 0)
+            Text(number.number)
+                .porchMono()
+                .foregroundStyle(PorchColor.ink)
+                .lineLimit(1)
+                .truncationMode(.middle)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            CarrierBadge(number.carrier)
         }
         .contentShape(Rectangle())
         .accessibilityElement(children: .combine)

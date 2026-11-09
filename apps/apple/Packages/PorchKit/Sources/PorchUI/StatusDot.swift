@@ -7,6 +7,9 @@ import SwiftUI
 public struct StatusDot: View {
     public let status: Status
     public let withLabel: Bool
+    /// `.increased` on a selected (accent-filled) row: every tone turns white,
+    /// since blue vanishes on the accent and green and amber lose their contrast.
+    @Environment(\.backgroundProminence) private var prominence
 
     public init(_ status: Status, withLabel: Bool = false) {
         self.status = status
@@ -25,7 +28,7 @@ public struct StatusDot: View {
     }
 
     @ViewBuilder private var dot: some View {
-        let color = PorchColor.tone(status.tone)
+        let color = prominence == .increased ? Color.white : PorchColor.tone(status.tone)
         if status.isPending {
             Circle().strokeBorder(color, lineWidth: 1.5).frame(width: 8, height: 8)
         } else {

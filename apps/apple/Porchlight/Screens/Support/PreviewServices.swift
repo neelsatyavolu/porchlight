@@ -53,9 +53,16 @@ enum PreviewData {
         ],
     ]
 
+    /// The current session is the device the preview runs on.
+    #if os(macOS)
+    private static let thisDevice = Platform.macos, otherDevice = Platform.ios
+    #else
+    private static let thisDevice = Platform.ios, otherDevice = Platform.macos
+    #endif
+
     static let sessions: [SessionInfo] = [
-        session("s1", .ios, current: true, seen: 0),
-        session("s2", .macos, current: false, seen: 180),
+        session("s1", thisDevice, current: true, seen: 0),
+        session("s2", otherDevice, current: false, seen: 180),
         session("s3", .web, current: false, seen: 60 * 50),
     ]
 

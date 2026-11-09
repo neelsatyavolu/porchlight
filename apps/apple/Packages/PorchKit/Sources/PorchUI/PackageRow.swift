@@ -13,9 +13,16 @@ public struct PackageRow: View {
     public let now: Date
     public let timeZone: TimeZone
     public let showsChecked: Bool
+    /// Drawn on the accent fill (the Mac list draws its own selection): white
+    /// text, and the dot and carrier chip follow through `backgroundProminence`.
+    public let highlighted: Bool
     @Environment(\.dynamicTypeSize) private var typeSize
+    /// `.increased` on a selected row: the system fills it with the accent, so
+    /// all the text turns white to stay readable (gray on blue is not).
+    @Environment(\.backgroundProminence) private var prominence
 
-    public init(_ package: Package, now: Date, timeZone: TimeZone = .current, showsChecked: Bool = true) {
+    public init(_ package: Package, now: Date, timeZone: TimeZone = .current, showsChecked: Bool = true, highlighted: Bool = false) {
+        self.highlighted = highlighted
         self.package = package
         self.now = now
         self.timeZone = timeZone
@@ -31,19 +38,19 @@ public struct PackageRow: View {
                 line(alignment: .firstTextBaseline) {
                     Text(package.displayTitle)
                         .font(PorchFont.rowTitle)
-                        .foregroundStyle(PorchColor.ink)
+                        .foregroundStyle(selected ? Color.white : PorchColor.ink)
                         .lineLimit(stacked ? 2 : 1)
                     if !stacked { Spacer(minLength: PorchSpacing.xs) }
                     Text(phrase.text)
                         .font(PorchFont.bodySmall)
                         .monospacedDigit()
-                        .foregroundStyle(phrase.muted ? PorchColor.mute : PorchColor.body)
+                        .foregroundStyle(selected ? Color.white : phrase.muted ? PorchColor.mute : PorchColor.body)
                         .lineLimit(1)
                 }
                 line(alignment: .center) {
                     Text(PackageText.statusLine(package))
                         .font(PorchFont.bodySmall)
-                        .foregroundStyle(PorchColor.mute)
+                        .foregroundStyle(secondary)
                         .lineLimit(stacked ? 3 : 1)
                     if !stacked { Spacer(minLength: PorchSpacing.xs) }
                     CarrierBadge(package.carrier)
@@ -52,15 +59,19 @@ public struct PackageRow: View {
                     Text(TimeWords.checked(package.lastCheckedAt, now: now))
                         .font(PorchFont.caption)
                         .monospacedDigit()
-                        .foregroundStyle(PorchColor.mute)
+                        .foregroundStyle(secondary)
                 }
             }
         }
+        .environment(\.backgroundProminence, selected ? .increased : .standard)
         .padding(.vertical, PorchSpacing.xs)
         .frame(minHeight: PorchSpacing.rowMinHeight)
         .contentShape(Rectangle())
         .accessibilityElement(children: .combine)
     }
+
+    private var selected: Bool { highlighted || prominence == .increased }
+    private var secondary: Color { selected ? Color.white : PorchColor.mute }
 
     /// At accessibility text sizes the two halves of a line stack, so the
     /// title and status keep their words instead of truncating to a few letters.
