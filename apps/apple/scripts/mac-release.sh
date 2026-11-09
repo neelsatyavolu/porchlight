@@ -88,6 +88,7 @@ ditto "$APP" "$STAGE/Porchlight.app"
 ln -s /Applications "$STAGE/Applications"
 rm -f "$DMG"
 hdiutil create -volname "Porchlight" -srcfolder "$STAGE" -fs HFS+ -format UDZO -ov "$DMG" >/dev/null
+chmod 644 "$DMG"   # the umask 077 for secrets would otherwise leave the download unreadable to others
 codesign --sign "$IDENTITY" --keychain "$KC" --timestamp "$DMG"
 
 echo "==> Notarizing the DMG"

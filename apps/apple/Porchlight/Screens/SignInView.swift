@@ -56,6 +56,9 @@ struct SignInView: View {
 
     private var emailStep: some View {
         VStack(alignment: .leading, spacing: PorchSpacing.m) {
+            // The Mac app ships with Developer ID, which can't carry the Sign in with Apple
+            // entitlement, so Mac users sign in by email only.
+            #if os(iOS)
             SignInWithAppleButton(.signIn) { request in
                 let fresh = AppleNonce.make()
                 nonce = fresh
@@ -71,6 +74,7 @@ struct SignInView: View {
                 .font(PorchFont.caption)
                 .foregroundStyle(PorchColor.mute)
                 .padding(.top, PorchSpacing.xs)
+            #endif
 
             TextField("Email", text: $email, prompt: Text("you@example.com"))
                 .labelsHidden()

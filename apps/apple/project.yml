@@ -139,8 +139,9 @@ targets:
     entitlements:
       path: Porchlight/Support/Porchlight-macOS.entitlements
       properties:
+        # No Sign in with Apple: Developer ID profiles can't include it, so the Mac
+        # app signs in by email (SignInView hides the Apple button on macOS).
         com.apple.developer.aps-environment: $(PORCHLIGHT_APS_ENVIRONMENT)
-        com.apple.developer.applesignin: [Default]
         com.apple.security.app-sandbox: true
         com.apple.security.network.client: true
         keychain-access-groups: [$(AppIdentifierPrefix)co.xanom.porchlight]
