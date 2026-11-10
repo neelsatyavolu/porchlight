@@ -31,7 +31,17 @@ describe("ship24 aggregator adapter", () => {
     await adapter.track("SCD0000F00410922107", "jitsu", ctx);
     expect(calls[0]?.url).toBe("https://api.ship24.com/public/v1/trackers/track");
     expect(calls[0]?.headers.get("authorization")).toBe("Bearer apik_test");
-    expect(JSON.parse(calls[0]?.body ?? "{}")).toEqual({ trackingNumber: "SCD0000F00410922107" });
+    expect(JSON.parse(calls[0]?.body ?? "{}")).toEqual({ trackingNumber: "SCD0000F00410922107", courierCode: ["jitsu"] });
+  });
+
+  it("names the courier so Ship24 doesn't guess (a 12-digit FedEx number stayed pending), but not for other", async () => {
+    const cases = [["fedex", "fedex"], ["usps", "us-post"], ["ups", "ups"], ["other", null]] as const;
+    for (const [carrier, code] of cases) {
+      const { adapter, ctx, calls } = setup([{ body: ofdJitsu }]);
+      await adapter.track("548346249748", carrier, ctx);
+      const body = JSON.parse(calls[0]?.body ?? "{}");
+      expect(body).toEqual(code ? { trackingNumber: "548346249748", courierCode: [code] } : { trackingNumber: "548346249748" });
+    }
   });
 
   it("orders events by `order`, newest first, and maps milestones", async () => {
@@ -62,6 +72,20 @@ describe("ship24 aggregator adapter", () => {
     expect(result.etaStart).toBe("2026-11-06");
     expect(result.etaEnd).toBe("2026-11-06");
     expect(result.etaDateOnly).toBe(true);
+  });
+
+  it("reads a midnight-UTC estimate as that calendar day, keeping real times", async () => {
+    const withEta = (from: string, to: string) => {
+      const body = structuredClone(returned) as { data: { trackings: { shipment: { delivery: unknown } }[] } };
+      body.data.trackings[0]!.shipment.delivery = { courierEstimatedDeliveryDate: { from, to } };
+      return body;
+    };
+    let s = setup([{ body: withEta("2026-11-17T00:00:00.000Z", "2026-11-17T00:00:00.000Z") }]);
+    let result = await s.adapter.track("548346249748", "fedex", s.ctx);
+    expect([result.etaStart, result.etaEnd, result.etaDateOnly]).toEqual(["2026-11-17", "2026-11-17", true]);
+    s = setup([{ body: withEta("2026-11-17T17:00:00Z", "2026-11-17T21:00:00Z") }]);
+    result = await s.adapter.track("548346249748", "fedex", s.ctx);
+    expect([result.etaStart, result.etaEnd, result.etaDateOnly]).toEqual(["2026-11-17T17:00:00Z", "2026-11-17T21:00:00Z", false]);
   });
 
   it("returns unknown with no events while the tracker is still pending", async () => {

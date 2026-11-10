@@ -1,4 +1,4 @@
-import type { CarrierEnv, Status, TrackContext, TrackEvent, TrackResult } from "../types.js";
+import type { CarrierEnv, CarrierId, Status, TrackContext, TrackEvent, TrackResult } from "../types.js";
 import { CarrierError } from "../types.js";
 import { errorMessage, requestJson, type HttpReply } from "./shared/http.js";
 import { arr, obj, str, strOrNull, type Json } from "./shared/json.js";
@@ -37,6 +37,13 @@ function toEvent(e: Json): TrackEvent {
   };
 }
 
+/** Ship24 writes a day-only estimate as midnight UTC ("2026-11-17T00:00:00.000Z"): read it as that date. */
+function etaValue(value: unknown): string | null {
+  const v = strOrNull(value);
+  const midnight = v === null ? null : /^(\d{4}-\d{2}-\d{2})T00:00:00(?:\.0+)?(?:Z|[+-]00:?00)$/.exec(v);
+  return midnight ? midnight[1]! : v;
+}
+
 /** Newest first by Ship24's `order`; events without one keep their position at the end. */
 function sortEvents(events: Json[]): Json[] {
   const rank = (e: Json) => (typeof e.order === "number" ? e.order : -Infinity);
@@ -61,17 +68,33 @@ function parse(body: unknown): TrackResult {
   return finishResult({
     status: mapShip24Milestone(str(shipment.statusMilestone), str(shipment.statusCode)),
     statusDetail: events[0]?.description ?? "",
-    etaStart: strOrNull(courierEta.from),
-    etaEnd: strOrNull(courierEta.to),
+    etaStart: etaValue(courierEta.from),
+    etaEnd: etaValue(courierEta.to),
     deliveredAt: strOrNull(obj(obj(t.statistics).timestamps).deliveredDatetime),
     events,
   });
 }
 
 /**
- * Uses `POST /trackers/track` (create-or-get, then fetch now). The body holds only
- * the number so it is deterministic: any other field change creates a new, billed
- * tracker. Courier codes are left to Ship24's auto-detect until we have its list.
+ * Ship24's courier codes (GET /public/v1/couriers). Its auto-detect left a
+ * 12-digit FedEx number pending with no courier, so the carrier we detected is
+ * passed along. `other` and DHL eCommerce stay on auto-detect.
+ */
+const COURIER_CODES: Partial<Record<CarrierId, string>> = {
+  usps: "us-post",
+  ups: "ups",
+  fedex: "fedex",
+  dhl: "dhl",
+  ontrac: "ontrac",
+  lasership: "lasership",
+  uniuni: "uniuni",
+  jitsu: "jitsu",
+};
+
+/**
+ * Uses `POST /trackers/track` (create-or-get, then fetch now). The body is the
+ * number and the carrier's courier code, both fixed per package, so it is
+ * deterministic: any other field change creates a new, billed tracker.
  */
 export function createShip24Adapter(): RegisteredAdapter {
   return {
@@ -80,7 +103,8 @@ export function createShip24Adapter(): RegisteredAdapter {
     // Amazon Logistics (TBA) is billed per number and usually not found; its status comes from the device's Amazon import.
     supports: (carrier) => carrier !== "amazon",
     isConfigured: (env: CarrierEnv) => Boolean(env.AGGREGATOR_API_KEY),
-    async track(number: string, _carrier, ctx: TrackContext) {
+    async track(number: string, carrier, ctx: TrackContext) {
+      const courier = COURIER_CODES[carrier];
       const reply = await requestJson(
         ctx,
         ID,
@@ -92,7 +116,7 @@ export function createShip24Adapter(): RegisteredAdapter {
             "content-type": "application/json",
             accept: "application/json",
           },
-          body: JSON.stringify({ trackingNumber: number }),
+          body: JSON.stringify(courier ? { trackingNumber: number, courierCode: [courier] } : { trackingNumber: number }),
         },
         classify,
       );
