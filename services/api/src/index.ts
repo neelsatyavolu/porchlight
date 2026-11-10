@@ -5,6 +5,7 @@ import { Router } from "./lib/router.js";
 import { consume } from "./poll/consume.js";
 import { purgeDhlEvents } from "./poll/purge.js";
 import { schedule } from "./poll/schedule.js";
+import { wakeDevices } from "./poll/wake.js";
 import type { TrackJob } from "./poll/types.js";
 import * as auth from "./routes/auth.js";
 import * as device from "./routes/device.js";
@@ -65,6 +66,10 @@ export default {
       .then((n) => n > 0 && console.info("purge: DHL events removed for", n, "packages"))
       .catch((err: unknown) => console.error("purge: failed", err));
     await schedule(controller, env, exec);
+    // Silent pushes so iPhones read Amazon and carrier pages in the background.
+    await wakeDevices(env, controller.scheduledTime)
+      .then((n) => n > 0 && console.info("wake: woke", n, "users"))
+      .catch((err: unknown) => console.error("wake: failed", err));
     await purge;
   },
 

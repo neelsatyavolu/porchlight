@@ -54,6 +54,8 @@ public actor AmazonImportCoordinator {
     public static let macTick: Duration = .seconds(5 * 60)
     /// macOS: how old the last good import may get before the next one.
     public static let macFreshness: TimeInterval = 30 * 60
+    /// macOS, when a delivery is close (AmazonActivity.isBusy): both the floor and the freshness.
+    public static let macBusyInterval: TimeInterval = 10 * 60
 
     private let store: any AmazonStatusStoring
     private let api: any APIClient
@@ -84,11 +86,13 @@ public actor AmazonImportCoordinator {
     /// is over 30 minutes old (or there was none) and the 15-minute floor has
     /// passed. An attempt that never finished (the app quit mid-run) is retried
     /// 15 minutes after it started, not half an hour after the next launch.
-    public func isDueOnMac() -> Bool {
+    /// `busy` (a delivery is close) shortens both to 10 minutes.
+    public func isDueOnMac(busy: Bool = false) -> Bool {
         let s = store.load()
-        guard s.connected, !running, nextAllowedAt() == nil else { return false }
+        let floor = busy ? Self.macBusyInterval : Self.minimumInterval
+        guard s.connected, !running, nextAllowedAt(minimumInterval: floor) == nil else { return false }
         guard let last = s.lastImportAt else { return true }
-        return now().timeIntervalSince(last) >= Self.macFreshness
+        return now().timeIntervalSince(last) >= (busy ? Self.macBusyInterval : Self.macFreshness)
     }
 
     /// Call once the Connect sheet reaches a signed-in page. The first import may run right away.

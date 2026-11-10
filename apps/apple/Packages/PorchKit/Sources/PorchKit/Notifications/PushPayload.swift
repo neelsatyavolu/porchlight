@@ -15,10 +15,14 @@ public struct PushPayload: Hashable, Sendable {
     public var kind: Kind
     /// Lowercased. Nil when missing or not a UUID.
     public var packageId: String?
+    /// The server's silent "check now" (`wake: "check"`, docs/API.md "Background
+    /// checks"): read Amazon and due carrier pages, not just sync.
+    public var wantsCheck: Bool
 
-    public init(kind: Kind, packageId: String?) {
+    public init(kind: Kind, packageId: String?, wantsCheck: Bool = false) {
         self.kind = kind
         self.packageId = packageId
+        self.wantsCheck = wantsCheck
     }
 
     /// Nil when `userInfo` has no `aps` dictionary with an alert or
@@ -33,6 +37,7 @@ public struct PushPayload: Hashable, Sendable {
             return nil
         }
         packageId = (userInfo["packageId"] as? String).flatMap(PackageID.normalize)
+        wantsCheck = kind == .background && (userInfo["wake"] as? String) == "check"
     }
 
     /// Where tapping this push should go.

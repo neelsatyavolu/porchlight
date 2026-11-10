@@ -23,12 +23,15 @@ final class AmazonModel {
     @ObservationIgnored private let signedIn: @MainActor () -> Bool
     /// Called after an import that sent packages, so the app syncs and shows them.
     @ObservationIgnored private let didImport: @MainActor () -> Void
+    /// The local packages, so the Mac timer can tell when a delivery is close.
+    @ObservationIgnored private let packages: @Sendable () async -> [Package]
     @ObservationIgnored private var timer: Task<Void, Never>?
     @ObservationIgnored private let log = Logger(subsystem: "co.xanom.porchlight", category: "amazon")
 
     init(
         api: any APIClient, signedIn: @escaping @MainActor () -> Bool,
-        didImport: @escaping @MainActor () -> Void = {}, defaults: UserDefaults = .standard
+        didImport: @escaping @MainActor () -> Void = {}, packages: @escaping @Sendable () async -> [Package] = { [] },
+        defaults: UserDefaults = .standard
     ) {
         let store = DefaultsAmazonStatusStore(defaults: defaults)
         let loader = AmazonWebPageLoader(engine: engine)
@@ -39,6 +42,7 @@ final class AmazonModel {
         self.api = api
         self.signedIn = signedIn
         self.didImport = didImport
+        self.packages = packages
         status = store.load()
     }
 
@@ -113,15 +117,22 @@ final class AmazonModel {
 
     #if os(macOS)
     /// While the app runs: every 5 minutes, import if the last good import is
-    /// over half an hour old (AmazonImportCoordinator.isDueOnMac).
+    /// over half an hour old, or 10 minutes when a delivery is close
+    /// (AmazonImportCoordinator.isDueOnMac, AmazonActivity.isBusy).
     func startTimer() {
         guard timer == nil else { return }
         timer = Task { [weak self] in
             while !Task.isCancelled {
-                if let self, await self.coordinator.isDueOnMac() { await self.importIfDue() }
+                await self?.tick()
                 try? await Task.sleep(for: AmazonImportCoordinator.macTick)
             }
         }
+    }
+
+    private func tick() async {
+        let busy = AmazonActivity.isBusy(await packages(), now: Date(), timeZone: .current)
+        guard await coordinator.isDueOnMac(busy: busy) else { return }
+        await run(deadline: nil, minimumInterval: busy ? AmazonImportCoordinator.macBusyInterval : AmazonImportCoordinator.minimumInterval)
     }
     #endif
 }

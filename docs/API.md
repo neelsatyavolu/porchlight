@@ -456,3 +456,16 @@ Errors: 404.
 
 - The aggregator webhook endpoint (`POST /v1/hooks/aggregator`) is added when the aggregator account exists. It authenticates with the aggregator's shared secret and is not a client API.
 - Push payloads: APNs `aps.alert` is sent for `out_for_delivery`, `delivered` and `exception`. Every other change sends `content-available: 1` with `{ "packageId": "uuid" }`.
+
+## Background checks
+
+Amazon retail orders and USPS/UPS/FedEx pages that the server hands off are read by a device, not the server: track.amazon.com answers `TRACKING_ID_NOT_FOUND` for retail TBA numbers. iOS runs the app in the background only now and then, so the cron (every 5 min) sends a silent push to the user's iPhones:
+
+```json
+{ "aps": { "content-available": 1 }, "wake": "check" }
+```
+
+- Sent to `ios` devices only; the Mac app checks on its own timer while it runs.
+- Every 20 minutes while a package is out for delivery, has an ETA within 18 hours, or has `device_needed_at` set; hourly while any other Amazon package is on its way. Packages not updated in 14 days, delivered, returned, archived or deleted don't count.
+- On a wake push the app reads Amazon (if it is connected on that iPhone) and any due carrier pages within iOS's ~30 seconds, then syncs. Status changes it posts produce the usual alert push.
+- `users.wake_sent_at` (migration 0006) records the last wake.

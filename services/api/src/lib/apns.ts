@@ -134,28 +134,50 @@ async function sendOne(target: Target, push: ApnsPush, jwt: string, topic: strin
 
 /** Pushes a package change to every device of the user. Returns how many were accepted. */
 export async function notifyPackageChange(env: ApnsEnv, change: PackageChange, deps: ApnsDeps = defaultDeps): Promise<number> {
+  return pushToUser(env, change.userId, buildPush(change), change.packageId, null, deps);
+}
+
+/**
+ * A silent "check now" push (`wake: "check"`) to the user's iPhones, so the
+ * app reads what only a device can (Amazon orders, carrier pages) while it is
+ * in the background (src/poll/wake.ts). Returns how many were accepted.
+ */
+export async function sendWake(env: ApnsEnv, userId: string, deps: ApnsDeps = defaultDeps): Promise<number> {
+  const push: ApnsPush = { pushType: "background", priority: 5, payload: { aps: { "content-available": 1 }, wake: "check" } };
+  return pushToUser(env, userId, push, "wake", "ios", deps);
+}
+
+/** Sends `push` to each of the user's devices with a token (only `platform`'s, when given) and drops dead tokens. */
+async function pushToUser(
+  env: ApnsEnv,
+  userId: string,
+  push: ApnsPush,
+  collapseId: string,
+  platform: "ios" | "macos" | null,
+  deps: ApnsDeps,
+): Promise<number> {
   const { APNS_TEAM_ID: teamId, APNS_KEY_ID: keyId, APNS_PRIVATE_KEY: pem, APNS_TOPIC: topic } = env;
   if (!teamId || !keyId || !pem || !topic) return 0;
 
   const { results } = await env.DB.prepare(
-    "SELECT apns_token, apns_environment FROM devices WHERE user_id = ? AND apns_token IS NOT NULL",
+    `SELECT apns_token, apns_environment FROM devices
+     WHERE user_id = ?1 AND apns_token IS NOT NULL AND (?2 IS NULL OR platform = ?2)`,
   )
-    .bind(change.userId)
+    .bind(userId, platform)
     .all<{ apns_token: string; apns_environment: Environment }>();
   if (results.length === 0) return 0;
 
   const jwt = await providerToken(teamId, keyId, pem, deps.nowSec());
-  const push = buildPush(change);
   let sent = 0;
   for (const { apns_token: token, apns_environment: environment } of results) {
     const target = { host: apnsHost(env, environment), deviceToken: token };
-    const outcome = await sendOne(target, push, jwt, topic, change.packageId, deps).catch((err: unknown) => {
+    const outcome = await sendOne(target, push, jwt, topic, collapseId, deps).catch((err: unknown) => {
       console.warn("apns: request error", err);
       return "failed" as const;
     });
     if (outcome === "sent") sent += 1;
     if (outcome === "dead_token") {
-      await env.DB.prepare("UPDATE devices SET apns_token = NULL WHERE user_id = ? AND apns_token = ?").bind(change.userId, token).run();
+      await env.DB.prepare("UPDATE devices SET apns_token = NULL WHERE user_id = ? AND apns_token = ?").bind(userId, token).run();
     }
   }
   return sent;

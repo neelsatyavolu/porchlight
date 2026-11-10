@@ -44,7 +44,8 @@ final class AppDelegate: NSObject {
         let sessionStore = model.sessionStore
         amazon = AmazonModel(
             api: model.api, signedIn: { (try? sessionStore.load()) != nil },
-            didImport: { Task { _ = await refresh.run() } }
+            didImport: { Task { _ = await refresh.run() } },
+            packages: { [repository = model.repository] in (try? await repository.packages(includeArchived: false)) ?? [] }
         )
         carriers = CarrierTrackingModel(
             api: model.api, signedIn: { (try? sessionStore.load()) != nil },
@@ -103,12 +104,17 @@ final class AppDelegate: NSObject {
     #if os(iOS)
     /// The `co.xanom.porchlight.refresh` task: book the next one, then sync.
     func handleAppRefresh() async {
-        // The whole refresh gets about 30 seconds, so the Amazon import stops opening pages in time to send what it read.
         let started = Date()
-        let amazonDeadline = started.addingTimeInterval(AmazonImporter.backgroundBudget)
         refresh.scheduleAppRefresh()
         _ = await refresh.run()
-        await amazon.importIfDue(deadline: amazonDeadline)
+        await readOnDevice(started: started)
+    }
+
+    /// Reads what only this device can: Amazon, then due carrier pages. iOS gives
+    /// a background run about 30 seconds, so each stops starting new pages in time
+    /// to send what it read. Used by background refresh and the server's wake push.
+    private func readOnDevice(started: Date) async {
+        await amazon.importIfDue(deadline: started.addingTimeInterval(AmazonImporter.backgroundBudget))
         // Carrier pages get what is left; no lookup starts that can't finish in it.
         await carriers.checkIfDue(deadline: started.addingTimeInterval(DeviceTrackingCoordinator.backgroundBudget))
     }
@@ -144,7 +150,14 @@ extension AppDelegate: UIApplicationDelegate {
 
     /// Silent pushes (`content-available: 1`): sync, then tell iOS what came of it.
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any]) async -> UIBackgroundFetchResult {
-        guard PushPayload(userInfo: userInfo) != nil else { return .noData }
+        guard let payload = PushPayload(userInfo: userInfo) else { return .noData }
+        // The server's "check now" (docs/API.md "Background checks"): read Amazon and
+        // carrier pages; what changes comes back as the usual alert push.
+        if payload.wantsCheck {
+            let started = Date()
+            _ = await refresh.run()
+            await readOnDevice(started: started)
+        }
         switch await refresh.run() {
         case .newData: return .newData
         case .failed: return .failed
@@ -160,6 +173,7 @@ extension AppDelegate: NSApplicationDelegate {
         refresh.startTimer()
         amazon.startTimer()
         carriers.startTimer()
+        LoginItem.turnOnOnce()
     }
 
     func application(_ application: NSApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {

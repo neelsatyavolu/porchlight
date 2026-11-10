@@ -29,6 +29,13 @@ private let ID = "6f1c7a52-6b8e-4c1e-9a43-3b0f2d9a7c11"
         #expect(PushPayload(userInfo: info)?.kind == .background)
     }
 
+    @Test func readsTheServersCheckNowWake() throws {
+        let wake: [AnyHashable: Any] = ["aps": ["content-available": 1], "wake": "check"]
+        #expect(PushPayload(userInfo: wake)?.wantsCheck == true)
+        let change: [AnyHashable: Any] = ["aps": ["content-available": 1], "packageId": ID]
+        #expect(PushPayload(userInfo: change)?.wantsCheck == false)
+    }
+
     @Test func lowercasesTheId() throws {
         let info: [AnyHashable: Any] = ["aps": ["content-available": 1], "packageId": ID.uppercased()]
         #expect(PushPayload(userInfo: info)?.packageId == ID)

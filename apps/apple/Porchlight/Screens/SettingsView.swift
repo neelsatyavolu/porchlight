@@ -36,6 +36,8 @@ struct SettingsView: View {
 
             NotificationsSection()
 
+            OpenAtLoginSection()
+
             DevicesSection()
 
             FlintSection()
