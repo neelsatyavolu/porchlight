@@ -125,6 +125,25 @@ describe("device carriers", () => {
     expect(await aggregatorUsed(env, NOW)).toBe(0);
   });
 
+  it("asks the aggregator for a number the device couldn't read, then keeps using it", async () => {
+    const userId = await seedUser(env);
+    const id = await seedPackage(env, { userId, carrier: "fedex", updatedAt: NOW });
+    await env.DB.prepare("UPDATE packages SET device_needed_at = ?, device_reason = 'new', device_failures = 1 WHERE id = ?")
+      .bind(NOW + HOUR, id)
+      .run();
+    const agg = vi.fn(async () => result());
+    await processJob(job(id, userId), env, deps([adapter("aggregator", "aggregator", agg)]));
+    expect(agg).toHaveBeenCalledOnce();
+    expect(await cols(id)).toMatchObject({ last_source: "aggregator", device_needed_at: null, aggregator_registered_at: NOW });
+    expect((await getPackage(env, id)).status).toBe("in_transit");
+    expect(await aggregatorUsed(env, NOW)).toBe(1);
+
+    // Registered: later looks go to the aggregator without spending the budget again.
+    await processJob(job(id, userId), env, deps([adapter("aggregator", "aggregator", agg)], { now: () => NOW + 2 * HOUR }));
+    expect(agg).toHaveBeenCalledTimes(2);
+    expect(await aggregatorUsed(env, NOW)).toBe(1);
+  });
+
   it("keeps an earlier request or a backoff, and uses reason scheduled once read", async () => {
     const userId = await seedUser(env);
     const id = await seedPackage(env, { userId, carrier: "usps", status: "in_transit", lastCheckedAt: NOW - DAY, updatedAt: NOW });

@@ -69,12 +69,13 @@ const MISS_KINDS = new Set(["not_found", "auth", "device_required"]);
 
 /**
  * Whether the aggregator may be asked (docs/API.md "Aggregator budget"):
- * never for device carriers (the device is their path), and for the rest only
+ * for device carriers only once a device read failed (FedEx's bot wall turns
+ * the device away too) or the number is already registered; for the rest only
  * when no API or web adapter exists or those missed twice in a row.
  * Amazon never reaches here: pickAdapters leaves the aggregator out.
  */
 function aggregatorAllowed(pkg: PackageRow, primaries: number, misses: number): boolean {
-  if (isDeviceCarrier(pkg.carrier as CarrierId)) return false;
+  if (isDeviceCarrier(pkg.carrier as CarrierId)) return pkg.device_failures > 0 || pkg.aggregator_registered_at !== null;
   return primaries === 0 || pkg.web_misses + misses >= AGGREGATOR_AFTER_MISSES;
 }
 

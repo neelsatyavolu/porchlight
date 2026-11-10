@@ -32,6 +32,26 @@ enum SnapshotMain {
             }
             RunLoop.main.run()
         }
+        // PORCHLIGHT_CARRIER_TEST="fedex:<number>": read one carrier page the way the app does, print the result and exit.
+        if let spec = ProcessInfo.processInfo.environment["PORCHLIGHT_CARRIER_TEST"],
+           let colon = spec.firstIndex(of: ":"), let carrier = Carrier(rawValue: String(spec[..<colon])) {
+            let number = String(spec[spec.index(after: colon)...])
+            Task {
+                let job = DeviceJob(packageId: "test", carrier: carrier, trackingNumber: number, reason: .manual)
+                do {
+                    let capture = try await CarrierWebEngine().read(job, timeout: .seconds(40))
+                    switch capture {
+                    case let .response(url, status, body): print("carrier: response \(status) from \(url): \(body.prefix(600))")
+                    case let .page(url, html): print("carrier: page only from \(url), \(html.count) chars: \(html.prefix(300))")
+                    }
+                    print("carrier: read \(DeviceTrackingParser.read(capture, carrier: carrier, trackingNumber: number, now: Date(), timeZone: .current))")
+                } catch {
+                    print("carrier: error \(error)")
+                }
+                exit(0)
+            }
+            RunLoop.main.run()
+        }
         let app = NSApplication.shared
         app.setActivationPolicy(.prohibited)
         let out = URL(fileURLWithPath: ProcessInfo.processInfo.environment["PORCHLIGHT_SNAPSHOTS"] ?? FileManager.default.currentDirectoryPath)

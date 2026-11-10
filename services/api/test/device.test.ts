@@ -229,6 +229,8 @@ describe("POST /v1/packages/:id/observed", () => {
     expect(second.deviceNeededAt).toBe(new Date(NOW + 2 * HOUR).toISOString());
     expect(await deviceRow(id)).toMatchObject({ device_failures: 2, device_reason: "new" });
     expect((await getPackage(env, id)).status).toBe("in_transit");
+    // The server looks again now: it may ask the aggregator instead (poll/consume.ts).
+    expect((await getPackage(env, id)).next_check_at).toBe(NOW);
 
     // Not due while backing off; an ok read resets the count.
     expect((await data(await call("GET", "/v1/device-tracking/due", token))).jobs).toEqual([]);

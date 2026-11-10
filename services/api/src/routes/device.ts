@@ -178,12 +178,14 @@ async function observed({ req, env, params }: RouteContext, deps: DeviceDeps): P
     case "challenged":
     case "failed": {
       const failures = pkg.device_failures + 1;
+      // next_check_at = now: the server looks again on the next cron, and may ask the aggregator (poll/consume.ts).
       await db
         .prepare(
-          `UPDATE packages SET device_failures = ?, device_needed_at = ?, device_reason = COALESCE(device_reason, 'scheduled')
+          `UPDATE packages SET device_failures = ?, device_needed_at = ?, device_reason = COALESCE(device_reason, 'scheduled'),
+             next_check_at = ?
            WHERE id = ? AND user_id = ?`,
         )
-        .bind(failures, now + deviceBackoffMs(failures), id, pkg.user_id)
+        .bind(failures, now + deviceBackoffMs(failures), now, id, pkg.user_id)
         .run();
       break;
     }

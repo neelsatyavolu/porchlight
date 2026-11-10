@@ -452,7 +452,7 @@ Errors: 404.
 
 ## Not in v1 / server-internal
 
-- Aggregator budget: Ship24 is used only when no API, web or device path exists for the carrier (`other`, or a web adapter answered not found or failed for good twice in a row), never for `amazon`, and only while fewer than `AGGREGATOR_MONTHLY_LIMIT` (default 10) trackers were registered this calendar month (UTC). A KV counter holds the count; the first registration of a number counts, later reads of it don't.
+- Aggregator budget: Ship24 is used only when no API, web or device path exists for the carrier (`other`, or a web adapter answered not found or failed for good twice in a row), or after a device read of a USPS, UPS or FedEx page failed (FedEx's bot protection turns the device away too; a failed read makes the server look again on the next cron), never for `amazon`, and only while fewer than `AGGREGATOR_MONTHLY_LIMIT` (default 10) trackers were registered this calendar month (UTC). A KV counter holds the count; the first registration of a number counts, later reads of it don't.
 
 - The aggregator webhook endpoint (`POST /v1/hooks/aggregator`) is added when the aggregator account exists. It authenticates with the aggregator's shared secret and is not a client API.
 - Push payloads: APNs `aps.alert` is sent for `out_for_delivery`, `delivered` and `exception`. Every other change sends `content-available: 1` with `{ "packageId": "uuid" }`.
