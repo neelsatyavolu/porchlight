@@ -135,6 +135,33 @@ function packageStatus(detail: Json, events: TrackEvent[]): Status {
 }
 
 /** Reads only status, scans and the scheduled date; receivedBy, addresses, signature and photo links are ignored. */
+const CLOCK = /^(\d{1,2}):(\d{2})\s*([AP])\.?M\.?$/i;
+
+/** "1:30 P.M." → minutes after midnight; null when it isn't a clock time. */
+function clockMinutes(text: string): number | null {
+  const m = CLOCK.exec(text.trim());
+  if (!m) return null;
+  const hour = Number(m[1]);
+  const minute = Number(m[2]);
+  if (hour < 1 || hour > 12 || minute > 59) return null;
+  return ((hour % 12) + (m[3]!.toUpperCase() === "P" ? 12 : 0)) * 60 + minute;
+}
+
+/**
+ * packageStatusTime "1:30 P.M. - 3:30 P.M." on `date` ("YYYY-MM-DD") at
+ * `offset` minutes east of UTC, as [start, end]. Null for anything else
+ * ("End of Day", empty) or when the offset is unknown: the date stands alone.
+ */
+export function upsDeliveryWindow(date: string, text: string, offset: number | null): [string, string] | null {
+  if (offset === null) return null;
+  const parts = text.split(/\s+-\s+/);
+  if (parts.length !== 2) return null;
+  const [start, end] = parts.map(clockMinutes);
+  if (start == null || end == null || end < start) return null;
+  const at = (minutes: number) => formatAtOffset(Date.parse(`${date}T00:00:00Z`) + minutes * 60_000 - offset * 60_000, offset);
+  return [at(start), at(end)];
+}
+
 export function parseUpsStatus(body: unknown, number: string, now: Date): TrackResult {
   const b = obj(body);
   if (str(b.statusCode) !== "200" && b.statusCode !== 200) throw malformed(ID, `GetStatus statusCode ${str(b.statusCode) || "missing"}`);
@@ -155,11 +182,14 @@ export function parseUpsStatus(body: unknown, number: string, now: Date): TrackR
   if (events.length === 0) throw notFound(ID, "UPS has no scans for this number");
   const status = packageStatus(detail, events);
   const scheduled = upsScheduledDate(detail.scheduledDeliveryDateDetail, now);
+  // The window is a wall clock where the package is headed; the newest scan's offset stands in for that zone.
+  const offset = arr(detail.shipmentProgressActivities).map((a) => parseOffset(str(obj(a).gmtOffset))).find((o) => o !== null) ?? null;
+  const window = scheduled ? upsDeliveryWindow(scheduled, str(detail.packageStatusTime), offset) : null;
   return finishResult({
     status,
     statusDetail: str(detail.packageStatus) || (events[0] as TrackEvent).description,
-    etaStart: scheduled,
-    etaEnd: scheduled,
+    etaStart: window?.[0] ?? scheduled,
+    etaEnd: window?.[1] ?? scheduled,
     deliveredAt: null,
     events,
   });

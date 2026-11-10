@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { CarrierError } from "../../../src/types.js";
-import { createUpsWebAdapter, mapUpsActCode, upsScheduledDate } from "../../../src/adapters/web/ups.js";
+import { createUpsWebAdapter, mapUpsActCode, upsDeliveryWindow, upsScheduledDate } from "../../../src/adapters/web/ups.js";
 import pageFixture from "../../../fixtures/web/ups/page.json" with { type: "json" };
 import akamai from "../../../fixtures/web/ups/akamai-denied.json" with { type: "json" };
 import outForDelivery from "../../../fixtures/web/ups/out-for-delivery.json" with { type: "json" };
@@ -144,6 +144,24 @@ describe("web:ups", () => {
     expect(mapUpsActCode("48")).toBe("exception");
     expect(mapUpsActCode("AR")).toBe("in_transit");
     expect(mapUpsActCode("")).toBe("in_transit");
+  });
+
+  it("reads UPS's estimated time window at the newest scan's offset", async () => {
+    const withWindow = structuredClone(outForDelivery) as { trackDetails: Record<string, unknown>[] };
+    withWindow.trackDetails[0]!.packageStatusTime = "1:30 P.M. - 3:30 P.M.";
+    const { adapter, ctx } = setup([{ body: withWindow }]);
+    const result = await adapter.track(NUMBER, "ups", ctx);
+    expect([result.etaStart, result.etaEnd, result.etaDateOnly]).toEqual(["2026-08-04T13:30:00+02:00", "2026-08-04T15:30:00+02:00", false]);
+  });
+
+  it("parses UPS time windows, and keeps the date alone otherwise", () => {
+    expect(upsDeliveryWindow("2026-11-10", "1:30 P.M. - 3:30 P.M.", -480)).toEqual(["2026-11-10T13:30:00-08:00", "2026-11-10T15:30:00-08:00"]);
+    expect(upsDeliveryWindow("2026-11-10", "11:00 A.M. - 12:15 P.M.", -480)).toEqual(["2026-11-10T11:00:00-08:00", "2026-11-10T12:15:00-08:00"]);
+    expect(upsDeliveryWindow("2026-11-10", "12:00 A.M. - 7:00 P.M.", -300)).toEqual(["2026-11-10T00:00:00-05:00", "2026-11-10T19:00:00-05:00"]);
+    expect(upsDeliveryWindow("2026-11-10", "End of Day", -480)).toBeNull();
+    expect(upsDeliveryWindow("2026-11-10", "", -480)).toBeNull();
+    expect(upsDeliveryWindow("2026-11-10", "1:30 P.M. - 3:30 P.M.", null)).toBeNull();
+    expect(upsDeliveryWindow("2026-11-10", "3:30 P.M. - 1:30 P.M.", -480)).toBeNull();
   });
 
   it("picks the year for the scheduled date", () => {
