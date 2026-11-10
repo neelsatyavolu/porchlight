@@ -57,6 +57,7 @@ struct SettingsView: View {
         .sheet(isPresented: $deleting) {
             DeleteAccountSheet()
         }
+        .modifier(AmazonPresentations())
     }
 
     private var accountLine: String {

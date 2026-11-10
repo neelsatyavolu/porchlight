@@ -5,8 +5,6 @@ import SwiftUI
 /// Settings → Connected accounts → Amazon (SPEC §6, DESIGN.md §7).
 struct AmazonSection: View {
     @Environment(AmazonModel.self) private var amazon
-    @State private var signingIn = false
-    @State private var confirmingDisconnect = false
 
     var body: some View {
         Section {
@@ -16,13 +14,13 @@ struct AmazonSection: View {
                 TimelineView(.periodic(from: .now, by: 60)) { context in
                     let line = AmazonStatusText.elsewhere(elsewhere, now: context.date, timeZone: .current)
                     SettingsRow("Not connected on this device", detail: line.text, detailColor: line.isProblem ? PorchColor.warn : PorchColor.mute) {
-                        Button("Connect") { signingIn = true }
+                        Button("Connect") { amazon.signInShown = true }
                             .accessibilityLabel("Also connect Amazon on this device")
                     }
                 }
             } else {
                 SettingsRow("Not connected") {
-                    Button("Connect Amazon") { signingIn = true }
+                    Button("Connect Amazon") { amazon.signInShown = true }
                 }
             }
         } header: {
@@ -41,14 +39,6 @@ struct AmazonSection: View {
             try? await Task.sleep(for: .seconds(max(1, next.timeIntervalSinceNow)))
             await amazon.reload()
         }
-        .sheet(isPresented: $signingIn) {
-            AmazonSignInSheet { Task { await amazon.didSignIn() } }
-        }
-        .confirmationDialog("Disconnect Amazon?", isPresented: $confirmingDisconnect) {
-            Button("Disconnect", role: .destructive) { Task { await amazon.disconnect() } }
-        } message: {
-            Text("This signs Amazon out on this device. Packages already imported stay.")
-        }
     }
 
     @ViewBuilder private var connectedRows: some View {
@@ -60,7 +50,7 @@ struct AmazonSection: View {
                 detailColor: line.isProblem ? PorchColor.warn : PorchColor.mute
             ) {
                 if amazon.status.state == .needsSignIn {
-                    Button("Sign in again") { signingIn = true }
+                    Button("Sign in again") { amazon.signInShown = true }
                 } else {
                     Button("Import now") { Task { await amazon.importIfDue() } }
                         .disabled(amazon.running || amazon.nextAllowedAt != nil)
@@ -68,7 +58,7 @@ struct AmazonSection: View {
             }
         }
         SettingsRow("Disconnect Amazon", detail: "Signs Amazon out on this device. Packages already imported stay.") {
-            DangerButton("Disconnect") { confirmingDisconnect = true }
+            DangerButton("Disconnect") { amazon.disconnectAsked = true }
         }
     }
 
@@ -76,5 +66,24 @@ struct AmazonSection: View {
     private func statusDetail(_ line: AmazonStatusText.Line) -> String {
         guard let next = amazon.nextAllowedAt else { return line.text }
         return line.text + " Porchlight checks Amazon at most every 15 minutes. Next check after \(next.formatted(date: .omitted, time: .shortened))."
+    }
+}
+
+/// The Amazon Connect sheet and Disconnect question, for SettingsView to attach
+/// outside its Form (see AmazonModel.signInShown).
+struct AmazonPresentations: ViewModifier {
+    @Environment(AmazonModel.self) private var amazon
+
+    func body(content: Content) -> some View {
+        @Bindable var amazon = amazon
+        content
+            .sheet(isPresented: $amazon.signInShown) {
+                AmazonSignInSheet { Task { await amazon.didSignIn() } }
+            }
+            .confirmationDialog("Disconnect Amazon?", isPresented: $amazon.disconnectAsked) {
+                Button("Disconnect", role: .destructive) { Task { await amazon.disconnect() } }
+            } message: {
+                Text("This signs Amazon out on this device. Packages already imported stay.")
+            }
     }
 }

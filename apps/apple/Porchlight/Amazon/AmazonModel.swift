@@ -16,6 +16,11 @@ final class AmazonModel {
     /// While this device isn't signed in to Amazon: the status another device
     /// reported, so Settings can say Amazon is already connected there.
     private(set) var elsewhere: AmazonIntegration?
+    /// The Connect sheet and the Disconnect question. They live here, and are
+    /// presented from SettingsView outside the Form, because a sheet attached to
+    /// a Form section lands on its rows, and iOS closed it when a row rebuilt.
+    var signInShown = false
+    var disconnectAsked = false
 
     @ObservationIgnored private let engine = AmazonWebEngine()
     @ObservationIgnored private let coordinator: AmazonImportCoordinator
