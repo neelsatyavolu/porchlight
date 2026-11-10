@@ -12,23 +12,27 @@ struct RouteStop: Hashable {
     var coordinate: CLLocationCoordinate2D { .init(latitude: latitude, longitude: longitude) }
 }
 
-/// The package's path on a calm map: an Accent line through the located
-/// stops in order, a dot per stop (the newest larger), framed tight on the
-/// stops. The caller shows it only when at least one stop was located.
+/// Where the package started and where it is now, on a calm map: a dashed
+/// Accent line between the two, a dot at the start and a larger one at the
+/// newest stop, framed on every stop. Scans in between stay off the line so a
+/// route that doubles back doesn't scribble. The map doesn't move: it's a
+/// picture, not a place to get lost in. The caller shows it only when at least
+/// one stop was located.
 struct RouteMap: View {
     let stops: [RouteStop]
 
     var body: some View {
-        Map(initialPosition: camera, interactionModes: [.pan, .zoom]) {
-            if stops.count > 1 {
-                MapPolyline(coordinates: stops.map(\.coordinate))
-                    .stroke(PorchColor.accent, style: StrokeStyle(lineWidth: 3, lineCap: .round, lineJoin: .round))
+        Map(initialPosition: camera, interactionModes: []) {
+            if let first = stops.first, let last = stops.last, stops.count > 1 {
+                MapPolyline(coordinates: [first.coordinate, last.coordinate])
+                    .stroke(PorchColor.accent, style: StrokeStyle(lineWidth: 3, lineCap: .round, dash: [8, 7]))
+                // MapCircle, not Annotation: overlays draw wherever the map does.
+                // The radius follows the framed area, so a dot stays a dot at any zoom.
+                MapCircle(center: first.coordinate, radius: dotRadius)
+                    .foregroundStyle(PorchColor.accent)
             }
-            // MapCircle, not Annotation: overlays draw wherever the map does.
-            // The radius follows the framed area, so a dot stays a dot at any zoom.
-            ForEach(Array(stops.enumerated()), id: \.offset) { index, stop in
-                let newest = index == stops.count - 1
-                MapCircle(center: stop.coordinate, radius: dotRadius * (newest ? 1.4 : 1))
+            if let last = stops.last {
+                MapCircle(center: last.coordinate, radius: dotRadius * 1.6)
                     .foregroundStyle(PorchColor.accent)
             }
         }

@@ -50,6 +50,15 @@ import Testing
         #expect(EventWords.route(events.reversed()) == ["Reno, NV", "San Pablo, CA", "Oakland, CA"])
     }
 
+    @Test func upsSpellsOutTheCountry() {
+        #expect(EventWords.place("Palatine, IL, United States") == "Palatine, IL")
+        // UPS's label scan names only the country: no stop on the map.
+        #expect(EventWords.place("United States") == nil)
+        let label = TrackEvent(id: "l", packageId: "p", occurredAt: NOW.addingTimeInterval(-300), status: .labelCreated, description: "x", location: "United States")
+        let scan = TrackEvent(id: "s", packageId: "p", occurredAt: NOW, status: .inTransit, description: "x", location: "Hodgkins, IL, United States")
+        #expect(EventWords.route([scan, label]) == ["Hodgkins, IL"])
+    }
+
     @Test func routeKeepsAReturnToAnEarlierPlace() {
         let a = TrackEvent(id: "a", packageId: "p", occurredAt: NOW.addingTimeInterval(-300), status: .inTransit, description: "x", location: "Reno, NV")
         let b = TrackEvent(id: "b", packageId: "p", occurredAt: NOW.addingTimeInterval(-200), status: .inTransit, description: "x", location: "Sparks, NV")

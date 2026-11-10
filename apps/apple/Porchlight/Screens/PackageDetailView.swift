@@ -113,7 +113,10 @@ struct PackageDetailView: View {
             .padding(.vertical, PorchSpacing.l)
             .frame(maxWidth: .infinity)
         }
-        .refreshable { await refresh() }
+        .scrollIndicators(.hidden)
+        // Run outside the pull's task: SwiftUI cancels that task when refresh() changes
+        // state, which cut off the request and showed "Something went wrong".
+        .refreshable { await Task { await refresh() }.value }
     }
 
     private func header(_ pkg: Package, now: Date) -> some View {
@@ -381,6 +384,8 @@ struct PackageDetailView: View {
             if let pkg, SourceText.readsOnDevice(pkg) { await carriers?.checkNow() }
             _ = try? await services.sync.sync()
             services.didChange()
+        } catch is CancellationError {
+            return
         } catch {
             self.error = PackageText.refreshErrorText(error)
         }

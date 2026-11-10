@@ -23,12 +23,13 @@ public enum EventWords {
         return Described(title: title, placeInTitle: true)
     }
 
-    /// "Haslet, TX US" → "Haslet, TX"; "OAKLAND, CA, US" → "Oakland, CA". Other countries keep their code.
+    /// "Haslet, TX US" → "Haslet, TX"; "OAKLAND, CA, US" → "Oakland, CA"; UPS's "Palatine, IL, United States"
+    /// → "Palatine, IL", and its bare "United States" → nil. Other countries keep their code.
     public static func place(_ location: String?) -> String? {
         guard let location else { return nil }
         var parts = location.split(separator: ",").map { $0.trimmingCharacters(in: .whitespaces) }.filter { !$0.isEmpty }
         guard !parts.isEmpty else { return nil }
-        if parts.last == "US" || parts.last == "USA" { parts.removeLast() }
+        if let last = parts.last, ["US", "USA", "United States"].contains(where: { last.caseInsensitiveCompare($0) == .orderedSame }) { parts.removeLast() }
         if let last = parts.last, last.hasSuffix(" US") { parts[parts.count - 1] = String(last.dropLast(3)) }
         guard !parts.isEmpty else { return nil }
         // A shouted town name reads better in title case; state and country codes stay as they are.
