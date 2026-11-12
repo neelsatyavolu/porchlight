@@ -1,7 +1,7 @@
 // Builds the marketing pages into services/api/public (README.md, "Serving").
 // Plain copy, no bundler: HTML from src/, tokens.css from apps/web, Geist
 // woff2 files from the geist package. Leaves public/app (the web app) alone.
-import { copyFile, mkdir, readdir, readFile, rm, writeFile } from "node:fs/promises";
+import { copyFile, cp, mkdir, readdir, readFile, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -22,7 +22,7 @@ const FONTS = [
 ];
 
 /** Everything this script owns in public/. */
-const OWNED_DIRS = ["styles", "fonts", "icons", "download", "updates"];
+const OWNED_DIRS = ["styles", "fonts", "icons", "assets", "download", "updates"];
 
 async function clean() {
   await mkdir(out, { recursive: true });
@@ -51,6 +51,8 @@ async function build() {
   await mkdir(path.join(out, "fonts"), { recursive: true });
 
   const files = await readdir(src);
+  // The home page's layout kit (system.css/js, motion, moments, UI fragments, icons) and its page script.
+  await cp(path.join(src, "assets"), path.join(out, "assets"), { recursive: true });
   const pages = files.filter((f) => f.endsWith(".html"));
   for (const page of pages) await copyFile(path.join(src, page), path.join(out, page));
   // site.css (every page); home.css and sections.css (the home page only).
